@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: org.jungmha
+testFramework: junit
+sourceLanguage: kotlin
+buildTool: gradle_kotlin
+features: [app-name, flyway, gradle, http-client-test, jdbc-hikari, jooq, junit, kotlin, kotlin-application, ksp, logback, micronaut-aot, micronaut-build, micronaut-http-validation, netty-server, openapi, postgres, properties, readme, serialization-jackson, shade, swagger-ui, test-resources, websocket]
