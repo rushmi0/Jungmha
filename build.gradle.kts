@@ -53,6 +53,9 @@ dependencies {
 
 }
 
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+}
 
 
 tasks {
@@ -119,7 +122,8 @@ jooq {
             generateSchemaSourceOnCompilation.set(true)  // default (can be omitted)
 
             jooqConfiguration.apply {
-                logging = Logging.WARN
+                //logging = Logging.WARN
+                logging = Logging.DEBUG
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
                     url = "jdbc:postgresql://localhost:5432/postgres"
@@ -128,6 +132,7 @@ jooq {
                     properties.add(Property().apply {
                         key = "ssl"
                         value = "false"
+                        //value = "true"
                     })
                 }
                 generator.apply {
@@ -135,18 +140,19 @@ jooq {
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
-                        forcedTypes.addAll(listOf(
-                            ForcedType().apply {
-                                name = "varchar"
-                                includeExpression = ".*"
-                                includeTypes = "JSONB?"
-                            },
-                            ForcedType().apply {
-                                name = "varchar"
-                                includeExpression = ".*"
-                                includeTypes = "INET"
-                            }
-                        ))
+//                        forcedTypes.addAll(listOf(
+//                            ForcedType().apply {
+//                                name = "jsonb" // ชื่อของชนิดข้อมูล JSONB ในฐานข้อมูลของคุณ
+//                                includeExpression = ".*"
+//                                includeTypes = ".*"
+//                            },
+//                            ForcedType().apply {
+//                                name = "inet" // ชื่อของชนิดข้อมูล INET ในฐานข้อมูลของคุณ
+//                                includeExpression = ".*"
+//                                includeTypes = ".*"
+//                            }
+//                        ))
+
                     }
                     generate.apply {
                         isDeprecated = false

@@ -11,7 +11,6 @@ import java.util.function.Function;
 
 import nu.studer.sample.Keys;
 import nu.studer.sample.Public;
-import nu.studer.sample.enums.UserType;
 import nu.studer.sample.tables.records.UserprofilesRecord;
 
 import org.jooq.Check;
@@ -104,7 +103,7 @@ public class Userprofiles extends TableImpl<UserprofilesRecord> {
     /**
      * The column <code>public.userprofiles.user_type</code>.
      */
-    public final TableField<UserprofilesRecord, UserType> USER_TYPE = createField(DSL.name("user_type"), SQLDataType.VARCHAR.asEnumDataType(nu.studer.sample.enums.UserType.class), this, "");
+    public final TableField<UserprofilesRecord, String> USER_TYPE = createField(DSL.name("user_type"), SQLDataType.VARCHAR(255), this, "");
 
     private Userprofiles(Name alias, Table<UserprofilesRecord> aliased) {
         this(alias, aliased, null);
@@ -163,7 +162,7 @@ public class Userprofiles extends TableImpl<UserprofilesRecord> {
     public List<Check<UserprofilesRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("userprofiles_email_check"), "(((email)::text ~~ '%_@_%._%'::text))", true),
-            Internal.createCheck(this, DSL.name("userprofiles_user_type_check"), "((user_type = ANY (ARRAY['Normal'::user_type, 'DogWalkers'::user_type])))", true)
+            Internal.createCheck(this, DSL.name("userprofiles_user_type_check"), "(((user_type)::text = ANY ((ARRAY['Normal'::character varying, 'DogWalkers'::character varying])::text[])))", true)
         );
     }
 
@@ -211,14 +210,14 @@ public class Userprofiles extends TableImpl<UserprofilesRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, String, String, String, String, String, String, String, OffsetDateTime, UserType> fieldsRow() {
+    public Row10<Integer, String, String, String, String, String, String, String, OffsetDateTime, String> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function10<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super OffsetDateTime, ? super UserType, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function10<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super OffsetDateTime, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -226,7 +225,7 @@ public class Userprofiles extends TableImpl<UserprofilesRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super OffsetDateTime, ? super UserType, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super OffsetDateTime, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

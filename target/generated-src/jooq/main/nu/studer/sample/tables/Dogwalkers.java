@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 import nu.studer.sample.Keys;
 import nu.studer.sample.Public;
-import nu.studer.sample.enums.Verify;
 import nu.studer.sample.tables.records.DogwalkersRecord;
 
 import org.jooq.Check;
@@ -78,7 +77,7 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     /**
      * The column <code>public.dogwalkers.verification</code>.
      */
-    public final TableField<DogwalkersRecord, Verify> VERIFICATION = createField(DSL.name("verification"), SQLDataType.VARCHAR.defaultValue(DSL.field(DSL.raw("'false'::verify"), SQLDataType.VARCHAR)).asEnumDataType(nu.studer.sample.enums.Verify.class), this, "");
+    public final TableField<DogwalkersRecord, String> VERIFICATION = createField(DSL.name("verification"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("'false'::character varying"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.dogwalkers.price_small</code>.
@@ -169,7 +168,7 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     public List<Check<DogwalkersRecord>> getChecks() {
         return Arrays.asList(
             Internal.createCheck(this, DSL.name("dogwalkers_id_card_number_check"), "((length(((id_card_number)::character varying)::text) = 10))", true),
-            Internal.createCheck(this, DSL.name("dogwalkers_verification_check"), "((verification = ANY (ARRAY['true'::verify, 'false'::verify])))", true)
+            Internal.createCheck(this, DSL.name("dogwalkers_verification_check"), "(((verification)::text = ANY ((ARRAY['true'::character varying, 'false'::character varying])::text[])))", true)
         );
     }
 
@@ -217,14 +216,14 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, String, Long, Verify, Integer, Integer, Integer> fieldsRow() {
+    public Row8<Integer, Integer, String, Long, String, Integer, Integer, Integer> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super Verify, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -232,7 +231,7 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super Verify, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -12,7 +12,6 @@ import java.util.function.Function;
 
 import nu.studer.sample.Keys;
 import nu.studer.sample.Public;
-import nu.studer.sample.enums.State;
 import nu.studer.sample.tables.records.DogwalkbookingsRecord;
 
 import org.jooq.Check;
@@ -80,7 +79,7 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
     /**
      * The column <code>public.dogwalkbookings.status</code>.
      */
-    public final TableField<DogwalkbookingsRecord, State> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR.nullable(false).defaultValue(DSL.field(DSL.raw("'Pending'::state"), SQLDataType.VARCHAR)).asEnumDataType(nu.studer.sample.enums.State.class), this, "");
+    public final TableField<DogwalkbookingsRecord, String> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.field(DSL.raw("'Pending'::character varying"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.dogwalkbookings.time_start</code>.
@@ -192,7 +191,7 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
     @Override
     public List<Check<DogwalkbookingsRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("dogwalkbookings_status_check"), "((status = ANY (ARRAY['Confirm'::state, 'Cancel'::state, 'Pending'::state])))", true)
+            Internal.createCheck(this, DSL.name("dogwalkbookings_status_check"), "(((status)::text = ANY ((ARRAY['Confirm'::character varying, 'Cancel'::character varying, 'Pending'::character varying])::text[])))", true)
         );
     }
 
@@ -240,14 +239,14 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, Integer, Integer, Integer, State, LocalTime, LocalTime, LocalTime, OffsetDateTime> fieldsRow() {
+    public Row9<Integer, Integer, Integer, Integer, String, LocalTime, LocalTime, LocalTime, OffsetDateTime> fieldsRow() {
         return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super State, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -255,7 +254,7 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super State, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

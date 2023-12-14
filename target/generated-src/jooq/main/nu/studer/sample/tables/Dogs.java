@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 import nu.studer.sample.Keys;
 import nu.studer.sample.Public;
-import nu.studer.sample.enums.DogSize;
 import nu.studer.sample.tables.records.DogsRecord;
 
 import org.jooq.Check;
@@ -73,7 +72,7 @@ public class Dogs extends TableImpl<DogsRecord> {
     /**
      * The column <code>public.dogs.size</code>.
      */
-    public final TableField<DogsRecord, DogSize> SIZE = createField(DSL.name("size"), SQLDataType.VARCHAR.nullable(false).asEnumDataType(nu.studer.sample.enums.DogSize.class), this, "");
+    public final TableField<DogsRecord, String> SIZE = createField(DSL.name("size"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     private Dogs(Name alias, Table<DogsRecord> aliased) {
         this(alias, aliased, null);
@@ -126,7 +125,7 @@ public class Dogs extends TableImpl<DogsRecord> {
     @Override
     public List<Check<DogsRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("dogs_size_check"), "((size = ANY (ARRAY['Small'::dog_size, 'Medium'::dog_size, 'Big'::dog_size])))", true)
+            Internal.createCheck(this, DSL.name("dogs_size_check"), "(((size)::text = ANY ((ARRAY['Small'::character varying, 'Medium'::character varying, 'Big'::character varying])::text[])))", true)
         );
     }
 
@@ -174,14 +173,14 @@ public class Dogs extends TableImpl<DogsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, DogSize> fieldsRow() {
+    public Row4<Integer, String, String, String> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super DogSize, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -189,7 +188,7 @@ public class Dogs extends TableImpl<DogsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super DogSize, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
