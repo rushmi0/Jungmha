@@ -132,7 +132,6 @@ jooq {
                     properties.add(Property().apply {
                         key = "ssl"
                         value = "false"
-                        //value = "true"
                     })
                 }
                 generator.apply {
@@ -140,18 +139,6 @@ jooq {
                     database.apply {
                         name = "org.jooq.meta.postgres.PostgresDatabase"
                         inputSchema = "public"
-//                        forcedTypes.addAll(listOf(
-//                            ForcedType().apply {
-//                                name = "jsonb" // ชื่อของชนิดข้อมูล JSONB ในฐานข้อมูลของคุณ
-//                                includeExpression = ".*"
-//                                includeTypes = ".*"
-//                            },
-//                            ForcedType().apply {
-//                                name = "inet" // ชื่อของชนิดข้อมูล INET ในฐานข้อมูลของคุณ
-//                                includeExpression = ".*"
-//                                includeTypes = ".*"
-//                            }
-//                        ))
 
                     }
                     generate.apply {
@@ -165,6 +152,7 @@ jooq {
                         directory = "target/generated-src/jooq/main"  // default (can be omitted)
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+
                 }
             }
         }
