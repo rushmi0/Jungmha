@@ -1,8 +1,9 @@
 package org.jungmha
 
-import io.micronaut.runtime.Micronaut.run
+import io.micronaut.runtime.Micronaut
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.info.*
+
 
 @OpenAPIDefinition(
     info = Info(
@@ -12,7 +13,15 @@ import io.swagger.v3.oas.annotations.info.*
 )
 object Api {
 }
-fun main(args: Array<String>) {
-	run(*args)
-}
 
+
+object Application {
+
+//    private val LOG = LoggerFactory.getLogger(Application::class.java)
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        Micronaut.run(Application.javaClass)
+    }
+
+}

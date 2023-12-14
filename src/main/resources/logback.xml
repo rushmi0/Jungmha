@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-<!--    <logger name="org.jungmha.*" level="DEBUG"/>-->
+    <logger name="org.jungmha.*" level="DEBUG"/>
 <!--    <logger name="io.micronaut.http.client" level="TRACE"/>-->
 <!--    <Logger name="io.micronaut.context.condition" level="DEBUG"/>-->
 
