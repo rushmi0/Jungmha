@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS UserProfiles
     last_name     VARCHAR(255),                                               -- bank_number ต้องมีความยาวที่เท่ากับ 10 ตัวตัวเลข.
     email         VARCHAR(255) CHECK (email LIKE '%_@_%._%') UNIQUE,
     phone_number  VARCHAR(10) UNIQUE,
-    authen_key    VARCHAR(255),                                               -- public key : d0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048
+    authen_key    VARCHAR(70),                                               -- public key : d0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048
     created_at    TIMESTAMPTZ  DEFAULT now(),
     user_type     VARCHAR(255) CHECK (user_type IN ('Normal', 'DogWalkers') ) -- Normal, DogWalkers
 );

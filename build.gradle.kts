@@ -45,11 +45,11 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jooq/jooq
     implementation("org.jooq:jooq:3.18.7")
 
-
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 
-//    implementation("org.postgresql:postgresql:42.2.23")
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation("com.google.guava:guava:32.1.2-jre")
 
 }
 

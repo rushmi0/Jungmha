@@ -6,10 +6,9 @@ import io.micronaut.http.annotation.Get
 import io.micronaut.serde.annotation.Serdeable
 import jakarta.inject.Inject
 import nu.studer.sample.tables.Dogs.DOGS
-import org.jooq.DSLContext
-import org.jooq.Record
-import org.jooq.Result
+import org.jooq.*
 import org.jooq.impl.DSL
+import org.jungmha.database.service.UserService
 import java.sql.DriverManager
 
 @Controller("/dogs")
@@ -50,12 +49,10 @@ fun main() {
 
     // เชื่อมต่อฐานข้อมูล
     DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
-        // สร้าง DSLContext จาก connection
         val dslContext = DSL.using(connection)
 
-        // เรียกใช้ getAllDogs() จาก DogsController
-        val dogsController = DogsController(dslContext)
-        val result: List<DogDetail> = dogsController.getAllDogs()
+        val dogsController = UserService(dslContext)
+        val result = dogsController.findUserName("user1")
 
         // แสดงผลลัพธ์ทั้งหมดทาง console
         println(result)
