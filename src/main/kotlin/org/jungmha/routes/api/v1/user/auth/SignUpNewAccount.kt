@@ -35,7 +35,7 @@ class SignUpNewAccount(
         val publicKey = payload.authenKey
 
         try {
-            // 'Normal', 'DogWalkers'
+
             when {
 
                 accountType == "Normal" || accountType == "DogWalkers" -> {

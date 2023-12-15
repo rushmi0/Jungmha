@@ -11,19 +11,16 @@ object AccountDirectory {
 
         return try {
             when {
-                typeAccount == "customers" -> {
+                typeAccount == "Normal" -> {
                     // สร้างไดเร็กทอรี `profileImage` สำหรับลูกค้า
                     File("$baseDirectory/profileImage").apply { mkdirs() }
                     true // สร้างไดเร็กทอรีสำเร็จ
                 }
 
-                typeAccount == "stores" -> {
+                typeAccount == "DogWalkers" -> {
                     // สร้างไดเร็กทอรี `profileImage` สำหรับร้านค้า
                     File("$baseDirectory/profileImage").apply { mkdirs() }
-
-                    // สร้างไดเร็กทอรี `products`, `camera`, และ `accessories` สำหรับร้านค้า
-                    File("$baseDirectory/products/camera").apply { mkdirs() }
-                    File("$baseDirectory/products/accessories").apply { mkdirs() }
+                    File("$baseDirectory/kyc").apply { mkdirs() }
                     true // สร้างไดเร็กทอรีสำเร็จ
                 }
 
