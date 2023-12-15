@@ -122,8 +122,8 @@ jooq {
             generateSchemaSourceOnCompilation.set(true)  // default (can be omitted)
 
             jooqConfiguration.apply {
-                //logging = Logging.WARN
-                logging = Logging.DEBUG
+                logging = Logging.WARN
+                //logging = Logging.DEBUG
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
                     url = "jdbc:postgresql://localhost:5432/postgres"
