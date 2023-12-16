@@ -8,6 +8,7 @@ import jakarta.inject.Inject
 
 import org.jooq.*
 import org.jooq.impl.DSL
+import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import java.sql.DriverManager
 
@@ -41,7 +42,7 @@ data class DogDetail(
     val size: String
 )
 
-fun main() {
+suspend fun main() {
     // กำหนด connection string และข้อมูลการเข้าถึงฐานข้อมูล
     val jdbcUrl = "jdbc:postgresql://localhost:5432/postgres"
     val username = "postgres"
@@ -51,8 +52,8 @@ fun main() {
     DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
         val dslContext = DSL.using(connection)
 
-        val dogsController = UserService(dslContext)
-        val result = dogsController.findUserName("user1")
+        val dogsController = UserServiceImpl(dslContext)
+        val result = dogsController.findUser("user1")
 
         // แสดงผลลัพธ์ทั้งหมดทาง console
         println(result)
