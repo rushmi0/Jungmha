@@ -8,7 +8,6 @@ import jakarta.inject.Inject
 
 import org.jooq.*
 import org.jooq.impl.DSL
-import org.jungmha.database.service.UserService
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import java.sql.DriverManager
 

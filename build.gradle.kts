@@ -41,6 +41,9 @@ dependencies {
 
     jooqGenerator("org.postgresql:postgresql:42.5.1")
 
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0")
+
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 
@@ -118,8 +121,8 @@ jooq {
             generateSchemaSourceOnCompilation.set(true)  // default (can be omitted)
 
             jooqConfiguration.apply {
-                //logging = Logging.WARN
-                logging = Logging.DEBUG
+                logging = Logging.WARN
+                //logging = Logging.DEBUG
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
                     url = "jdbc:postgresql://localhost:5432/postgres"

@@ -1,6 +1,7 @@
 package org.jungmha.utils
 
 import java.math.BigInteger
+import java.security.MessageDigest
 import java.util.*
 
 object ShiftTo {
@@ -207,6 +208,14 @@ object ShiftTo {
         return result
     }
 
+    fun ByteArray.SHA256(): ByteArray {
+        return MessageDigest.getInstance("SHA-256").digest(this)
+    }
+
+
+    fun String.SHA256(): ByteArray {
+        return toByteArray().SHA256()
+    }
 
     fun String.encodeBase64(): String {
         return Base64.getEncoder().encodeToString(this.HexToByteArray())
