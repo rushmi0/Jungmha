@@ -81,92 +81,54 @@ CREATE TABLE IF NOT EXISTS DogWalkerReviews
 -- //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-CREATE OR REPLACE FUNCTION update_verification()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    IF NEW.id_card_number IS NOT NULL AND NEW.verification = 'false' THEN
-        NEW.verification := 'true';
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER tr_dogwalkers_update_verification
-    BEFORE INSERT OR UPDATE
-    ON DogWalkers
-    FOR EACH ROW
-EXECUTE FUNCTION update_verification();
-
-
 -- //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+-- ข้อมูลจำลองสำหรับ UserProfiles
+INSERT INTO UserProfiles (image_profile, username, first_name, last_name, email, phone_number, authen_key, user_type)
+VALUES ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890',
+        'd0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048', 'Normal'),
+       ('profile2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210',
+        'eba194a2eb10e0aba531b559548584bce753de0100148bfd29f7265b76e595b2', 'DogWalkers'),
+       ('profile3.jpg', 'user3', 'Alice', 'Johnson', 'alice.johnson@email.com', '5551112233',
+        '1c4648fbdb46ccc9391d75a41e824cca80fd742cdeccddb3da24887c5c200457', 'Normal'),
+       ('profile4.jpg', 'user4', 'Bob', 'Miller', 'bob.miller@email.com', '9998887777',
+        '86311bd86cf43a5dc1818774ceee11210fa5031b9281502617935d9c11811bd2', 'DogWalkers'),
+       ('profile5.jpg', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '1231231234',
+        'bb787fcc86e4d5fedf3df9587104e88246ead292b34858ef4ef0b0693f7f20e4', 'Normal');
 
--- สร้างฟังก์ชันเพื่อคำนวณระยะเวลาที่จอง
-CREATE OR REPLACE FUNCTION calculate_duration() RETURNS TRIGGER AS
-$$
-BEGIN
-    -- คำนวณระยะเวลาระหว่างเวลาสิ้นสุดและเวลาเริ่มต้นแล้วเก็บผลลัพธ์ในฟิลด์ duration
-    NEW.duration = (NEW.time_end::time - NEW.time_start::time)::TIME;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- สร้างทริกเกอร์เพื่อเรียกใช้ฟังก์ชัน calculate_duration() เมื่อมีการเพิ่มหรืออัพเดตข้อมูล
-CREATE TRIGGER tr_dogwalkbookings_calculate_duration
-    BEFORE INSERT OR UPDATE OF time_start, time_end
-    ON DogWalkBookings
-    FOR EACH ROW
-EXECUTE FUNCTION calculate_duration();
-
-
--- //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-ALTER TABLE DogWalkBookings
-    ADD COLUMN total INTEGER;
-
-CREATE OR REPLACE FUNCTION calculate_total()
-    RETURNS TRIGGER AS
-$$
-DECLARE
-    dog_size_enum VARCHAR(6);
-    price         INTEGER;
-    total_minutes INTEGER;
-    hours         INTEGER;
-    minutes       INTEGER;
-BEGIN
-    -- ดึงขนาดของหมา
-    SELECT size INTO dog_size_enum FROM Dogs WHERE dog_id = NEW.dog_id;
-
--- ดึงราคาตามขนาดจาก DogWalkers
-    CASE dog_size_enum
-        WHEN 'Small' THEN SELECT price_small INTO price FROM DogWalkers WHERE walker_id = NEW.walker_id;
-        WHEN 'Medium' THEN SELECT price_medium INTO price FROM DogWalkers WHERE walker_id = NEW.walker_id;
-        WHEN 'Big' THEN SELECT price_big INTO price FROM DogWalkers WHERE walker_id = NEW.walker_id;
-        ELSE price := 0; -- หากรูปแบบขนาดไม่ถูกต้อง
-        END CASE;
-
-    -- คำนวณราคาทั้งหมด
-    total_minutes := EXTRACT(EPOCH FROM (NEW.time_end - NEW.time_start)) / 60;
-    hours := FLOOR(total_minutes / 60);
-    minutes := total_minutes % 60;
-
-    -- คำนวณราคาตามชั่วโมงและชั่วโมงครึ่ง
-    NEW.total := (hours + (CASE WHEN minutes > 0 THEN 0.5 ELSE 0 END)) * price;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- ข้อมูลจำลองสำหรับ DogWalkers
+INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
+VALUES (1, 'Park A', 1234567890, 50, 60, 70),
+       (2, 'Park B', 9876543210, 45, 55, 65),
+       (3, 'Park C', 5551112233, 40, 50, 60),
+       (4, 'Park D', 9998887777, 55, 65, 75),
+       (5, 'Park E', 1231231234, 60, 70, 80);
 
 
--- สร้างทริกเกอร์
-CREATE TRIGGER tr_dogwalkbookings_calculate_total
-    BEFORE INSERT OR UPDATE OF time_start, time_end
-    ON DogWalkBookings
-    FOR EACH ROW
-EXECUTE FUNCTION calculate_total();
+-- ข้อมูลจำลองสำหรับ Dogs
+INSERT INTO Dogs (dog_image, breed_name, size)
+VALUES ('dog1.jpg', 'Labrador Retriever', 'Big'),
+       ('dog2.jpg', 'Beagle', 'Small'),
+       ('dog3.jpg', 'German Shepherd', 'Medium'),
+       ('dog4.jpg', 'Golden Retriever', 'Big'),
+       ('dog5.jpg', 'French Bulldog', 'Small');
 
+-- ข้อมูลจำลองสำหรับ DogWalkBookings
+INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end)
+VALUES (1, 2, 3, 'Confirm', '10:00', '11:30'),
+       (2, 3, 4, 'Pending', '14:00', '15:00'),
+       (3, 4, 5, 'Confirm', '16:00', '17:30'),
+       (4, 5, 1, 'Pending', '08:00', '10:00'),
+       (5, 1, 2, 'Confirm', '12:00', '14:30');
 
--- //////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT *
+FROM DogWalkBookings;
+
+-- ข้อมูลจำลองสำหรับ DogWalkerReviews
+INSERT INTO DogWalkerReviews (walker_id, user_id, rating, review_text)
+VALUES (1, 2, 4, 'Great service!'),
+       (2, 3, 5, 'Excellent dog walker!'),
+       (3, 4, 3, 'Good experience overall.'),
+       (4, 5, 2, 'Could improve communication.'),
+       (5, 1, 5, 'Very satisfied with the service.');
 

@@ -7,7 +7,7 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Post
-
+import jakarta.inject.Inject
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
 import org.jungmha.security.xss.XssDetector
@@ -15,7 +15,7 @@ import org.jungmha.utils.AccountDirectory
 import org.slf4j.LoggerFactory
 
 @Controller("api/v1")
-class SignUpNewAccount(
+class SignUpNewAccount @Inject constructor(
     private val service: UserService
 ) {
 
@@ -26,90 +26,52 @@ class SignUpNewAccount(
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
-    fun SignUp(
+    fun signUp(
         @Header("AccountType") accountType: String?,
         @Body payload: UserProfileForm
     ): MutableHttpResponse<out Any>? {
-
-        val userName = payload.userName
-        val publicKey = payload.authenKey
-
         try {
-
-            when {
-
-                accountType == "Normal" || accountType == "DogWalkers" -> {
-
-                    if (userName.isNotBlank() && publicKey.isNotBlank()) {
-                        // ตรวจสอบ XSS
-                        if (XssDetector.containsXss(userName) ||
-                            XssDetector.containsXss(publicKey)
+            when (accountType) {
+                "Normal", "DogWalkers" -> {
+                    if (payload.userName.isNotBlank() && payload.authenKey.isNotBlank()) {
+                        if (XssDetector.containsXss(payload.userName) ||
+                            XssDetector.containsXss(payload.authenKey)
                         ) {
-                            return HttpResponse.badRequest("ตรวจพบการเขียน Cross-site scripting")
+                            return HttpResponse.badRequest("Cross-site scripting detected")
                         } else {
+                            val checkUserName = service.findUserName(payload.userName)?.userName
 
-                            val checkUserName = service.findUserName(userName)?.userName
-
-                            if (checkUserName == userName && accountType == "Normal") {
-                                return HttpResponse.badRequest("User Name: $checkUserName ใช้งานไม่ได้")
+                            if (checkUserName == payload.userName) {
+                                return HttpResponse.badRequest("Invalid User Name: $checkUserName")
                             } else {
-                                val statement: Boolean = service.insert(
-                                    UserProfileForm(
-                                        payload.imageProfile,
-                                        payload.userName,
-                                        payload.firstName,
-                                        payload.lastName,
-                                        payload.email,
-                                        payload.phoneNumber,
-                                        payload.authenKey,
-                                        payload.userType
-                                    )
+                                val userForm = UserProfileForm(
+                                    payload.imageProfile,
+                                    payload.userName,
+                                    payload.firstName,
+                                    payload.lastName,
+                                    payload.email,
+                                    payload.phoneNumber,
+                                    payload.authenKey,
+                                    payload.userType
                                 )
 
-                                if (statement) {
-                                    val user = service.findUserName(userName)
-                                    val id = user!!.userID
-                                    AccountDirectory.createDirectory("Normal", id)
-                                }
-
-                            }
-
-                            if (checkUserName == userName && accountType == "DogWalkers") {
-                                return HttpResponse.badRequest("User Name: $checkUserName ใช้งานไม่ได้")
-                            } else {
-                                val statement: Boolean = service.insert(
-                                    UserProfileForm(
-                                        payload.imageProfile,
-                                        payload.userName,
-                                        payload.firstName,
-                                        payload.lastName,
-                                        payload.email,
-                                        payload.phoneNumber,
-                                        payload.authenKey,
-                                        payload.userType
-                                    )
-                                )
+                                val statement: Boolean = service.insert(userForm)
 
                                 if (statement) {
-                                    val user = service.findUserName(userName)
-                                    val id = user!!.userID
-                                    AccountDirectory.createDirectory("DogWalkers", id)
+                                    val user = service.findUserName(payload.userName)
+                                    val id: Int? = user?.userID
+                                    if (id != null) {
+                                        AccountDirectory.createDirectory(accountType, id)
+                                    }
                                 }
                             }
-
                         }
                     }
-
                 }
-
-
             }
         } catch (e: Exception) {
-            LOG.error("เกิดข้อผิดพลาดในการสร้างบัญชี: ", e)
+            LOG.error("There was an error creating the account: ", e)
         }
-
         return HttpResponse.created("สร้างบัญชีสำเร็จ")
     }
-
-
 }

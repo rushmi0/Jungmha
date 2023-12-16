@@ -7,9 +7,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: sql@min
-
     restart: unless-stopped
-
     volumes:
       - C:\Items\mysoftwares\JVM\Jungmha\src\main\resources\db\migration:/docker-entrypoint-initdb.d/
 
