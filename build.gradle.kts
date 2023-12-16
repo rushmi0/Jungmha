@@ -147,8 +147,8 @@ jooq {
                         isFluentSetters = true
                     }
                     target.apply {
-                        packageName = "nu.studer.sample"
-                        directory = "database/generated-src/jooq/main"
+                        packageName = "org.jungmha.infra.database"
+                        directory = "database/infra/jooq/main"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }
