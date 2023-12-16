@@ -5,10 +5,11 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.serde.annotation.Serdeable
 import jakarta.inject.Inject
-import nu.studer.sample.tables.Dogs.DOGS
+
 import org.jooq.*
 import org.jooq.impl.DSL
 import org.jungmha.database.service.UserService
+import org.jungmha.infra.database.tables.Dogs.DOGS
 import java.sql.DriverManager
 
 @Controller("/dogs")

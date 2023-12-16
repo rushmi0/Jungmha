@@ -1,11 +1,11 @@
 package org.jungmha.database.service
 
 import jakarta.inject.Inject
-import nu.studer.sample.tables.Userprofiles.USERPROFILES
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.UserProfileForm
+import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 
 class UserService(
     @Inject

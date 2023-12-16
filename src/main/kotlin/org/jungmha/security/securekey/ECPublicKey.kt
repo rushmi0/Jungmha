@@ -193,13 +193,3 @@ object ECPublicKey {
     }
 
 }
-
-
-fun main() {
-    val privateKey = BigInteger("936c8c2afdddb699fc82de36b39ce715d6b0e22efd72595a2b7a82c05663cc39", 16)
-    val pub1 = privateKey.toPublicKey()
-    val pub2 = pub1.compressed()
-
-    println(pub1)
-    println(pub2)
-}

@@ -41,9 +41,6 @@ dependencies {
 
     jooqGenerator("org.postgresql:postgresql:42.5.1")
 
-    // https://mvnrepository.com/artifact/org.jooq/jooq
-    //implementation("org.jooq:jooq:3.18.7")
-
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 
