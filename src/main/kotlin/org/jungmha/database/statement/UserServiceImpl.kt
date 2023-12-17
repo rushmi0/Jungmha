@@ -1,6 +1,9 @@
 package org.jungmha.database.statement
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -14,6 +17,8 @@ import org.jungmha.infra.database.tables.records.UserprofilesRecord
 import org.jungmha.service.UserService
 
 @Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 class UserServiceImpl(
     @Bean
     private val query: DSLContext

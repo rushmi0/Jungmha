@@ -1,11 +1,18 @@
 package org.jungmha.utils
 
+import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.security.MessageDigest
 import java.util.*
 
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 object ShiftTo {
 
     private val hexDigits: String = "0123456789abcdef"

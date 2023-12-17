@@ -1,5 +1,6 @@
 package org.jungmha.routes.api.v1.user.auth
 
+import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
@@ -20,6 +21,7 @@ import org.slf4j.MDC
 
 
 @Controller("api/v1")
+@Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class SignUpNewAccount @Inject constructor(

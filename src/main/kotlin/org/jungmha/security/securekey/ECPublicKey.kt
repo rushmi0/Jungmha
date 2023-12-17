@@ -1,6 +1,10 @@
 package org.jungmha.security.securekey
 
 
+import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.security.securekey.EllipticCurve.P
 import org.jungmha.security.securekey.EllipticCurve.A
 import org.jungmha.security.securekey.EllipticCurve.B
@@ -10,6 +14,9 @@ import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.math.BigInteger
 
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 object ECPublicKey {
 
 

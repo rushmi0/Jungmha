@@ -1,8 +1,12 @@
 package org.jungmha.domain
 
+import io.micronaut.context.annotation.Bean
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import io.micronaut.serde.annotation.Serdeable
 import jakarta.inject.Inject
 
@@ -13,6 +17,9 @@ import org.jungmha.infra.database.tables.Dogs.DOGS
 import java.sql.DriverManager
 
 @Controller("/dogs")
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 class DogsController(
     @Inject
     private val dslContext: DSLContext

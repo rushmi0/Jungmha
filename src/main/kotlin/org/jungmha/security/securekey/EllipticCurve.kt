@@ -1,5 +1,9 @@
 package org.jungmha.security.securekey
 
+import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import java.math.BigInteger
 
 /*
@@ -11,6 +15,9 @@ import java.math.BigInteger
 * < Elliptic Curve Cryptography >
 * */
 
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 object EllipticCurve {
 
     // * กำหนดค่าพื้นฐานของเส้นโค้งวงรี โดยใส่ชื่อเส้นโค้งวงรีที่ต้องการใช้งาน

@@ -1,5 +1,13 @@
 package org.jungmha.security.xss
 
+import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
 class XssDetector {
 
     companion object {
