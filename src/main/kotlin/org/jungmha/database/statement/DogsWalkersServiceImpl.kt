@@ -2,9 +2,9 @@ package org.jungmha.database.statement
 
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
-import org.jungmha.service.DogwalkersService
+import org.jungmha.service.DogsWalkersService
 
-class DogwalkersServiceImpl : DogwalkersService {
+class DogsWalkersServiceImpl : DogsWalkersService {
 
     override suspend fun dogWalkersAll(): List<DogWalkerField> {
         TODO("Not yet implemented")

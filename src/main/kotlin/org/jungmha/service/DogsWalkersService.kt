@@ -3,7 +3,7 @@ package org.jungmha.service
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
 
-interface DogwalkersService {
+interface DogsWalkersService {
 
     suspend fun dogWalkersAll() : List<DogWalkerField>
 
