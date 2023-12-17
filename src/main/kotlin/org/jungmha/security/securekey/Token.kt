@@ -1,14 +1,16 @@
 package org.jungmha.security.securekey
 
+
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import java.util.*
 
-
 data class user(
     val id: Int,
     val authenKey: String,
-    val createdAt: Long
+    val exp: Long,
+    val signature: String,
+    val verify: Boolean
 )
 
 object Token {
@@ -16,12 +18,14 @@ object Token {
 
     fun buildToken(id: Int, authenKey: String): String? {
 
-        val timestampInSeconds = (Date().time / 1000).coerceAtLeast(0) + 2592000
+        val exp = (Date().time / 1000).coerceAtLeast(0) + 2592000
 
         val userObject = user(
             id,
             authenKey,
-            timestampInSeconds
+            exp,
+            "",
+            true
         )
 
         val text = jacksonObjectMapper().writeValueAsString(userObject)
