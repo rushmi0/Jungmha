@@ -4,6 +4,7 @@ Thumbs.db
 build/
 target/
 out/
+src/main/resources/images/account/
 .micronaut/
 .idea
 *.iml

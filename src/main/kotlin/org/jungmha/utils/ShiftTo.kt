@@ -1,6 +1,8 @@
 package org.jungmha.utils
 
 import java.math.BigInteger
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.security.MessageDigest
 import java.util.*
 
@@ -208,6 +210,17 @@ object ShiftTo {
         return result
     }
 
+
+
+
+    fun Int.intToByteArray(): ByteArray {
+        val buffer = ByteBuffer.allocate(4).order(ByteOrder.BIG_ENDIAN)
+        buffer.putInt(this)
+        return buffer.array()
+    }
+
+
+
     fun ByteArray.SHA256(): ByteArray {
         return MessageDigest.getInstance("SHA-256").digest(this)
     }
@@ -219,6 +232,10 @@ object ShiftTo {
 
     fun String.encodeBase64(): String {
         return Base64.getEncoder().encodeToString(this.HexToByteArray())
+    }
+
+    fun Int.encodeBase64(): String {
+        return this.DeciToHex().encodeBase64()
     }
 
     fun String.decodeBase64(): String {

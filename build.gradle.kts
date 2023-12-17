@@ -44,6 +44,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0")
 
+    // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
     implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 

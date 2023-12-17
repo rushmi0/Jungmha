@@ -1,9 +1,8 @@
 POST http://localhost:8080/api/v1/user/sign-up
 Content-Type: application/json
-AccountType: Normal
 
 {
-  "imageProfile" : "img.png",
+  "imageProfile" : "",
   "userName" : "Rushmi0",
   "firstName" : "Watcharapol",
   "lastName" : "Phongwilai",
@@ -13,11 +12,10 @@ AccountType: Normal
   "userType" : "Normal"
 }
 
-###
+### SignUpNewAccountTest
 
 POST http://localhost:8080/api/v1/user/sign-up
 Content-Type: application/json
-AccountType: DogWalkers
 
 {
   "imageProfile" : "img.png",
@@ -34,7 +32,6 @@ AccountType: DogWalkers
 
 POST http://localhost:8080/api/v1/user/sign-up
 Content-Type: application/json
-AccountType: DogWalkers
 
 {
   "imageProfile" : "",

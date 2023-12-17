@@ -1,8 +1,6 @@
 package org.jungmha.security.securekey
 
 
-import org.jungmha.security.securekey.ECPublicKey.compressed
-import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import org.jungmha.security.securekey.EllipticCurve.P
 import org.jungmha.security.securekey.EllipticCurve.A
 import org.jungmha.security.securekey.EllipticCurve.B

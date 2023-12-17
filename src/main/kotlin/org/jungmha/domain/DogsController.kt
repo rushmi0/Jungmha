@@ -18,7 +18,7 @@ class DogsController(
     private val dslContext: DSLContext
 ) {
     @Get("/", produces = [MediaType.APPLICATION_JSON])
-    fun getAllDogs(): List<DogDetail> { // แก้ที่นี่เป็น List<DogDetail>
+    fun getAllDogs(): List<DogDetail> {
         // ดึงข้อมูลจากตาราง DOGS
         val result: Result<Record> = dslContext.select().from(DOGS).fetch()
 
@@ -32,15 +32,16 @@ class DogsController(
             )
         }
     }
+
+    @Serdeable.Serializable
+    data class DogDetail(
+        val dogId: Int,
+        val dogImage: String,
+        val breedName: String,
+        val size: String
+    )
 }
 
-@Serdeable.Serializable
-data class DogDetail(
-    val dogId: Int,
-    val dogImage: String,
-    val breedName: String,
-    val size: String
-)
 
 suspend fun main() {
     // กำหนด connection string และข้อมูลการเข้าถึงฐานข้อมูล
