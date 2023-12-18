@@ -11,5 +11,4 @@ class JungmhaController {
     fun index(): String {
         return "Example Response"
     }
-
 }

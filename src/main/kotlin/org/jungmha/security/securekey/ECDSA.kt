@@ -1,9 +1,5 @@
 package org.jungmha.security.securekey
 
-import io.micronaut.context.annotation.Bean
-import io.micronaut.runtime.http.scope.RequestScope
-import io.micronaut.scheduling.TaskExecutors
-import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.security.securekey.ECPublicKey.pointRecovery
 import org.jungmha.security.securekey.EllipticCurve.addPoint
 import org.jungmha.security.securekey.EllipticCurve.modinv
@@ -16,9 +12,6 @@ import java.security.SecureRandom
 * สร้างลายเซ็นและตรวจสอบ ECDSA
 * */
 
-@Bean
-@RequestScope
-@ExecuteOn(TaskExecutors.IO)
 object ECDSA {
 
 

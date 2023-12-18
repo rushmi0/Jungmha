@@ -1,14 +1,7 @@
 package org.jungmha.utils
 
-import io.micronaut.context.annotation.Bean
-import io.micronaut.runtime.http.scope.RequestScope
-import io.micronaut.scheduling.TaskExecutors
-import io.micronaut.scheduling.annotation.ExecuteOn
 import java.io.File
 
-@Bean
-@RequestScope
-@ExecuteOn(TaskExecutors.IO)
 object AccountDirectory {
 
 

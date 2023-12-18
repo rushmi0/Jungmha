@@ -2,10 +2,6 @@ package org.jungmha.utils
 
 
 import com.google.common.io.BaseEncoding
-import io.micronaut.context.annotation.Bean
-import io.micronaut.runtime.http.scope.RequestScope
-import io.micronaut.scheduling.TaskExecutors
-import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.HexToByteArray
 
@@ -71,10 +67,6 @@ data class Bech32Data(val hrp: String, val fiveBitData: ByteArray) {
 /**
  * BIP173 compliant processing functions for handling Bech32 encoding for addresses
  */
-
-@Bean
-@RequestScope
-@ExecuteOn(TaskExecutors.IO)
 class Bech32 {
 
     companion object {

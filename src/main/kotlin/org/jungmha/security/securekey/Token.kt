@@ -3,15 +3,8 @@ package org.jungmha.security.securekey
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.micronaut.context.annotation.Bean
-import io.micronaut.runtime.http.scope.RequestScope
-import io.micronaut.scheduling.TaskExecutors
-import io.micronaut.scheduling.annotation.ExecuteOn
 import java.util.*
 
-@Bean
-@RequestScope
-@ExecuteOn(TaskExecutors.IO)
 data class user(
     val id: Int,
     val authenKey: String,

@@ -10,9 +10,8 @@ class HomeController {
 
     @Get(uri = "/", produces = [MediaType.TEXT_HTML])
     fun index(): String? {
-        return javaClass.getResourceAsStream("/public/index.html")
+        return javaClass.getResourceAsStream("/web/index.html")
             ?.readBytes()
             ?.toString(Charset.defaultCharset())
     }
-
 }

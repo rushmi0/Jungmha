@@ -18,7 +18,7 @@ public class Dogwalkers implements Serializable {
     private final Integer walkerId;
     private final Integer userId;
     private final String locationName;
-    private final Long idCardNumber;
+    private final String idCardNumber;
     private final String verification;
     private final Integer priceSmall;
     private final Integer priceMedium;
@@ -39,7 +39,7 @@ public class Dogwalkers implements Serializable {
         Integer walkerId,
         Integer userId,
         String locationName,
-        Long idCardNumber,
+        String idCardNumber,
         String verification,
         Integer priceSmall,
         Integer priceMedium,
@@ -79,7 +79,7 @@ public class Dogwalkers implements Serializable {
     /**
      * Getter for <code>public.dogwalkers.id_card_number</code>.
      */
-    public Long getIdCardNumber() {
+    public String getIdCardNumber() {
         return this.idCardNumber;
     }
 

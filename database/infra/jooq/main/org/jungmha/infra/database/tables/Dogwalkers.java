@@ -71,7 +71,7 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     /**
      * The column <code>public.dogwalkers.id_card_number</code>.
      */
-    public final TableField<DogwalkersRecord, Long> ID_CARD_NUMBER = createField(DSL.name("id_card_number"), SQLDataType.BIGINT.defaultValue(DSL.field(DSL.raw("0"), SQLDataType.BIGINT)), this, "");
+    public final TableField<DogwalkersRecord, String> ID_CARD_NUMBER = createField(DSL.name("id_card_number"), SQLDataType.VARCHAR(10).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.dogwalkers.verification</code>.
@@ -215,14 +215,14 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, Integer, String, Long, String, Integer, Integer, Integer> fieldsRow() {
+    public Row8<Integer, Integer, String, String, String, Integer, Integer, Integer> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Integer, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -230,7 +230,7 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super Integer, ? super String, ? super Long, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
