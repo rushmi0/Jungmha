@@ -14,8 +14,6 @@ interface DogsWalkersService {
 
     suspend fun dogWalkersAll() : List<DogWalkerField>
 
-    suspend fun findUser(accountName: String): DogWalkerField?
-
     suspend fun insert(payload: DogWalkerForm): Boolean
 
     suspend fun update(id: Int, fieldName: String, newValue: String): Boolean

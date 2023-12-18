@@ -25,8 +25,8 @@ public class Dogwalkbookings implements Serializable {
     private final LocalTime timeStart;
     private final LocalTime timeEnd;
     private final LocalTime duration;
-    private final OffsetDateTime timestamp;
     private final Integer total;
+    private final OffsetDateTime timestamp;
 
     public Dogwalkbookings(Dogwalkbookings value) {
         this.bookingId = value.bookingId;
@@ -37,8 +37,8 @@ public class Dogwalkbookings implements Serializable {
         this.timeStart = value.timeStart;
         this.timeEnd = value.timeEnd;
         this.duration = value.duration;
-        this.timestamp = value.timestamp;
         this.total = value.total;
+        this.timestamp = value.timestamp;
     }
 
     public Dogwalkbookings(
@@ -50,8 +50,8 @@ public class Dogwalkbookings implements Serializable {
         LocalTime timeStart,
         LocalTime timeEnd,
         LocalTime duration,
-        OffsetDateTime timestamp,
-        Integer total
+        Integer total,
+        OffsetDateTime timestamp
     ) {
         this.bookingId = bookingId;
         this.walkerId = walkerId;
@@ -61,8 +61,8 @@ public class Dogwalkbookings implements Serializable {
         this.timeStart = timeStart;
         this.timeEnd = timeEnd;
         this.duration = duration;
-        this.timestamp = timestamp;
         this.total = total;
+        this.timestamp = timestamp;
     }
 
     /**
@@ -122,17 +122,17 @@ public class Dogwalkbookings implements Serializable {
     }
 
     /**
-     * Getter for <code>public.dogwalkbookings.timestamp</code>.
-     */
-    public OffsetDateTime getTimestamp() {
-        return this.timestamp;
-    }
-
-    /**
      * Getter for <code>public.dogwalkbookings.total</code>.
      */
     public Integer getTotal() {
         return this.total;
+    }
+
+    /**
+     * Getter for <code>public.dogwalkbookings.timestamp</code>.
+     */
+    public OffsetDateTime getTimestamp() {
+        return this.timestamp;
     }
 
     @Override
@@ -192,17 +192,17 @@ public class Dogwalkbookings implements Serializable {
         }
         else if (!this.duration.equals(other.duration))
             return false;
-        if (this.timestamp == null) {
-            if (other.timestamp != null)
-                return false;
-        }
-        else if (!this.timestamp.equals(other.timestamp))
-            return false;
         if (this.total == null) {
             if (other.total != null)
                 return false;
         }
         else if (!this.total.equals(other.total))
+            return false;
+        if (this.timestamp == null) {
+            if (other.timestamp != null)
+                return false;
+        }
+        else if (!this.timestamp.equals(other.timestamp))
             return false;
         return true;
     }
@@ -219,8 +219,8 @@ public class Dogwalkbookings implements Serializable {
         result = prime * result + ((this.timeStart == null) ? 0 : this.timeStart.hashCode());
         result = prime * result + ((this.timeEnd == null) ? 0 : this.timeEnd.hashCode());
         result = prime * result + ((this.duration == null) ? 0 : this.duration.hashCode());
-        result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
         result = prime * result + ((this.total == null) ? 0 : this.total.hashCode());
+        result = prime * result + ((this.timestamp == null) ? 0 : this.timestamp.hashCode());
         return result;
     }
 
@@ -236,8 +236,8 @@ public class Dogwalkbookings implements Serializable {
         sb.append(", ").append(timeStart);
         sb.append(", ").append(timeEnd);
         sb.append(", ").append(duration);
-        sb.append(", ").append(timestamp);
         sb.append(", ").append(total);
+        sb.append(", ").append(timestamp);
 
         sb.append(")");
         return sb.toString();

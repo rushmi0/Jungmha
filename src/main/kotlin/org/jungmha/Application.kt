@@ -21,6 +21,7 @@ object Application {
 
     @JvmStatic
     fun main(args: Array<String>) {
+        println("c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73".length)
         Micronaut.run(Application.javaClass)
     }
 

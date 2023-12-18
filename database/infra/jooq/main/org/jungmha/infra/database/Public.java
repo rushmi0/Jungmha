@@ -14,7 +14,6 @@ import org.jungmha.infra.database.tables.Dogs;
 import org.jungmha.infra.database.tables.Dogwalkbookings;
 import org.jungmha.infra.database.tables.Dogwalkerreviews;
 import org.jungmha.infra.database.tables.Dogwalkers;
-import org.jungmha.infra.database.tables.FlywaySchemaHistory;
 import org.jungmha.infra.database.tables.Userprofiles;
 
 
@@ -52,11 +51,6 @@ public class Public extends SchemaImpl {
     public final Dogwalkers DOGWALKERS = Dogwalkers.DOGWALKERS;
 
     /**
-     * The table <code>public.flyway_schema_history</code>.
-     */
-    public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
-
-    /**
      * The table <code>public.userprofiles</code>.
      */
     public final Userprofiles USERPROFILES = Userprofiles.USERPROFILES;
@@ -81,7 +75,6 @@ public class Public extends SchemaImpl {
             Dogwalkbookings.DOGWALKBOOKINGS,
             Dogwalkerreviews.DOGWALKERREVIEWS,
             Dogwalkers.DOGWALKERS,
-            FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Userprofiles.USERPROFILES
         );
     }

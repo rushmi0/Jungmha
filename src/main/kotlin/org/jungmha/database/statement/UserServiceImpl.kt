@@ -1,6 +1,10 @@
 package org.jungmha.database.statement
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -12,66 +16,93 @@ import org.jungmha.database.form.UserProfileForm
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
 import org.jungmha.service.UserService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 
 @Bean
-class UserServiceImpl(
-    @Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
+class UserServiceImpl  @Inject constructor(
     private val query: DSLContext
 ) : UserService {
 
-    override suspend fun findUser(accountName: String): UserProfileField? {
-        val record: Record? = withContext(Dispatchers.IO) {
-            query.select()
-                .from(USERPROFILES)
-                .where(USERPROFILES.USERNAME.eq(accountName))
-                .fetchOne()
-        }
 
-        return record?.let {
-            UserProfileField(
-                it[USERPROFILES.USER_ID],
-                it[USERPROFILES.IMAGE_PROFILE],
-                it[USERPROFILES.USERNAME],
-                it[USERPROFILES.FIRST_NAME],
-                it[USERPROFILES.LAST_NAME],
-                it[USERPROFILES.EMAIL],
-                it[USERPROFILES.PHONE_NUMBER],
-                it[USERPROFILES.AUTHEN_KEY],
-                it[USERPROFILES.CREATED_AT].toString(),
-                it[USERPROFILES.USER_TYPE]
-            )
+    override suspend fun findUser(accountName: String): UserProfileField? {
+        return withContext(Dispatchers.IO) {
+            try {
+                LOG.info("Thread ${Thread.currentThread().name} executing findUser")
+
+                val record: Record? = query.select()
+                    .from(USERPROFILES)
+                    .where(USERPROFILES.USERNAME.eq(accountName))
+                    .fetchOne()
+
+                if (record != null) {
+                    LOG.info("User found with account name [$accountName]")
+                    return@withContext UserProfileField(
+                        record[USERPROFILES.USER_ID],
+                        record[USERPROFILES.IMAGE_PROFILE],
+                        record[USERPROFILES.USERNAME],
+                        record[USERPROFILES.FIRST_NAME],
+                        record[USERPROFILES.LAST_NAME],
+                        record[USERPROFILES.EMAIL],
+                        record[USERPROFILES.PHONE_NUMBER],
+                        record[USERPROFILES.AUTHEN_KEY],
+                        record[USERPROFILES.CREATED_AT].toString(),
+                        record[USERPROFILES.USER_TYPE]
+                    )
+                } else {
+                    LOG.info("User not found with account name [$accountName]")
+                    return@withContext null
+                }
+            } catch (e: Exception) {
+                LOG.error("Error finding user with account name [$accountName]", e)
+                null
+            }
         }
     }
 
 
-    override suspend fun userAll(): List<UserProfileField> {
-        val result: Result<Record> = withContext(Dispatchers.IO) {
-            query.select()
-                .from(USERPROFILES)
-                .fetch()
-        }
 
-        return result.map { record ->
-            UserProfileField(
-                record[USERPROFILES.USER_ID],
-                record[USERPROFILES.IMAGE_PROFILE],
-                record[USERPROFILES.USERNAME],
-                record[USERPROFILES.FIRST_NAME],
-                record[USERPROFILES.LAST_NAME],
-                record[USERPROFILES.EMAIL],
-                record[USERPROFILES.PHONE_NUMBER],
-                record[USERPROFILES.AUTHEN_KEY],
-                record[USERPROFILES.CREATED_AT].toString(),
-                record[USERPROFILES.USER_TYPE]
-            )
+    override suspend fun userAll(): List<UserProfileField> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val result: Result<Record> = query.select()
+                    .from(USERPROFILES)
+                    .fetch()
+
+                LOG.info("Thread ${Thread.currentThread().name} executing userAll")
+                LOG.info("Retrieved ${result.size} user profiles from the database")
+
+                return@withContext result.map { record ->
+                    UserProfileField(
+                        record[USERPROFILES.USER_ID],
+                        record[USERPROFILES.IMAGE_PROFILE],
+                        record[USERPROFILES.USERNAME],
+                        record[USERPROFILES.FIRST_NAME],
+                        record[USERPROFILES.LAST_NAME],
+                        record[USERPROFILES.EMAIL],
+                        record[USERPROFILES.PHONE_NUMBER],
+                        record[USERPROFILES.AUTHEN_KEY],
+                        record[USERPROFILES.CREATED_AT].toString(),
+                        record[USERPROFILES.USER_TYPE]
+                    )
+                }
+            } catch (e: Exception) {
+                LOG.error("Error retrieving user profiles from the database", e)
+                emptyList()
+            }
         }
     }
 
 
 
     override suspend fun insert(payload: UserProfileForm): Boolean {
-        try {
-            withContext(Dispatchers.IO) {
+        return withContext(Dispatchers.IO) {
+            try {
+                LOG.info("Thread ${Thread.currentThread().name} executing insert")
+
                 query.insertInto(
                     USERPROFILES,
                     USERPROFILES.USERNAME,
@@ -92,27 +123,49 @@ class UserServiceImpl(
                         payload.userType
                     )
                     .execute()
-            }
 
-            return true
-        } catch (e: Exception) {
-            return false
-        }
-    }
+                LOG.info("Insert successful for user with username [${payload.userName}]")
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val updateRows = query.update(USERPROFILES)
-                    .set(getField(fieldName), newValue)  // เรียกใช้เมทอด getField ที่ได้กำหนดไว้ด้านล่าง
-                    .where(USERPROFILES.USER_ID.eq(id))
-                    .execute()
-                updateRows > 0
+                true
             } catch (e: Exception) {
+                LOG.error("Error inserting user with username [${payload.userName}]", e)
                 false
             }
         }
     }
+
+
+    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+
+                LOG.info("Thread ${Thread.currentThread().name} executing update")
+
+                val field = getField(fieldName)
+                if (field == null) {
+                    LOG.error("Field name [$fieldName] not found!!!")
+                    return@withContext false
+                }
+
+                val updateRows = query.update(USERPROFILES)
+                    .set(field, newValue)
+                    .where(USERPROFILES.USER_ID.eq(id))
+                    .execute()
+
+                if (updateRows > 0) {
+                    LOG.info("Update successful for field [$fieldName] with new value [$newValue] for user ID [$id]")
+                } else {
+                    LOG.warn("Update did not affect any rows for field [$fieldName] with new value [$newValue] for user ID [$id]")
+                }
+
+                updateRows > 0
+            } catch (e: Exception) {
+                LOG.error("Error updating field [$fieldName] for user ID [$id]", e)
+                false
+            }
+        }
+    }
+
 
     // สร้างเมทอดเพิ่มเติมเพื่อ map ชื่อฟิลด์กับคอลัมน์ใน JOOQ
     private fun getField(fieldName: String): TableField<UserprofilesRecord, String>? {
@@ -124,21 +177,37 @@ class UserServiceImpl(
             "userType" -> USERPROFILES.USER_TYPE
             "authKey" -> USERPROFILES.AUTHEN_KEY
             else -> throw IllegalArgumentException("Field name [$fieldName] not found!!!")
+
         }
     }
 
+
     override suspend fun delete(id: Int): Boolean {
-        try {
-            val deletedRows = withContext(Dispatchers.IO) {
-                query.deleteFrom(USERPROFILES)
+        return withContext(Dispatchers.IO) {
+            try {
+                LOG.info("Thread ${Thread.currentThread().name} executing delete")
+
+                val deletedRows = query.deleteFrom(USERPROFILES)
                     .where(USERPROFILES.USER_ID.eq(id))
                     .execute()
-            }
 
-            return deletedRows > 0
-        } catch (e: Exception) {
-            return false
+                if (deletedRows > 0) {
+                    LOG.info("Delete successful for user with ID [$id]")
+                } else {
+                    LOG.warn("Delete did not affect any rows for user with ID [$id]")
+                }
+
+                deletedRows > 0
+            } catch (e: Exception) {
+                LOG.error("Error deleting user with ID [$id]", e)
+                false
+            }
         }
+    }
+
+
+    companion object {
+        private val LOG: Logger = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
 
 

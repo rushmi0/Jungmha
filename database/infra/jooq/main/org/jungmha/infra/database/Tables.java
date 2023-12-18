@@ -8,7 +8,6 @@ import org.jungmha.infra.database.tables.Dogs;
 import org.jungmha.infra.database.tables.Dogwalkbookings;
 import org.jungmha.infra.database.tables.Dogwalkerreviews;
 import org.jungmha.infra.database.tables.Dogwalkers;
-import org.jungmha.infra.database.tables.FlywaySchemaHistory;
 import org.jungmha.infra.database.tables.Userprofiles;
 
 
@@ -37,11 +36,6 @@ public class Tables {
      * The table <code>public.dogwalkers</code>.
      */
     public static final Dogwalkers DOGWALKERS = Dogwalkers.DOGWALKERS;
-
-    /**
-     * The table <code>public.flyway_schema_history</code>.
-     */
-    public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * The table <code>public.userprofiles</code>.

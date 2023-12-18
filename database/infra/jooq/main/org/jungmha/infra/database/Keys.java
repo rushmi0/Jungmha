@@ -13,13 +13,11 @@ import org.jungmha.infra.database.tables.Dogs;
 import org.jungmha.infra.database.tables.Dogwalkbookings;
 import org.jungmha.infra.database.tables.Dogwalkerreviews;
 import org.jungmha.infra.database.tables.Dogwalkers;
-import org.jungmha.infra.database.tables.FlywaySchemaHistory;
 import org.jungmha.infra.database.tables.Userprofiles;
 import org.jungmha.infra.database.tables.records.DogsRecord;
 import org.jungmha.infra.database.tables.records.DogwalkbookingsRecord;
 import org.jungmha.infra.database.tables.records.DogwalkerreviewsRecord;
 import org.jungmha.infra.database.tables.records.DogwalkersRecord;
-import org.jungmha.infra.database.tables.records.FlywaySchemaHistoryRecord;
 import org.jungmha.infra.database.tables.records.UserprofilesRecord;
 
 
@@ -39,7 +37,6 @@ public class Keys {
     public static final UniqueKey<DogwalkerreviewsRecord> DOGWALKERREVIEWS_PKEY = Internal.createUniqueKey(Dogwalkerreviews.DOGWALKERREVIEWS, DSL.name("dogwalkerreviews_pkey"), new TableField[] { Dogwalkerreviews.DOGWALKERREVIEWS.REVIEW_ID }, true);
     public static final UniqueKey<DogwalkersRecord> DOGWALKERS_PKEY = Internal.createUniqueKey(Dogwalkers.DOGWALKERS, DSL.name("dogwalkers_pkey"), new TableField[] { Dogwalkers.DOGWALKERS.WALKER_ID }, true);
     public static final UniqueKey<DogwalkersRecord> DOGWALKERS_USER_ID_KEY = Internal.createUniqueKey(Dogwalkers.DOGWALKERS, DSL.name("dogwalkers_user_id_key"), new TableField[] { Dogwalkers.DOGWALKERS.USER_ID }, true);
-    public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<UserprofilesRecord> USERPROFILES_EMAIL_KEY = Internal.createUniqueKey(Userprofiles.USERPROFILES, DSL.name("userprofiles_email_key"), new TableField[] { Userprofiles.USERPROFILES.EMAIL }, true);
     public static final UniqueKey<UserprofilesRecord> USERPROFILES_PHONE_NUMBER_KEY = Internal.createUniqueKey(Userprofiles.USERPROFILES, DSL.name("userprofiles_phone_number_key"), new TableField[] { Userprofiles.USERPROFILES.PHONE_NUMBER }, true);
     public static final UniqueKey<UserprofilesRecord> USERPROFILES_PKEY = Internal.createUniqueKey(Userprofiles.USERPROFILES, DSL.name("userprofiles_pkey"), new TableField[] { Userprofiles.USERPROFILES.USER_ID }, true);

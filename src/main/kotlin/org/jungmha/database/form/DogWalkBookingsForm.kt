@@ -1,10 +1,11 @@
-package org.jungmha.database.field
+package org.jungmha.database.form
 
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 
-@Serdeable.Serializable
-data class DogWalkBookingsField(
-    val bookingID: Int,
+@Introspected
+@Serdeable.Deserializable
+data class DogWalkBookingsForm(
     val walkerID: Int,
     val userID: Int,
     val dogID: Int,

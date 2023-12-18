@@ -6,9 +6,10 @@ import io.micronaut.serde.annotation.Serdeable
 @Introspected
 @Serdeable.Deserializable
 data class DogWalkerForm(
+    val userID: Int,
     val locationName: String,
-    val idCardNumber: Int,
-    val priceSmall: String,
-    val priceMedium: String,
-    val priceBig: String
+    val idCardNumber: String,
+    val priceSmall: Int,
+    val priceMedium: Int,
+    val priceBig: Int
 )

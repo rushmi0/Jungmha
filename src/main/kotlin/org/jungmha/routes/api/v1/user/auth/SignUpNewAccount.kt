@@ -26,8 +26,6 @@ class SignUpNewAccount @Inject constructor(
     private val service: UserServiceImpl,
 ) {
 
-    private val LOG = LoggerFactory.getLogger(SignUpNewAccount::class.java)
-
     @Post(
         uri = "/user/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
@@ -37,6 +35,7 @@ class SignUpNewAccount @Inject constructor(
         @Body payload: UserProfileForm,
     ): MutableHttpResponse<out Any?>? {
         try {
+            LOG.info("Thread ${Thread.currentThread().name} executing signUp")
             MDC.put("thread -> ", Thread.currentThread().name)
 
             if (payload.userName.isNotBlank() && payload.authenKey.isNotBlank()) {
@@ -87,5 +86,12 @@ class SignUpNewAccount @Inject constructor(
             MDC.clear()
         }
     }
+
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(SignUpNewAccount::class.java)
+    }
+
+
 }
 

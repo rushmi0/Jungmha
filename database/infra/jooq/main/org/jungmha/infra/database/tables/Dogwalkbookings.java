@@ -96,14 +96,14 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
     public final TableField<DogwalkbookingsRecord, LocalTime> DURATION = createField(DSL.name("duration"), SQLDataType.LOCALTIME(6), this, "");
 
     /**
-     * The column <code>public.dogwalkbookings.timestamp</code>.
-     */
-    public final TableField<DogwalkbookingsRecord, OffsetDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
-
-    /**
      * The column <code>public.dogwalkbookings.total</code>.
      */
     public final TableField<DogwalkbookingsRecord, Integer> TOTAL = createField(DSL.name("total"), SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.dogwalkbookings.timestamp</code>.
+     */
+    public final TableField<DogwalkbookingsRecord, OffsetDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.TIMESTAMPWITHTIMEZONE(6).defaultValue(DSL.field(DSL.raw("now()"), SQLDataType.TIMESTAMPWITHTIMEZONE)), this, "");
 
     private Dogwalkbookings(Name alias, Table<DogwalkbookingsRecord> aliased) {
         this(alias, aliased, null);
@@ -243,14 +243,14 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, Integer, Integer, Integer, String, LocalTime, LocalTime, LocalTime, OffsetDateTime, Integer> fieldsRow() {
+    public Row10<Integer, Integer, Integer, Integer, String, LocalTime, LocalTime, LocalTime, Integer, OffsetDateTime> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function10<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function10<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super Integer, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -258,7 +258,7 @@ public class Dogwalkbookings extends TableImpl<DogwalkbookingsRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super OffsetDateTime, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? super String, ? super LocalTime, ? super LocalTime, ? super LocalTime, ? super Integer, ? super OffsetDateTime, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -9,7 +9,6 @@ import org.jooq.OrderField;
 import org.jooq.impl.DSL;
 import org.jooq.impl.Internal;
 import org.jungmha.infra.database.tables.Dogwalkerreviews;
-import org.jungmha.infra.database.tables.FlywaySchemaHistory;
 import org.jungmha.infra.database.tables.Userprofiles;
 
 
@@ -23,7 +22,6 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index FLYWAY_SCHEMA_HISTORY_S_IDX = Internal.createIndex(DSL.name("flyway_schema_history_s_idx"), FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, new OrderField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS }, false);
     public static final Index IDX_REVIEWS_USERID = Internal.createIndex(DSL.name("idx_reviews_userid"), Dogwalkerreviews.DOGWALKERREVIEWS, new OrderField[] { Dogwalkerreviews.DOGWALKERREVIEWS.USER_ID }, false);
     public static final Index IDX_REVIEWS_WALKERID = Internal.createIndex(DSL.name("idx_reviews_walkerid"), Dogwalkerreviews.DOGWALKERREVIEWS, new OrderField[] { Dogwalkerreviews.DOGWALKERREVIEWS.WALKER_ID }, false);
     public static final Index IDX_USERS_EMAIL = Internal.createIndex(DSL.name("idx_users_email"), Userprofiles.USERPROFILES, new OrderField[] { Userprofiles.USERPROFILES.EMAIL }, false);

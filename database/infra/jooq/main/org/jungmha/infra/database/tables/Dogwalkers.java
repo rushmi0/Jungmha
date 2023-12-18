@@ -71,12 +71,12 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     /**
      * The column <code>public.dogwalkers.id_card_number</code>.
      */
-    public final TableField<DogwalkersRecord, String> ID_CARD_NUMBER = createField(DSL.name("id_card_number"), SQLDataType.VARCHAR(10).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<DogwalkersRecord, String> ID_CARD_NUMBER = createField(DSL.name("id_card_number"), SQLDataType.VARCHAR(255).nullable(false).defaultValue(DSL.field(DSL.raw("'N/A'::character varying"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.dogwalkers.verification</code>.
      */
-    public final TableField<DogwalkersRecord, String> VERIFICATION = createField(DSL.name("verification"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("'false'::character varying"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<DogwalkersRecord, String> VERIFICATION = createField(DSL.name("verification"), SQLDataType.VARCHAR(6).defaultValue(DSL.field(DSL.raw("'false'::character varying"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>public.dogwalkers.price_small</code>.
@@ -166,7 +166,6 @@ public class Dogwalkers extends TableImpl<DogwalkersRecord> {
     @Override
     public List<Check<DogwalkersRecord>> getChecks() {
         return Arrays.asList(
-            Internal.createCheck(this, DSL.name("dogwalkers_id_card_number_check"), "((length(((id_card_number)::character varying)::text) = 10))", true),
             Internal.createCheck(this, DSL.name("dogwalkers_verification_check"), "(((verification)::text = ANY ((ARRAY['true'::character varying, 'false'::character varying])::text[])))", true)
         );
     }
