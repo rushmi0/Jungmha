@@ -21,7 +21,7 @@ object Application {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        LOG.info("Thread ${Thread.currentThread().name} executing main in Application")
         Micronaut.run(Application.javaClass)
+        LOG.info("Thread ${Thread.currentThread().name} executing in Jungmha Application")
     }
 }
