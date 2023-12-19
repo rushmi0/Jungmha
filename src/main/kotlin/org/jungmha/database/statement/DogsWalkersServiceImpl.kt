@@ -11,6 +11,7 @@ import org.jooq.DSLContext
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
+import org.jungmha.infra.database.tables.Userprofiles
 import org.jungmha.service.DogsWalkersService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -149,10 +150,29 @@ class DogsWalkersServiceImpl  @Inject constructor(
     }
 
 
-
     override suspend fun delete(id: Int): Boolean {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            try {
+                LOG.info("Thread ${Thread.currentThread().name} executing delete")
+
+                val deletedRows = query.deleteFrom(DOGWALKERS)
+                    .where(DOGWALKERS.WALKER_ID.eq(id))
+                    .execute()
+
+                if (deletedRows > 0) {
+                    LOG.info("Delete successful for DogWalker with ID [$id]")
+                } else {
+                    LOG.warn("Delete did not affect any rows for DogWalker with ID [$id]")
+                }
+
+                deletedRows > 0
+            } catch (e: Exception) {
+                LOG.error("Error deleting DogWalker with ID [$id]", e)
+                false
+            }
+        }
     }
+
 
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogsWalkersServiceImpl::class.java)

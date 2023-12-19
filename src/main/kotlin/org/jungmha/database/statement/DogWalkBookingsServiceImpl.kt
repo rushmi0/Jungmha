@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkBookingsServiceImpl : DogWalkBookingsService {
+
     override suspend fun bookingsAll(): List<DogWalkerField> {
         TODO("Not yet implemented")
     }
