@@ -7,6 +7,8 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.DogField
 import org.jungmha.database.form.DogForm
 import org.jungmha.service.DogsService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Bean
 @RequestScope
@@ -23,4 +25,9 @@ class DogsServiceImpl : DogsService {
     override suspend fun update(payload: DogForm): DogField {
         TODO("Not yet implemented")
     }
+
+    companion object {
+        private val LOG: Logger = LoggerFactory.getLogger(DogsServiceImpl::class.java)
+    }
+
 }

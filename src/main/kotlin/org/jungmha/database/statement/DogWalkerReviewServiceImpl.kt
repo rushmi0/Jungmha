@@ -7,6 +7,8 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.DogWalkerReviewField
 import org.jungmha.database.form.DogWalkerReviewForm
 import org.jungmha.service.DogWalkerReviewService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 @Bean
 @RequestScope
@@ -27,4 +29,9 @@ class DogWalkerReviewServiceImpl : DogWalkerReviewService {
     override suspend fun delete(id: Int): Boolean {
         TODO("Not yet implemented")
     }
+
+    companion object {
+        private val LOG: Logger = LoggerFactory.getLogger(DogWalkerReviewServiceImpl::class.java)
+    }
+
 }
