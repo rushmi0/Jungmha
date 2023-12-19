@@ -1,14 +1,12 @@
 package org.jungmha
 
-import io.micronaut.runtime.Micronaut
+import io.micronaut.runtime.Micronaut.run
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.info.*
-import org.slf4j.LoggerFactory
-
 
 @OpenAPIDefinition(
     info = Info(
-        title = "jungmha",
+        title = "Jungmha",
         version = "0.1"
     )
 )
@@ -16,12 +14,6 @@ object Api {
 
 }
 
-object Application {
-    private val LOG = LoggerFactory.getLogger(Application::class.java)
-
-    @JvmStatic
-    fun main(args: Array<String>) {
-        Micronaut.run(Application.javaClass)
-        LOG.info("Thread ${Thread.currentThread().name} executing in Jungmha Application")
-    }
+fun main(args: Array<String>) {
+    run(*args)
 }

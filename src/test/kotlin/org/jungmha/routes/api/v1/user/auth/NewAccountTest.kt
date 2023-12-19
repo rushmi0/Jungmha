@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 
 @MicronautTest
-class SignUpNewAccountTest {
+class NewAccountTest {
 
     @Inject
     lateinit var userService: UserServiceImpl // You might need to inject the service for testing

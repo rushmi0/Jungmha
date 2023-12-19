@@ -15,6 +15,7 @@ plugins {
 version = "0.1"
 group = "org.jungmha"
 
+
 val kotlinVersion = project.properties["kotlinVersion"]
 repositories {
     mavenCentral()
@@ -86,7 +87,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("org.jungmha.ApplicationKt")
+    mainClass.set("org.jungmha.Application")
 }
 
 
@@ -151,7 +152,7 @@ jooq {
                     }
                     target.apply {
                         packageName = "org.jungmha.infra.database"
-                        directory = "database/infra/jooq/main"
+                        directory = "target/infra/jooq/main"
                     }
                     strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
                 }

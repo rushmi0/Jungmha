@@ -41,22 +41,3 @@ class DogsController(
         val size: String
     )
 }
-
-
-suspend fun main() {
-    // กำหนด connection string และข้อมูลการเข้าถึงฐานข้อมูล
-    val jdbcUrl = "jdbc:postgresql://localhost:5432/postgres"
-    val username = "postgres"
-    val password = "sql@min"
-
-    // เชื่อมต่อฐานข้อมูล
-    DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
-        val dslContext = DSL.using(connection)
-
-        val dogsController = UserServiceImpl(dslContext)
-        val result = dogsController.findUser("user1")
-
-        // แสดงผลลัพธ์ทั้งหมดทาง console
-        println(result)
-    }
-}

@@ -22,7 +22,7 @@ import org.slf4j.MDC
 @Controller("api/v1")
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class SignUpNewAccount @Inject constructor(
+class NewAccount @Inject constructor(
     private val service: UserServiceImpl,
 ) {
 
@@ -89,7 +89,7 @@ class SignUpNewAccount @Inject constructor(
 
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(SignUpNewAccount::class.java)
+        private val LOG = LoggerFactory.getLogger(NewAccount::class.java)
     }
 
 
