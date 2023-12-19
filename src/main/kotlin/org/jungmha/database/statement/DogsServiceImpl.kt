@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogsServiceImpl : DogsService {
+
     override suspend fun dogsAll(): List<DogField> {
         TODO("Not yet implemented")
     }

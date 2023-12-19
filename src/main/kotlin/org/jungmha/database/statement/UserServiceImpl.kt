@@ -205,10 +205,8 @@ class UserServiceImpl  @Inject constructor(
         }
     }
 
-
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
-
 
 }
