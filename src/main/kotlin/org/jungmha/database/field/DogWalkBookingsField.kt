@@ -1,6 +1,8 @@
 package org.jungmha.database.field
 
 import io.micronaut.serde.annotation.Serdeable
+import java.time.LocalTime
+import java.time.OffsetDateTime
 
 @Serdeable.Serializable
 data class DogWalkBookingsField(
@@ -9,9 +11,9 @@ data class DogWalkBookingsField(
     val userID: Int,
     val dogID: Int,
     val status: String,
-    val timeStart: String,
-    val timeEnd: String,
-    val duration: Int,
+    val timeStart: LocalTime,
+    val timeEnd: LocalTime,
+    val duration: LocalTime,
     val total: Int,
-    val timeStamp: String
+    val timeStamp: OffsetDateTime
 )

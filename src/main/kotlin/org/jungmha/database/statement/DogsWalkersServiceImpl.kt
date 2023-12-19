@@ -94,60 +94,43 @@ class DogsWalkersServiceImpl  @Inject constructor(
     override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-
                 LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
                 val status = when (fieldName) {
-
                     "userID" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.USER_ID, Integer.valueOf(newValue))
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     "locationName" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.LOCATION_NAME, newValue)
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     "idCardNumber" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.ID_CARD_NUMBER, newValue)
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     "priceSmall" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_SMALL, Integer.valueOf(newValue))
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     "priceMedium" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_MEDIUM, Integer.valueOf(newValue))
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     "priceBig" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_BIG, Integer.valueOf(newValue))
-                        .where(DOGWALKERS.WALKER_ID.eq(id))
-                        .execute()
-
                     else -> {
                         LOG.error("Field name [$fieldName] not found!!!")
                         return@withContext false
                     }
                 }
 
-                if (status > 0) {
+                val affectedRows = status.where(DOGWALKERS.WALKER_ID.eq(id)).execute()
+
+                if (affectedRows > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for walker ID [$id]")
                 } else {
-                    LOG.warn("Update did not affect any rows for field [$fieldName] with new value [$newValue] for walker ID [$id]")
+                    LOG.error("Update did not affect any rows for field [$fieldName] with new value [$newValue] for walker ID [$id]")
                 }
 
-                status > 0
+                return@withContext affectedRows > 0
             } catch (e: Exception) {
                 LOG.error("Error updating field [$fieldName] for walker ID [$id]", e)
-                false
+                return@withContext false
             }
         }
     }
+
 
 
     override suspend fun delete(id: Int): Boolean {

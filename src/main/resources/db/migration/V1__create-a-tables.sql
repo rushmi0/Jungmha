@@ -144,41 +144,34 @@ CREATE TABLE IF NOT EXISTS DogWalkerReviews
 );
 
 
--- ข้อมูลจำลองสำหรับ UserProfiles
+-- เพิ่มข้อมูลตัวอย่างในตาราง UserProfiles
 INSERT INTO UserProfiles (image_profile, username, first_name, last_name, email, phone_number, authen_key, user_type)
-VALUES ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890',
-        'd0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048', 'Normal'),
-       ('profile2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210',
-        'eba194a2eb10e0aba531b559548584bce753de0100148bfd29f7265b76e595b2', 'DogWalkers'),
-       ('profile3.jpg', 'user3', 'Alice', 'Johnson', 'alice.johnson@email.com', '5551112233',
-        '1c4648fbdb46ccc9391d75a41e824cca80fd742cdeccddb3da24887c5c200457', 'Normal');
+VALUES
+    ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890',
+     'd0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048', 'Normal'),
+    ('profile2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210',
+     'eba194a2eb10e0aba531b559548584bce753de0100148bfd29f7265b76e595b2', 'DogWalkers');
 
--- ข้อมูลจำลองสำหรับ DogWalkers
+-- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkers
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
-VALUES (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73', 50, 60, 70),
-       (2, 'Park B', '889157fbd2ddf84740fc465765c51f5e3ada347676afce181b2db9c786e6417a', 45, 55, 65),
-       (3, 'Park C', '1188e354a2f302b38ad68ed27c6ca3c89b559f7dd6b204b8caae0f13cc723720', 40, 50, 60);
+VALUES
+    (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73', 50, 60, 70),
+    (2, 'Park B', '889157fbd2ddf84740fc465765c51f5e3ada347676afce181b2db9c786e6417a', 45, 55, 65);
 
--- ข้อมูลจำลองสำหรับ Dogs
+-- เพิ่มข้อมูลตัวอย่างในตาราง Dogs
 INSERT INTO Dogs (dog_image, breed_name, size)
-VALUES ('dog1.jpg', 'Labrador Retriever', 'Big'),
-       ('dog2.jpg', 'Beagle', 'Small'),
-       ('dog3.jpg', 'German Shepherd', 'Medium');
+VALUES
+    ('dog1.jpg', 'Labrador Retriever', 'Big'),
+    ('dog2.jpg', 'Beagle', 'Small');
 
--- ข้อมูลจำลองสำหรับ DogWalkBookings
+-- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkBookings
 INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end)
-VALUES (1, 2, 3, 'Confirm', '10:00', '11:30'),
-       (2, 3, 1, 'Pending', '14:00', '15:00'),
-       (3, 1, 2, 'Confirm', '16:00', '17:30');
+VALUES
+    (1, 2, 1, 'Confirm', '10:00', '11:30'),
+    (2, 1, 2, 'Pending', '14:00', '15:00');
 
--- ข้อมูลจำลองสำหรับ DogWalkerReviews
+-- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkerReviews
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating, review_text)
-VALUES (1, 2, 4, 'Great service!'),
-       (2, 3, 5, 'Excellent dog walker!'),
-       (3, 2, 3, 'Good experience overall');
-
-
-
-
-
-
+VALUES
+    (1, 2, 4, 'Great service!'),
+    (2, 1, 5, 'Excellent dog walker!');
