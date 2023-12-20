@@ -61,7 +61,7 @@ class DogsWalkersServiceImpl  @Inject constructor(
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert for Dog Walker")
 
-                query.insertInto(
+                val result = query.insertInto(
                     DOGWALKERS,
                     DOGWALKERS.USER_ID,
                     DOGWALKERS.LOCATION_NAME,
@@ -80,9 +80,15 @@ class DogsWalkersServiceImpl  @Inject constructor(
                     )
                     .execute()
 
-                LOG.info("Insert successful for walker with User ID [${payload.userID}]")
+                val success: Boolean = result > 0 // ตรวจสอบว่ามีการเพิ่มข้อมูลลงในฐานข้อมูลหรือไม่
 
-                true
+                if (success) {
+                    LOG.info("Insert successful for walker with User ID [${payload.userID}]")
+                } else {
+                    LOG.warn("No rows inserted for walker with User ID [${payload.userID}]")
+                }
+
+                return@withContext success
             } catch (e: Exception) {
                 LOG.error("Error inserting walker with User ID [${payload.userID}]", e)
                 false
@@ -148,7 +154,7 @@ class DogsWalkersServiceImpl  @Inject constructor(
                     LOG.warn("Delete did not affect any rows for DogWalker with ID [$id]")
                 }
 
-                deletedRows > 0
+                return@withContext deletedRows > 0
             } catch (e: Exception) {
                 LOG.error("Error deleting DogWalker with ID [$id]", e)
                 false
