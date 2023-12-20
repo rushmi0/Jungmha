@@ -26,10 +26,8 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
     override suspend fun bookingsAll(): List<DogWalkBookingsField> {
         return withContext(Dispatchers.IO) {
-            val currentThreadName = Thread.currentThread().name
-
             try {
-                LOG.info("Retrieve bookings operation started on thread [$currentThreadName]")
+                LOG.info("Retrieve bookings operation started on thread [${Thread.currentThread().name}]")
 
                 val data = query.select()
                     .from(DOGWALKBOOKINGS)
@@ -49,15 +47,20 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     )
                 }
 
-                LOG.info("Retrieve bookings operation successful on thread [$currentThreadName]")
+                if (result.isNotEmpty()) {
+                    LOG.info("Retrieve bookings operation successful on thread [${Thread.currentThread().name}]")
+                } else {
+                    LOG.warn("No bookings found on thread [${Thread.currentThread().name}]")
+                }
 
-                result
+                return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve bookings operation on thread [$currentThreadName]", e)
+                LOG.error("Error during retrieve bookings operation on thread [${Thread.currentThread().name}]", e)
                 emptyList()
             }
         }
     }
+
 
 
     override suspend fun insert(payload: DogWalkBookingsField): Boolean {
@@ -98,7 +101,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     LOG.warn("Insert did not affect any rows on thread [$currentThreadName]")
                 }
 
-                result > 0
+                return@withContext result > 0
             } catch (e: Exception) {
                 LOG.error("Error during insert operation on thread [$currentThreadName]", e)
                 false
