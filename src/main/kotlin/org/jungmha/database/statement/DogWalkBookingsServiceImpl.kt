@@ -156,8 +156,29 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            val currentThreadName = Thread.currentThread().name
+            try {
+                LOG.info("Delete operation started on thread [$currentThreadName]")
+
+                val deletedRows = query.deleteFrom(DOGWALKBOOKINGS)
+                    .where(DOGWALKBOOKINGS.BOOKING_ID.eq(id))
+                    .execute()
+
+                if (deletedRows > 0) {
+                    LOG.info("Delete successful for booking with ID [$id] on thread [$currentThreadName]")
+                } else {
+                    LOG.warn("Delete did not affect any rows for booking with ID [$id] on thread [$currentThreadName]")
+                }
+
+                return@withContext deletedRows > 0
+            } catch (e: Exception) {
+                LOG.error("Error during delete operation for booking with ID [$id] on thread [$currentThreadName]", e)
+                false
+            }
+        }
     }
+
 
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogWalkBookingsServiceImpl::class.java)
