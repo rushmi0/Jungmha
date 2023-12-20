@@ -14,8 +14,10 @@ interface DogsService {
 
     suspend fun dogsAll(): List<DogField>
 
-    suspend fun insert(payload: DogForm): DogField
+    suspend fun insert(payload: DogForm): Boolean
 
-    suspend fun update(payload: DogForm): DogField
+    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+
+    suspend fun delete(id: Int): Boolean
 
 }
