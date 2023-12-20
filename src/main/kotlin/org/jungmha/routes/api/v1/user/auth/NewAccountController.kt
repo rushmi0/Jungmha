@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.security.securekey.Token
-import org.slf4j.MDC
 
 
 @Controller("api/v1")
@@ -27,16 +26,13 @@ class NewAccountController @Inject constructor(
 ) {
 
     @Post(
-        uri = "/user/sign-up",
+        uri = "/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
-    suspend fun signUp(
-        @Body payload: UserProfileForm,
-    ): MutableHttpResponse<out Any?>? {
+    suspend fun signUp(@Body payload: UserProfileForm): MutableHttpResponse<out Any?>? {
         try {
-            LOG.info("Thread ${Thread.currentThread().name} executing signUp")
-            MDC.put("thread -> ", Thread.currentThread().name)
+            LOG.info("Executing signUp: {}", payload)
 
             if (payload.userName.isNotBlank() && payload.authenKey.isNotBlank()) {
                 if (XssDetector.containsXss(payload.userName) ||
@@ -59,8 +55,6 @@ class NewAccountController @Inject constructor(
                             payload.userType
                         )
 
-                        LOG.debug("Received JSON payload: {}", payload)
-
                         val statement: Boolean = service.insert(userForm)
 
                         if (statement) {
@@ -80,10 +74,8 @@ class NewAccountController @Inject constructor(
                 return HttpResponse.badRequest("Invalid input data")
             }
         } catch (e: Exception) {
-            LOG.error("Error creating the account: ${e.message} $e")
+            LOG.error("Error creating the account", e)
             return HttpResponse.serverError("Failed to create the account")
-        } finally {
-            MDC.clear()
         }
     }
 

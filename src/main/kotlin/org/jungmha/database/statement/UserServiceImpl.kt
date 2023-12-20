@@ -171,7 +171,6 @@ class UserServiceImpl  @Inject constructor(
     private fun getField(fieldName: String): TableField<UserprofilesRecord, String>? {
         return when (fieldName) {
             "imageProfile" -> USERPROFILES.IMAGE_PROFILE
-            "userName" -> USERPROFILES.USERNAME
             "email" -> USERPROFILES.EMAIL
             "phoneNumber" -> USERPROFILES.PHONE_NUMBER
             "userType" -> USERPROFILES.USER_TYPE
