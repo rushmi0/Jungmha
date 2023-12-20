@@ -11,7 +11,6 @@ import org.jooq.DSLContext
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
-import org.jungmha.infra.database.tables.Userprofiles
 import org.jungmha.service.DogsWalkersService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
