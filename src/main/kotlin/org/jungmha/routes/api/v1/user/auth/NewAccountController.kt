@@ -16,24 +16,28 @@ import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.security.securekey.Token
+import org.slf4j.MDC
 
 
 @Controller("api/v1")
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class NewAccountController @Inject constructor(
+class SignUpNewAccount @Inject constructor(
     private val service: UserServiceImpl,
     private val token: Token
 ) {
 
     @Post(
-        uri = "/sign-up",
+        uri = "/user/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
-    suspend fun signUp(@Body payload: UserProfileForm): MutableHttpResponse<out Any?>? {
+    suspend fun signUp(
+        @Body payload: UserProfileForm,
+    ): MutableHttpResponse<out Any?>? {
         try {
-            LOG.info("Executing signUp: {}", payload)
+            LOG.info("Thread ${Thread.currentThread().name} executing signUp")
+            MDC.put("thread -> ", Thread.currentThread().name)
 
             if (payload.userName.isNotBlank() && payload.authenKey.isNotBlank()) {
                 if (XssDetector.containsXss(payload.userName) ||
@@ -41,8 +45,7 @@ class NewAccountController @Inject constructor(
                 ) {
                     return HttpResponse.badRequest("Cross-site scripting detected")
                 } else {
-                    val checkUserName: String = service.findUser(payload.userName)?.userName.toString()
-
+                    val checkUserName = service.findUser(payload.userName)?.userName
                     if (checkUserName == payload.userName) {
                         return HttpResponse.badRequest("Invalid User Name: $checkUserName")
                     } else {
@@ -56,6 +59,8 @@ class NewAccountController @Inject constructor(
                             payload.authenKey,
                             payload.userType
                         )
+
+                        LOG.debug("Received JSON payload: {}", payload)
 
                         val statement: Boolean = service.insert(userForm)
 
@@ -76,16 +81,17 @@ class NewAccountController @Inject constructor(
                 return HttpResponse.badRequest("Invalid input data")
             }
         } catch (e: Exception) {
-            LOG.error("Error creating the account", e)
+            LOG.error("Error creating the account: ${e.message} $e")
             return HttpResponse.serverError("Failed to create the account")
+        } finally {
+            MDC.clear()
         }
     }
 
 
     companion object {
-        private val LOG = LoggerFactory.getLogger(NewAccountController::class.java)
+        private val LOG = LoggerFactory.getLogger(SignUpNewAccount::class.java)
     }
 
 
 }
-

@@ -2,11 +2,11 @@ package org.jungmha.security.securekey
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.starkbank.ellipticcurve.Curve
-import com.starkbank.ellipticcurve.Ecdsa
-import com.starkbank.ellipticcurve.PrivateKey
-import org.jungmha.utils.ShiftTo.ByteArrayToHex
-import org.jungmha.utils.ShiftTo.SHA256
+import io.micronaut.context.annotation.Bean
+import io.micronaut.context.annotation.Value
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import java.math.BigInteger
 import java.util.*
 
@@ -17,26 +17,28 @@ data class JWTObject(
     val signature: String,
 )
 
-class Token {
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
+class Token{
 
-    private val privateKey = PrivateKey(
-        Curve.secp256k1,
-        BigInteger("a66679d60de1659086f2138bd275e1d0ef53f143ca814442eb97b94ca9668a20", 16)
-    )
 
     fun buildToken(username: String): String? {
         val currentTimeMillis = System.currentTimeMillis()
         val exp = currentTimeMillis + 2_592_000
 
-        val message = JWTObject(
+        val rawObject = JWTObject(
             username,
             exp.toBigInteger(),
             currentTimeMillis.toBigInteger(),
             ""
         )
 
-        val dataHash = jacksonObjectMapper().writeValueAsString(message).SHA256().ByteArrayToHex()
-        val signature = Ecdsa.sign(dataHash, privateKey).toDer().bytes.ByteArrayToHex()
+        val message = jacksonObjectMapper().writeValueAsString(rawObject)
+        val signature = ECDSA.sign(
+            BigInteger("B885C70F190320D90AAECDBED18E4CB556D52AA9D8CD3E4040EC1582A960C43B", 16),
+            message
+        )
 
         val tokenObject = JWTObject(
             username,
@@ -50,6 +52,8 @@ class Token {
         return Base64.getEncoder().encodeToString(encode)
     }
 
+
+    // eyJ1c2VyTmFtZSI6IlJ1c2htaTAiLCJleHAiOjE3MDMxODA4MTgxNTYsImlhdCI6MTcwMzE3ODIyNjE1Niwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMGU2ZWZkNDBjZGI3YWQ2NGNmY2QxMDVhNjM2Y2JlYzQwOTZmMWI5OGYzMjQwMTFmMDYyZTAxYmM3YjM1YjZlZWYwMjIwMjI2OTNlMTZjZjUwZGNlYmNjYjdjNDdlNzVhMGJmYjNmYzA1NjgwYmYwYTgyNzFkOGI1NmNhNmU1NGJjN2QxMiJ9
     fun verifyToken(token: String): JWTObject {
         val decode = Base64.getDecoder().decode(token)
         val jsonMap = jacksonObjectMapper().readValue<Map<String, Any>>(decode)
@@ -58,22 +62,3 @@ class Token {
     }
 }
 
-fun main() {
-    val userName = "root"
-    val authenKey = "028fda492e3522673b0b0561526e4b1b96b3bdf81484ca5a1db4f30125fc04be54"
-
-    val token = Token().buildToken(userName)!!
-    println(token)
-
-    val verify = Token().verifyToken(token)
-    println(verify)
-
-    val data = JWTObject(
-        verify.userName,
-        verify.exp,
-        verify.iat,
-        verify.signature
-    )
-
-    println(data)
-}
