@@ -1,5 +1,6 @@
 package org.jungmha.utils
 
+import org.jungmha.utils.ShiftTo.encodeBase64
 import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -238,10 +239,21 @@ object ShiftTo {
         return this.DeciToHex().encodeBase64()
     }
 
-    fun String.decodeBase64(): String {
-        return Base64.getDecoder().decode(this).ByteArrayToHex()
+    fun ByteArray.encodeBase64(): String {
+        return Base64.getEncoder().encodeToString(this)
+    }
+
+    fun String.decodeBase64(): ByteArray {
+        return Base64.getDecoder().decode(this)
     }
 
 
 
+}
+
+
+fun main() {
+
+    val key = "060e4d82ee7087bff782f6f0ae303c1fff20d62768c57322c7878eea262b2ab2".encodeBase64()
+    println(key)
 }

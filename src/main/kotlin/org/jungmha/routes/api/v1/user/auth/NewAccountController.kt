@@ -23,6 +23,7 @@ import org.jungmha.security.securekey.Token
 @ExecuteOn(TaskExecutors.IO)
 class NewAccountController @Inject constructor(
     private val service: UserServiceImpl,
+    private val token: Token
 ) {
 
     @Post(
@@ -40,7 +41,8 @@ class NewAccountController @Inject constructor(
                 ) {
                     return HttpResponse.badRequest("Cross-site scripting detected")
                 } else {
-                    val checkUserName = service.findUser(payload.userName)?.userName
+                    val checkUserName: String = service.findUser(payload.userName)?.userName.toString()
+
                     if (checkUserName == payload.userName) {
                         return HttpResponse.badRequest("Invalid User Name: $checkUserName")
                     } else {
@@ -60,7 +62,7 @@ class NewAccountController @Inject constructor(
                         if (statement) {
                             val user = service.findUser(payload.userName)
                             val userId = user?.userID
-                            val token = userId?.let { Token.buildToken(it, payload.authenKey) }
+                            val token = token.buildToken(payload.userName)
                             if (userId != null) {
                                 AccountDirectory.createDirectory(payload.userType, userId)
                             }

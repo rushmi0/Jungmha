@@ -1,10 +1,12 @@
 package org.jungmha.security.securekey
 
-import org.jungmha.security.securekey.ECPublicKey.pointRecovery
+
 import org.jungmha.security.securekey.EllipticCurve.addPoint
+import org.jungmha.security.securekey.EllipticCurve.getDecompress
 import org.jungmha.security.securekey.EllipticCurve.modinv
 import org.jungmha.security.securekey.EllipticCurve.multiplyPoint
-
+import org.jungmha.utils.ShiftTo.ByteArrayToBigInteger
+import org.jungmha.utils.ShiftTo.SHA256
 import java.math.BigInteger
 import java.security.SecureRandom
 
@@ -12,105 +14,69 @@ import java.security.SecureRandom
 * สร้างลายเซ็นและตรวจสอบ ECDSA
 * */
 
+
 object ECDSA {
 
-
     /*
-* https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki
-*/
+    * https://github.com/bitcoin/bips/blob/master/bip-0062.mediawiki
+    */
 
     // * Parameters secp256k1
     private val curveDomain: Secp256K1.CurveParams = Secp256K1.getCurveParams()
     private val N: BigInteger = curveDomain.N
 
+    data class Point(
+        val R: BigInteger,
+        val S: BigInteger
+    )
 
-    fun sign(
-        privateKey: String,
-        message: String
-    ): String {
-        val signaturePoint: Pair<BigInteger, BigInteger> = signECDSA(
-            BigInteger(privateKey, 16),
-            BigInteger(message, 16)
-        )
-        return toDERFormat(signaturePoint)
-    }
+    private fun SignSignatures(privateKey: BigInteger, message: BigInteger): Point {
+        try {
+            val m = message
+            val k = BigInteger(256, SecureRandom())
 
-    fun verify(
-        publicKeyPoint: String,
-        message: String,
-        signature: String
-    ): Boolean {
-        val signaturePoint = derRecovered(signature)
-        return signaturePoint?.let {
-            verifyECDSA(publicKeyPoint, BigInteger(message, 16), it)
-        } ?: false
-    }
+            val point = multiplyPoint(k)
+            val kInv: BigInteger = modinv(k, N)
 
+            val r: BigInteger = point.x % N
+            var s: BigInteger = ((m + r * privateKey) * kInv) % N
 
+            // * https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki
+            if (s > N.shiftRight(1)) {
+                s = N - s
+            }
 
-    // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
-
-
-    // * สร้างลายเซ็น โดยรับค่า private key และ message ที่ต้องการลงลายเซ็น และคืนค่าเป็นคู่ของ BigInteger (r, s)
-
-    private fun signECDSA(
-        privateKey: BigInteger,
-        message: BigInteger
-    ): Pair<BigInteger, BigInteger> {
-        val m = message
-        //val k = BigInteger("42854675228720239947134362876390869888553449708741430898694136287991817016610")
-
-        val k = BigInteger(N.bitLength(), SecureRandom()).mod(N - BigInteger.ONE).add(BigInteger.ONE)
-
-        val point: PointField = multiplyPoint(k)
-
-        val kInv: BigInteger = modinv(k, N)
-
-        val r: BigInteger = point.x % N
-
-        var s: BigInteger = (m + r * privateKey) * kInv % N
-        // var s: BigInteger = ((m + r * privateKey) * kInv) % N
-
-        // * https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki
-        if (s > N.shiftRight(1)) {
-            s = N - s
+            return Point(r, s)
+        } catch (e: Exception) {
+            throw e
         }
-
-        return Pair(r, s)
     }
 
-    private fun verifyECDSA(
-        publicKeyPoint: String,
+    private fun VerifySignature(
+        publicKeyPoint: PointField,
         message: BigInteger,
-        signature: PointField?
+        signature: Point
     ): Boolean {
-        val (r, s) = signature ?: return false
+        val (r, s) = signature
 
-        val w: BigInteger = modinv(s, N)
-        val u1: BigInteger = (message * w) % N
-        val u2: BigInteger = (r * w) % N
+        val w = modinv(s, N)
+        val u1 = (message * w) % N
+        val u2 = (r * w) % N
 
-        val point1: PointField = multiplyPoint(u1)
-        val point2: PointField = multiplyPoint(
-            u2,
-            publicKeyPoint.pointRecovery()
-        )
+        val point1 = multiplyPoint(u1)
+        val point2 = multiplyPoint(u2, publicKeyPoint)
 
-        val point: PointField = addPoint(point1, point2)
+        val point = addPoint(point1, point2)
 
-        val x: BigInteger = point.x % N
+        val x = point.x % N
 
         return x == r
     }
 
-
-    // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
-
-
     // * https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
     // เมธอดสำหรับแปลงลายเซ็นให้อยู่ในรูปของ DER format
     // โดยรับคู่ของ BigInteger ที่แทนลายเซ็น (r, s) เป็น input
-    private fun toDERFormat(signature: Pair<BigInteger, BigInteger>): String {
+    private fun toDERFormat(signature: Point): String {
         // แยกค่า r และ s จากคู่ของ BigInteger
         val (r, s) = signature
 
@@ -135,14 +101,13 @@ object ECDSA {
 
     // เมธอดสำหรับถอดรหัสลายเซ็นในรูปของ DER
     // และคืนค่าเป็นคู่ของ BigInteger (r, s)
-    private fun derRecovered(derSignature: String): PointField? {
+    private fun derRecovered(derSignature: String): Point? {
         try {
             // แปลงรหัสลายเซ็นในรูปของ DER จากฐาน 16 เป็น bytes
             val derBytes = derSignature.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 
             // ตรวจสอบความถูกต้องของรูปแบบ DER
             if (derBytes.size < 8 || derBytes[0] != 0x30.toByte() || derBytes[2] != 0x02.toByte()) {
-                println("รูปแบบ DER ไม่ถูกต้อง")
                 return null
             }
 
@@ -158,12 +123,47 @@ object ECDSA {
             val r = BigInteger(1, rBytes)
             val s = BigInteger(1, sBytes)
 
-            return PointField(r, s)
+            return Point(r, s)
         } catch (e: Exception) {
             println("ไม่สามารถถอดรหัสลายเซ็น: ${e.message}")
             return null
         }
     }
+
+
+    fun sign(
+        privateKey: BigInteger,
+        message: String
+    ): String {
+
+        val hashMessage = message.SHA256().ByteArrayToBigInteger()
+
+        val signature = SignSignatures(
+            privateKey,
+            hashMessage
+        )
+
+        return toDERFormat(signature)
+    }
+
+    fun verify(
+        message: String,
+        publicKey: String,
+        signature: String
+    ): Boolean {
+
+        val hashMessage = message.SHA256().ByteArrayToBigInteger()
+        val point = publicKey.getDecompress()!!
+        val signatureRecovered = derRecovered(signature)!!
+
+        return VerifySignature(
+            point,
+            hashMessage,
+            signatureRecovered
+        )
+
+    }
+
 
 
 }

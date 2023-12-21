@@ -13,6 +13,7 @@ plugins {
 }
 
 version = "0.1"
+
 group = "org.jungmha"
 
 
@@ -26,7 +27,6 @@ dependencies {
     ksp("io.micronaut.openapi:micronaut-openapi")
     ksp("io.micronaut.serde:micronaut-serde-processor")
     implementation("io.micronaut:micronaut-websocket")
-    implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
@@ -53,6 +53,13 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
+
+    // https://mvnrepository.com/artifact/com.starkbank.ellipticcurve/starkbank-ecdsa
+    implementation("com.starkbank.ellipticcurve:starkbank-ecdsa:1.0.2")
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
+
 
 }
 

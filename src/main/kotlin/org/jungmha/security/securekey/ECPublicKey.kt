@@ -38,12 +38,6 @@ object ECPublicKey {
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
 
 
-
-
-
-    // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
-
-
     // รับค่า private key และคืนค่า public key ในรูปแบบพิกัดบนเส้นโค้งวงรี พิกัด x และ y จะเป็นค่า BigInteger เลขฐาน 10
     private fun generatePoint(k: BigInteger): PointField {
         // คำนวณค่าพิกัดบนเส้นโค้งวงรีจาก private key
@@ -97,7 +91,7 @@ object ECPublicKey {
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
 
 
-    private fun generateKeyPair(publicKey: String): String {
+    private fun groupSelection(publicKey: String): String {
 
 
         val keyByteArray = publicKey.HexToByteArray().copyOfRange(1, publicKey.HexToByteArray().size)
@@ -125,6 +119,7 @@ object ECPublicKey {
 
 
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
+
 
 
     private fun publicKeyGroup(xGroupOnly: String): PointField {
@@ -177,7 +172,7 @@ object ECPublicKey {
 
     // `compressed` ใช้สำหรับแปรง Public Key Hex
     fun String.compressed(): String {
-        return generateKeyPair(this)
+        return groupSelection(this)
     }
 
     // `toPoint` ใช้สำหรับแปรง Private Key รูปแบบเลขฐาน 10 ให้อยู่ในรูปแบบของ พิดกัดบนเส้นโค้งวงรี (x, y)

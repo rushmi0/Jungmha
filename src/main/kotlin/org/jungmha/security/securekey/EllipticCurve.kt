@@ -1,5 +1,7 @@
 package org.jungmha.security.securekey
 
+import org.jungmha.utils.ShiftTo.ByteArrayToBigInteger
+import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.math.BigInteger
 
 /*
@@ -131,5 +133,48 @@ object EllipticCurve {
 
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
 
+
+    private fun decompressPublicKey(compressedPublicKey: String): PointField? {
+        try {
+            // แปลง compressed public key ในรูปแบบ Hex เป็น ByteArray
+            val byteArray = compressedPublicKey.HexToByteArray()
+
+            // ดึงค่า x coordinate จาก ByteArray
+            val xCoord = byteArray.copyOfRange(1, byteArray.size).ByteArrayToBigInteger()
+
+            // ตรวจสอบว่า y เป็นเลขคู่หรือไม่
+            val isYEven = byteArray[0] == 2.toByte()
+
+            // คำนวณค่า x^3 (mod P)
+            val xCubed = xCoord.modPow(BigInteger.valueOf(3), P)
+
+            // คำนวณ Ax (mod P)
+            val Ax = xCoord.multiply(A).mod(P)
+
+            // คำนวณ y^2 = x^3 + Ax + B (mod P)
+            val ySquared = xCubed.add(Ax).add(B).mod(P)
+
+            // คำนวณค่า y จาก y^2 โดยใช้ square root
+            val y = ySquared.modPow(P.add(BigInteger.ONE).divide(BigInteger.valueOf(4)), P)
+
+            // ตรวจสอบว่า y^2 เป็นเลขคู่หรือไม่
+            val isYSquareEven = y.mod(BigInteger.TWO) == BigInteger.ZERO
+
+            // คำนวณค่า y โดยแก้ไขเครื่องหมายตามผลลัพธ์ที่ได้จากการตรวจสอบ
+            val computedY = if (isYSquareEven != isYEven) P.subtract(y) else y
+
+            // สร้าง Point จาก x และ y ที่ได้
+            return PointField(xCoord, computedY)
+        } catch (e: Exception) {
+            println("Failed to decompress the public key: ${e.message}")
+            return null
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────────────────── \\
+
+    fun String.getDecompress(): PointField? {
+        return decompressPublicKey(this)
+    }
 
 }

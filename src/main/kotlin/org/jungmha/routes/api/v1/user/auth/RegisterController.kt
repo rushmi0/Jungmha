@@ -8,7 +8,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 @Controller("api/v1")
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class UserAuthenticationController {
+class RegisterController {
 
 
 

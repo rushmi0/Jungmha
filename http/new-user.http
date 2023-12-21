@@ -59,3 +59,14 @@ Content-Type: application/json
   "authenKey" : "028fda492e3522673b0b0561526e4b1b96b3bdf81484ca5a1db4f30125fc04be54",
   "userType" : "Normal"
 }
+
+
+###
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "identity": "my-user",
+  "secret": "secret"
+}
