@@ -1,9 +1,5 @@
 version: "3.9"
 
-networks:
-  jungmha-network:
-    driver: bridge
-
 services:
 
   jungmhaDB:
@@ -16,24 +12,4 @@ services:
     restart: unless-stopped
     volumes:
       - C:\Items\mysoftwares\JVM\Jungmha\src\main\resources\db\migration:/docker-entrypoint-initdb.d/
-    networks:
-      - jungmha-network
 
-  jungmhaApp:
-    container_name: jungmha-server
-    image: amazoncorretto:17-alpine
-    working_dir: /app
-    volumes:
-      - C:\Items\mysoftwares\JVM\Jungmha:/app
-    ports:
-      - "8080:8080"
-    networks:
-      - jungmha-network
-    depends_on:
-      - jungmhaDB
-    build:
-      context: .
-    command:  ./gradlew generateJooq
-
-volumes:
-  jungmha-postgres-data:

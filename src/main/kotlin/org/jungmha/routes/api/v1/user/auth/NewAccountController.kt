@@ -67,7 +67,7 @@ class SignUpNewAccount @Inject constructor(
                         if (statement) {
                             val user = service.findUser(payload.userName)
                             val userId = user?.userID
-                            val token = token.buildToken(payload.userName)
+                            val token = token.buildTokenPair(payload.userName)
                             if (userId != null) {
                                 AccountDirectory.createDirectory(payload.userType, userId)
                             }
