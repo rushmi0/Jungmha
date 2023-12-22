@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class UserServiceImpl  @Inject constructor(
+class UserServiceImpl @Inject constructor(
     private val query: DSLContext
 ) : UserService {
 
@@ -42,13 +42,14 @@ class UserServiceImpl  @Inject constructor(
                     LOG.info("User found with account name [$accountName]")
                     return@withContext UserProfileField(
                         record[USERPROFILES.USER_ID],
+                        record[USERPROFILES.AUTHEN_KEY],
+                        record[USERPROFILES.SHARE_KEY],
                         record[USERPROFILES.IMAGE_PROFILE],
                         record[USERPROFILES.USERNAME],
                         record[USERPROFILES.FIRST_NAME],
                         record[USERPROFILES.LAST_NAME],
                         record[USERPROFILES.EMAIL],
                         record[USERPROFILES.PHONE_NUMBER],
-                        record[USERPROFILES.AUTHEN_KEY],
                         record[USERPROFILES.CREATED_AT].toString(),
                         record[USERPROFILES.USER_TYPE]
                     )
@@ -64,7 +65,6 @@ class UserServiceImpl  @Inject constructor(
     }
 
 
-
     override suspend fun userAll(): List<UserProfileField> {
         return withContext(Dispatchers.IO) {
             try {
@@ -78,13 +78,14 @@ class UserServiceImpl  @Inject constructor(
                 return@withContext result.map { record ->
                     UserProfileField(
                         record[USERPROFILES.USER_ID],
+                        record[USERPROFILES.AUTHEN_KEY],
+                        record[USERPROFILES.SHARE_KEY],
                         record[USERPROFILES.IMAGE_PROFILE],
                         record[USERPROFILES.USERNAME],
                         record[USERPROFILES.FIRST_NAME],
                         record[USERPROFILES.LAST_NAME],
                         record[USERPROFILES.EMAIL],
                         record[USERPROFILES.PHONE_NUMBER],
-                        record[USERPROFILES.AUTHEN_KEY],
                         record[USERPROFILES.CREATED_AT].toString(),
                         record[USERPROFILES.USER_TYPE]
                     )
@@ -97,7 +98,6 @@ class UserServiceImpl  @Inject constructor(
     }
 
 
-
     override suspend fun insert(payload: UserProfileForm): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -105,37 +105,80 @@ class UserServiceImpl  @Inject constructor(
 
                 query.insertInto(
                     USERPROFILES,
-                    USERPROFILES.USERNAME,
                     USERPROFILES.FIRST_NAME,
                     USERPROFILES.LAST_NAME,
                     USERPROFILES.EMAIL,
                     USERPROFILES.PHONE_NUMBER,
-                    USERPROFILES.AUTHEN_KEY,
                     USERPROFILES.USER_TYPE
                 )
                     .values(
-                        payload.userName,
                         payload.firstName,
                         payload.lastName,
                         payload.email,
                         payload.phoneNumber,
-                        payload.authenKey,
                         payload.userType
                     )
                     .execute()
 
-                LOG.info("Insert successful for user with username [${payload.userName}]")
+                LOG.info("Insert successful for User Profile")
 
                 true
             } catch (e: Exception) {
-                LOG.error("Error inserting user with username [${payload.userName}]", e)
+                LOG.error("Error inserting User Profile", e)
                 false
             }
         }
     }
 
+    override suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean {
+        return withContext(Dispatchers.IO) {
+            val currentThreadName = Thread.currentThread().name
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+            try {
+                LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
+
+                validateAndLogSize("First Name", payload.firstName, 50)
+                validateAndLogSize("Image Profile", payload.imageProfile, 300)
+                validateAndLogSize("Email", payload.email, 50)
+                validateAndLogSize("Phone Number", payload.phoneNumber, 10)
+                validateAndLogSize("User Type", payload.userType, 255)
+
+                val updateRows = query.update(USERPROFILES)
+                    .set(USERPROFILES.FIRST_NAME, payload.firstName)
+                    .set(USERPROFILES.LAST_NAME, payload.lastName)
+                    .set(USERPROFILES.IMAGE_PROFILE, payload.imageProfile)
+                    .set(USERPROFILES.EMAIL, payload.email)
+                    .set(USERPROFILES.PHONE_NUMBER, payload.phoneNumber)
+                    .set(USERPROFILES.USER_TYPE, payload.userType)
+                    .where(USERPROFILES.USERNAME.eq(userName))
+                    .execute()
+
+                if (updateRows > 0) {
+                    LOG.info("Update successful for user [$userName] on thread [$currentThreadName]")
+                } else {
+                    LOG.warn("Update did not affect any rows for user [$userName] on thread [$currentThreadName]")
+                }
+
+                updateRows > 0
+            } catch (e: Exception) {
+                LOG.error("An error occurred during update for user [$userName] on thread [$currentThreadName]", e)
+                false
+            }
+        }
+    }
+
+    private fun validateAndLogSize(fieldName: String, value: String?, maxSize: Int) {
+        if (value != null && value.length > maxSize) {
+            LOG.error("Field [$fieldName] has a size exceeding the limit (max: $maxSize): $value")
+        }
+    }
+
+
+
+
+
+
+    override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(Dispatchers.IO) {
             try {
 
@@ -174,7 +217,6 @@ class UserServiceImpl  @Inject constructor(
             "email" -> USERPROFILES.EMAIL
             "phoneNumber" -> USERPROFILES.PHONE_NUMBER
             "userType" -> USERPROFILES.USER_TYPE
-            "authKey" -> USERPROFILES.AUTHEN_KEY
             else -> throw IllegalArgumentException("Field name [$fieldName] not found!!!")
 
         }

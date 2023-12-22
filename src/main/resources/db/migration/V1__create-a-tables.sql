@@ -1,14 +1,22 @@
+CREATE TABLE IF NOT EXISTS ServerKey
+(
+    key_id      SERIAL PRIMARY KEY,
+    private_key VARCHAR(255),
+    tag         VARCHAR(255)
+);
+
 -- สร้างตาราง UserProfiles
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
     user_id       SERIAL PRIMARY KEY,
-    image_profile VARCHAR(255) DEFAULT 'N/A',
-    username      VARCHAR(255) UNIQUE,
-    first_name    VARCHAR(255),
-    last_name     VARCHAR(255),
-    email         VARCHAR(255) CHECK (email LIKE '%_@_%._%') UNIQUE,
-    phone_number  VARCHAR(10),
-    authen_key    VARCHAR(70),
+    authen_key VARCHAR(70) DEFAULT 'N/A',
+    share_key  VARCHAR(70) DEFAULT 'N/A',
+    image_profile VARCHAR(300) DEFAULT 'N/A',
+    username      VARCHAR(50) UNIQUE,
+    first_name    VARCHAR(50) DEFAULT 'N/A',
+    last_name     VARCHAR(50) DEFAULT 'N/A',
+    email         VARCHAR(50) CHECK (email LIKE '%_@_%._%') UNIQUE,
+    phone_number  VARCHAR(10)  DEFAULT 'N/A',
     created_at    TIMESTAMPTZ  DEFAULT now(),
     user_type     VARCHAR(255) CHECK (user_type IN ('Normal', 'DogWalkers'))
 );
@@ -18,8 +26,8 @@ CREATE TABLE IF NOT EXISTS DogWalkers
 (
     walker_id      SERIAL PRIMARY KEY,
     user_id        INTEGER UNIQUE REFERENCES UserProfiles (user_id),
-    location_name  VARCHAR(255) NOT NULL DEFAULT 'N/A',
-    id_card_number VARCHAR(255) NOT NULL DEFAULT 'N/A',
+    location_name  VARCHAR(50) NOT NULL DEFAULT 'N/A',
+    id_card_number VARCHAR(60) NOT NULL DEFAULT 'N/A',
     verification   VARCHAR(6)            DEFAULT 'false' CHECK (verification IN ('true', 'false')),
     price_small    INTEGER      NOT NULL DEFAULT 0,
     price_medium   INTEGER      NOT NULL DEFAULT 0,
@@ -47,9 +55,9 @@ EXECUTE FUNCTION update_verification();
 CREATE TABLE IF NOT EXISTS Dogs
 (
     dog_id     SERIAL PRIMARY KEY,
-    dog_image  VARCHAR(255) NOT NULL DEFAULT 'N/A',
-    breed_name VARCHAR(255) NOT NULL DEFAULT 'N/A',
-    size       VARCHAR(255) NOT NULL CHECK (size IN ('Small', 'Medium', 'Big'))
+    dog_image  VARCHAR(300) NOT NULL DEFAULT 'N/A',
+    breed_name VARCHAR(30) NOT NULL DEFAULT 'N/A',
+    size       VARCHAR(10) NOT NULL DEFAULT 'N/A' CHECK (size IN ('Small', 'Medium', 'Big', 'N/A'))
 );
 
 -- สร้างตาราง DogWalkBookings
@@ -59,11 +67,11 @@ CREATE TABLE IF NOT EXISTS DogWalkBookings
     walker_id  INTEGER REFERENCES DogWalkers (walker_id),
     user_id    INTEGER REFERENCES UserProfiles (user_id),
     dog_id     INTEGER REFERENCES Dogs (dog_id),
-    status     VARCHAR(255) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
+    status     VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
     time_start TIME,
     time_end   TIME,
     duration   TIME,
-    total      INTEGER DEFAULT 0,
+    total      INTEGER               DEFAULT 0,
     timestamp  TIMESTAMPTZ           DEFAULT now()
 );
 
@@ -72,7 +80,7 @@ CREATE OR REPLACE FUNCTION calculate_total()
     RETURNS TRIGGER AS
 $$
 DECLARE
-    dog_size_enum VARCHAR(255);
+    dog_size_enum VARCHAR(10);
     price         INTEGER;
     total_minutes INTEGER;
     hours         INTEGER;
@@ -144,34 +152,33 @@ CREATE TABLE IF NOT EXISTS DogWalkerReviews
 );
 
 
+-- b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2
+INSERT INTO ServerKey (private_key, tag)
+VALUES ('b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2', 'root');
+
 -- เพิ่มข้อมูลตัวอย่างในตาราง UserProfiles
 INSERT INTO UserProfiles (image_profile, username, first_name, last_name, email, phone_number, authen_key, user_type)
-VALUES
-    ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890',
-     'd0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048', 'Normal'),
-    ('profile2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210',
-     'eba194a2eb10e0aba531b559548584bce753de0100148bfd29f7265b76e595b2', 'DogWalkers');
+VALUES ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890',
+        'd0bc0c7b1675aa204412c9024d6de56aafccd78fb0d0cb9433e39ee0fda7f048', 'Normal'),
+       ('profile2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210',
+        'eba194a2eb10e0aba531b559548584bce753de0100148bfd29f7265b76e595b2', 'DogWalkers');
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkers
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
-VALUES
-    (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73', 50, 60, 70),
-    (2, 'Park B', '889157fbd2ddf84740fc465765c51f5e3ada347676afce181b2db9c786e6417a', 45, 55, 65);
+VALUES (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73', 50, 60, 70),
+       (2, 'Park B', '889157fbd2ddf84740fc465765c51f5e3ada347676afce181b2db9c786e6417a', 45, 55, 65);
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง Dogs
 INSERT INTO Dogs (dog_image, breed_name, size)
-VALUES
-    ('dog1.jpg', 'Labrador Retriever', 'Big'),
-    ('dog2.jpg', 'Beagle', 'Small');
+VALUES ('dog1.jpg', 'Labrador Retriever', 'Big'),
+       ('dog2.jpg', 'Beagle', 'Small');
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkBookings
 INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end)
-VALUES
-    (1, 2, 1, 'Confirm', '10:00', '11:30'),
-    (2, 1, 2, 'Pending', '14:00', '15:00');
+VALUES (1, 2, 1, 'Confirm', '10:00', '11:30'),
+       (2, 1, 2, 'Pending', '14:00', '15:00');
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkerReviews
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating, review_text)
-VALUES
-    (1, 2, 4, 'Great service!'),
-    (2, 1, 5, 'Excellent dog walker!');
+VALUES (1, 2, 4, 'Great service!'),
+       (2, 1, 5, 'Excellent dog walker!');

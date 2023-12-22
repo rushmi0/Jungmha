@@ -1,4 +1,4 @@
-package org.jungmha.routes.api.v1.response
+package org.jungmha.security.securekey
 
 import io.micronaut.serde.annotation.Serdeable
 

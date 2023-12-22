@@ -1,12 +1,10 @@
 package org.jungmha.routes.api.v1.user.auth
 
 
-import io.micronaut.context.ApplicationContext
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import io.micronaut.http.client.HttpClient
-import io.micronaut.http.client.annotation.Client
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
@@ -38,12 +36,10 @@ class NewAccountControllerTest {
     fun testSignUpEndpoint() {
         val payload = UserProfileForm(
             "img.png",
-            "Rushmi0",
             "Watcharapol",
             "Phongwilai",
             "ph.watcharapol_st@gmail.com",
             "1234567653",
-            "028fda492e3522673b0b0561526e4b1b96b3bdf81484ca5a1db4f30125fc04be54",
             "Normal"
         )
 

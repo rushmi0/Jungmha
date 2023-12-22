@@ -70,3 +70,15 @@ Content-Type: application/json
   "identity": "my-user",
   "secret": "secret"
 }
+
+###
+
+POST http://localhost:8080/auth/open-channel
+Content-Type: application/json
+
+{
+  "userName" : "Rushmi0",
+  "authenKey" : "028fda492e3522673b0b0561526e4b1b96b3bdf81484ca5a1db4f30125fc04be54"
+}
+
+

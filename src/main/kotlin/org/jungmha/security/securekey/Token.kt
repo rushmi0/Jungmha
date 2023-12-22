@@ -6,8 +6,6 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import org.jungmha.routes.api.v1.response.ApiResponseToken
-import org.jungmha.routes.api.v1.response.TokenResponse
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import java.math.BigInteger
@@ -26,9 +24,24 @@ data class TokenObject(
 @ExecuteOn(TaskExecutors.IO)
 class Token {
 
-    private val privateKey =
-        BigInteger("B885C70F190320D90AAECDBED18E4CB556D52AA9D8CD3E4040EC1582A960C43B", 16)
+    private val privateKey = BigInteger("B885C70F190320D90AAECDBED18E4CB556D52AA9D8CD3E4040EC1582A960C43B", 16)
     private val publicKey = privateKey.toPublicKey().compressed()
+
+
+    fun buildTokenPair(username: String, time: Long? = null): TokenResponse {
+        val fullControlToken = buildToken("full-control", username, time)!!
+        val viewOnlyToken = buildToken("view-only", username, time)!!
+
+        return TokenResponse(
+            listOf(
+                ApiResponseToken(
+                    fullControlToken,
+                    viewOnlyToken
+                )
+            )
+        )
+    }
+
 
     private fun buildToken(permission: String, username: String, time: Long? = null): String? {
         val currentTimeMillis = System.currentTimeMillis().toBigInteger()
@@ -54,19 +67,7 @@ class Token {
         return Base64.getEncoder().encodeToString(encode)
     }
 
-    fun buildTokenPair(username: String, time: Long? = null): TokenResponse {
-        val fullControlToken = buildToken("full-control", username, time)!!
-        val viewOnlyToken = buildToken("view-only", username, time)!!
 
-        return TokenResponse(
-            listOf(
-                ApiResponseToken(
-                    fullControlToken,
-                    viewOnlyToken
-                )
-            )
-        )
-    }
 
     fun verifyToken(token: String): Boolean {
         try {
@@ -104,22 +105,4 @@ class Token {
     private fun isTokenExpired(currentTimeMillis: BigInteger, iat: BigInteger, exp: BigInteger): Boolean {
         return currentTimeMillis < iat || currentTimeMillis > exp
     }
-}
-
-fun main() {
-    val tokenManager = Token()
-
-    // สร้าง Token ทั้งสองแบบ
-    val username = "root"
-    val tokenPair = tokenManager.buildTokenPair(username)
-    println(tokenPair.token)
-//    println("Generated Full-Control Token: ${tokenPair.tokens.first().fullControl}")
-//    println("Generated View-Only Token: ${tokenPair.tokens.first().viewOnly}")
-//
-//    // ทดสอบการตรวจสอบ Token
-//    val isFullControlTokenValid = tokenManager.verifyToken(tokenPair.tokens.first().fullControl)
-//    val isViewOnlyTokenValid = tokenManager.verifyToken(tokenPair.tokens.first().viewOnly)
-//
-//    println("Is Full-Control Token Valid? $isFullControlTokenValid")
-//    println("Is View-Only Token Valid? $isViewOnlyTokenValid")
 }

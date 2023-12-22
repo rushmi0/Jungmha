@@ -18,7 +18,9 @@ interface UserService {
 
     suspend fun insert(payload: UserProfileForm): Boolean
 
-    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+    suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean
+
+    suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
     suspend fun delete(id: Int): Boolean
 

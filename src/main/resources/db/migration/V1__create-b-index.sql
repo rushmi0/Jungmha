@@ -2,4 +2,5 @@
 CREATE INDEX idx_users_email ON UserProfiles (email);
 CREATE INDEX idx_reviews_walkerid ON DogWalkerReviews (walker_id);
 CREATE INDEX idx_reviews_userid ON DogWalkerReviews (user_id);
-CREATE INDEX idx_users_public_key ON UserProfiles (authen_key);
+CREATE INDEX idx_users_name ON UserProfiles (username);
+CREATE INDEX idx_identity_root_id ON Identity(root_id);

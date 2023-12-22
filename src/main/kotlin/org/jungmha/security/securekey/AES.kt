@@ -1,6 +1,12 @@
+package org.jungmha.security.securekey
+
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.micronaut.context.annotation.Bean
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.security.SecureRandom
 import javax.crypto.Cipher
@@ -8,7 +14,10 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import java.util.Base64
 
-object AESEncryption {
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
+class AES {
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
@@ -57,12 +66,14 @@ fun main() {
 
     println(data)
 
+    val AES = AES()
+
     // Encrypt
-    val dataToSend = AESEncryption.encrypt(data, sharedKey)
+    val dataToSend = AES.encrypt(data, sharedKey)
     println("Encrypted data: $dataToSend")
 
     // Decrypt
-    val decryptedData = AESEncryption.decrypt(dataToSend, sharedKey)
+    val decryptedData = AES.decrypt(dataToSend, sharedKey)
     println("Decrypted data: $decryptedData")
 
     // Access only the property
