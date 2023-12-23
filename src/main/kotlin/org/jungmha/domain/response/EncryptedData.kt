@@ -7,6 +7,5 @@ import io.micronaut.serde.annotation.Serdeable
 @Serdeable.Deserializable
 @Serdeable.Serializable
 data class EncryptedData(
-    val tag: String,
     val content: String
 )

@@ -6,6 +6,9 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import jakarta.inject.Inject
+import kotlinx.coroutines.runBlocking
+import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import java.math.BigInteger
@@ -22,15 +25,21 @@ data class TokenObject(
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class Token {
+class Token @Inject constructor(
+    private val server: ServerKeyServiceImpl,
+){
 
-    private val privateKey = BigInteger("B885C70F190320D90AAECDBED18E4CB556D52AA9D8CD3E4040EC1582A960C43B", 16)
-    private val publicKey = privateKey.toPublicKey().compressed()
+    private val privateKey: BigInteger = runBlocking {
+        BigInteger(server.getServerKey(1)?.privateKey, 16)
+    }
+    private val publicKey: String = runBlocking {
+        privateKey.toPublicKey().compressed()
+    }
 
 
     fun buildTokenPair(username: String, time: Long? = null): TokenResponse {
-        val fullControlToken = buildToken("full-control", username, time)!!
-        val viewOnlyToken = buildToken("view-only", username, time)!!
+        val fullControlToken: String = buildToken("full-control", username, time)!!
+        val viewOnlyToken: String = buildToken("view-only", username, time)!!
 
         return TokenResponse(
             listOf(
@@ -44,9 +53,9 @@ class Token {
 
 
     private fun buildToken(permission: String, username: String, time: Long? = null): String? {
-        val currentTimeMillis = System.currentTimeMillis().toBigInteger()
-        val timePoint = time ?: 5
-        val exp = currentTimeMillis + 86_400.toBigInteger() * timePoint.toBigInteger()
+        val currentTimeMillis: BigInteger = System.currentTimeMillis().toBigInteger()
+        val timePoint: Long = time ?: 5
+        val exp: BigInteger = currentTimeMillis + 86_400.toBigInteger() * timePoint.toBigInteger()
 
         val rawObject = TokenObject(
             username,
@@ -55,15 +64,15 @@ class Token {
             currentTimeMillis,
             ""
         )
-        val message = jacksonObjectMapper().writeValueAsString(rawObject)
-        val signature = ECDSA.sign(privateKey, message)
+        val message: String = jacksonObjectMapper().writeValueAsString(rawObject)
+        val signature: String = ECDSA.sign(privateKey, message)
 
         return encodeToken(rawObject.copy(signature = signature))
     }
 
     private fun encodeToken(tokenObject: TokenObject): String {
-        val data = jacksonObjectMapper().writeValueAsString(tokenObject)
-        val encode = data.toByteArray(Charsets.UTF_8)
+        val data: String = jacksonObjectMapper().writeValueAsString(tokenObject)
+        val encode: ByteArray = data.toByteArray(Charsets.UTF_8)
         return Base64.getEncoder().encodeToString(encode)
     }
 
@@ -71,8 +80,8 @@ class Token {
 
     fun verifyToken(token: String): Boolean {
         try {
-            val decodedBytes = Base64.getDecoder().decode(token)
-            val jsonMap = jacksonObjectMapper().readValue<Map<String, Any>>(decodedBytes)
+            val decodedBytes: ByteArray = Base64.getDecoder().decode(token)
+            val jsonMap: Map<String, Any> = jacksonObjectMapper().readValue<Map<String, Any>>(decodedBytes)
 
             val userName = jsonMap["userName"] as String
             val permission = jsonMap["permission"] as String
@@ -93,7 +102,7 @@ class Token {
                 iat,
                 ""
             )
-            val message = jacksonObjectMapper().writeValueAsString(raw)
+            val message: String = jacksonObjectMapper().writeValueAsString(raw)
 
             return ECDSA.verify(message, publicKey, signature)
         } catch (e: Exception) {

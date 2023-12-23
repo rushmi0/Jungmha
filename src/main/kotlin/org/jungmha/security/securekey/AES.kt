@@ -60,8 +60,6 @@ class AES {
             ex.printStackTrace() // หรือให้ทำการล็อกหรือรายงานข้อผิดพลาดตามความเหมาะสม
             //throw RuntimeException("Failed to decrypt the data. Reason: ${ex.message}")
             throw RuntimeException("Failed to decrypt the data. Reason: ${ex.localizedMessage}")
-            //throw RuntimeException("Failed to decrypt the data. Reason: ${ex.toString()}")
-
         }
     }
 

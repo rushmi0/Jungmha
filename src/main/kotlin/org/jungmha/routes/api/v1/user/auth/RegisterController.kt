@@ -12,29 +12,39 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.form.UserProfileForm
-import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.response.EncryptedData
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
+import org.jungmha.security.xss.XssDetector
 import org.jungmha.utils.AccountDirectory
 import org.slf4j.MDC
 import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
 
+
 // * RegisterController
 
+/**
+ * คลาสนี้เป็น Controller สำหรับดำเนินการลงทะเบียนผู้ใช้
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class RegisterController @Inject constructor(
-    private val server: ServerKeyServiceImpl,
     private val service: UserServiceImpl,
     private val token: Token,
     private val aes: AES
 ) {
 
+    /**
+     * สำหรับการลงทะเบียนผู้ใช้
+     *
+     * @param name ชื่อผู้ใช้
+     * @param payload ข้อมูลที่ถูกเข้ารหัสแล้วที่จะถูกใช้ในการลงทะเบียน
+     * @return HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการลงทะเบียน
+     */
     @Post(
         uri = "/auth/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
@@ -49,9 +59,13 @@ class RegisterController @Inject constructor(
             LOG.info("Thread ${Thread.currentThread().name} executing signUp")
             MDC.put("thread -> ", Thread.currentThread().name)
 
+            // ดึงคีย์ที่ใช้ในการเข้ารหัสจากฐานข้อมูล
             val shareKey = service.findUser(name)?.sharedKey.toString()
+
+            // ถอดรหัสข้อมูลที่ถูกเข้ารหัสแล้ว
             val decrypted = aes.decrypt(payload.content, shareKey)
 
+            // สร้าง Object UserProfileForm จากข้อมูลที่ถอดรหัสได้
             val data = UserProfileForm(
                 decrypted["firstName"].toString(),
                 decrypted["lastName"].toString(),
@@ -60,23 +74,44 @@ class RegisterController @Inject constructor(
                 decrypted["userType"].toString()
             )
 
-            val statement: Boolean = service.updateMultiField(
-                name,
-                data
-            )
-
-            if (statement) {
-                val user = service.findUser(name)
-                val userId = user?.userID
-                val token = token.buildTokenPair(name)
-                if (userId != null) {
-                    AccountDirectory.createDirectory(data.userType, userId)
-                }
-                return HttpResponse.created(token)
+            // ตรวจสอบความปลอดภัยของข้อมูลต่อ XSS
+            if (
+                XssDetector.containsXss(data.firstName) ||
+                XssDetector.containsXss(data.lastName) ||
+                XssDetector.containsXss(data.email) ||
+                XssDetector.containsXss(data.phoneNumber) ||
+                XssDetector.containsXss(data.userType)
+            ) {
+                return HttpResponse.badRequest("Cross-site scripting detected")
             } else {
-                LOG.error("Failed to create the account: Update operation failed")
-                return HttpResponse.serverError("Failed to create the account: Update operation failed")
+
+                // อัปเดตข้อมูลผู้ใช้
+                val statement: Boolean = service.updateMultiField(
+                    name,
+                    data
+                )
+
+                if (statement) {
+
+                    // ดึงข้อมูลผู้ใช้หลังจากการอัปเดต
+                    val user = service.findUser(name)
+                    val userId = user?.userID
+
+                    // สร้าง Token และสร้างไดเร็กทอรีสำหรับผู้ใช้ใหม่ (ถ้ามี)
+                    val token = token.buildTokenPair(name, 15)
+                    if (userId != null) {
+                        AccountDirectory.createDirectory(data.userType, userId)
+                    }
+
+                    // ส่งคำตอบสำหรับการลงทะเบียนเรียบร้อย พร้อมกับส่ง `Access Token`
+                    return HttpResponse.created(token)
+                } else {
+                    // การลงทะเบียนล้มเหลวเนื่องจากการอัปเดตข้อมูลไม่สำเร็จ
+                    LOG.error("Failed to create the account: Update operation failed")
+                    return HttpResponse.serverError("Failed to create the account: Update operation failed")
+                }
             }
+
         } catch (e: Exception) {
             LOG.error("Error creating the account: ${e.message}", e)
             return HttpResponse.serverError("Failed to create the account: ${e.message}")
@@ -86,6 +121,7 @@ class RegisterController @Inject constructor(
     }
 
     companion object {
+        // Logger สำหรับการลงทะเบียน
         private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
     }
 

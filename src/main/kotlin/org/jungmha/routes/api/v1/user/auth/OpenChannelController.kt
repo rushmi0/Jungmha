@@ -22,8 +22,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigInteger
 
-// * OpenChannelController
+// * Open Channel Controller
 
+/**
+ * คลาสนี้เป็น Controller สำหรับการเปิดช่องสื่อสาร (Open Channel)
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -34,6 +37,12 @@ class OpenChannelController @Inject constructor(
     private val ecdh: ECDHkey
 ) {
 
+    /**
+     * สำหรับการเปิดช่องสื่อสาร (Open Channel)
+     *
+     * @param payload ข้อมูลที่ใช้ในการกำหนดตัวตนของผู้ใช้
+     * @return HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการเปิดช่องสื่อสาร
+     */
     @Post(
         uri = "/auth/open-channel",
         consumes = [MediaType.APPLICATION_JSON],
@@ -44,37 +53,40 @@ class OpenChannelController @Inject constructor(
     ): MutableHttpResponse<out Any?>? {
 
         try {
-            // ขั้นตอนเริ่มต้น
+
+            // ดึง `Private Key` ของ Server 
             val serverPrivateKey = BigInteger(
                 server.getServerKey(1)?.privateKey,
                 16
             )
+
+            // แปลง `Public Key` ของ Server เป็นรูปแบบที่มีขนาดเล็ก
             val publicKey: String = serverPrivateKey.toPublicKey().compressed()
 
+            // ดึง `Public Key` ของผู้ใช้จากข้อมูล payload
             val clientPublicKey: String = payload.authenKey
-            val name: String = payload.userName
 
-            // ตรวจสอบ User Name
+            // ตรวจสอบว่ามีชื่อผู้ใช้นี้อยู่ฐานข้อมูลแล้วหรือไม่
             val checkUserName = service.findUser(payload.userName)?.userName
             if (checkUserName == payload.userName) {
                 LOG.warn("Invalid User Name: $checkUserName")
                 return HttpResponse.badRequest("Invalid User Name: $checkUserName")
             }
 
-            // สร้าง share secret key
+            // คำนวณ Shared Key จาก `Private Key` ของ Server และ `Public Key` ของผู้ใช้
             val sharedKey = ecdh.sharedSecret(
                 serverPrivateKey,
                 clientPublicKey
             )
 
-            // การสร้าง IdentityForm
+            // สร้าง Object IdentityForm เพื่อบันทึกข้อมูลตัวตนของผู้ใช้
             val id = IdentityForm(
-                name,
+                payload.userName,
                 clientPublicKey,
                 sharedKey
             )
 
-            // การทำงานกับ UserService
+            // บันทึกข้อมูลลงในฐานข้อมูล
             val statement: Boolean = service.insert(id)
             if (statement) {
                 LOG.info("Create channel successful for New User")
@@ -88,7 +100,6 @@ class OpenChannelController @Inject constructor(
             return HttpResponse.serverError("Unexpected error during open channel operation")
         }
     }
-
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(OpenChannelController::class.java)
