@@ -91,7 +91,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("org.jungmha")
+    mainClass.set("org.jungmha.ApplicationKt")
 }
 
 
