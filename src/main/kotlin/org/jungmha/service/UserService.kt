@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.UserProfileField
+import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 
 @Bean
@@ -16,7 +17,7 @@ interface UserService {
 
     suspend fun findUser(accountName: String): UserProfileField?
 
-    suspend fun insert(payload: UserProfileForm): Boolean
+    suspend fun insert(payload: IdentityForm): Boolean
 
     suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean
 

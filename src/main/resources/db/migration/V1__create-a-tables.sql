@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS ServerKey
 (
     key_id      SERIAL PRIMARY KEY,
-    private_key VARCHAR(255),
-    tag         VARCHAR(255)
+    private_key VARCHAR(70),
+    tag         VARCHAR(50)
 );
 
 -- สร้างตาราง UserProfiles
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS UserProfiles
     email         VARCHAR(50) CHECK (email LIKE '%_@_%._%') UNIQUE,
     phone_number  VARCHAR(10)  DEFAULT 'N/A',
     created_at    TIMESTAMPTZ  DEFAULT now(),
-    user_type     VARCHAR(255) CHECK (user_type IN ('Normal', 'DogWalkers'))
+    user_type     VARCHAR(10) CHECK (user_type IN ('Normal', 'DogWalkers'))
 );
 
 -- สร้างตาราง DogWalkers
@@ -165,8 +165,8 @@ VALUES ('profile1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '123456789
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง DogWalkers
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
-VALUES (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b41f636588c0eeef8ce4bc31de57c120a7d73', 50, 60, 70),
-       (2, 'Park B', '889157fbd2ddf84740fc465765c51f5e3ada347676afce181b2db9c786e6417a', 45, 55, 65);
+VALUES (1, 'Park A', 'c5234b2313bc9e7bdbf18810e12b4', 50, 60, 70),
+       (2, 'Park B', '889157fbd2ddf84740fc465765c51', 45, 55, 65);
 
 -- เพิ่มข้อมูลตัวอย่างในตาราง Dogs
 INSERT INTO Dogs (dog_image, breed_name, size)

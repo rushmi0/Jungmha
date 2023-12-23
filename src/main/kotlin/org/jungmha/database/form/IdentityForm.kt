@@ -8,4 +8,5 @@ import io.micronaut.serde.annotation.Serdeable
 data class IdentityForm(
     val userName: String,
     val authenKey: String,
+    val shareKey: String
 )

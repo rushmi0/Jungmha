@@ -35,7 +35,6 @@ class NewAccountControllerTest {
     @Test
     fun testSignUpEndpoint() {
         val payload = UserProfileForm(
-            "img.png",
             "Watcharapol",
             "Phongwilai",
             "ph.watcharapol_st@gmail.com",

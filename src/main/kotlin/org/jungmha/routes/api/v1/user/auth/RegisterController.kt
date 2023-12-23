@@ -6,18 +6,23 @@ import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Header
 import io.micronaut.http.annotation.Post
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import jakarta.inject.Inject
-import org.jungmha.database.form.IdentityForm
+import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.security.securekey.ECDHkey
-import org.jungmha.security.securekey.ECPublicKey.compressed
-import org.jungmha.security.securekey.ECPublicKey.toPublicKey
-import java.math.BigInteger
+import org.jungmha.domain.response.EncryptedData
+import org.jungmha.security.securekey.AES
+import org.jungmha.security.securekey.Token
+import org.jungmha.utils.AccountDirectory
+import org.slf4j.MDC
+import org.slf4j.LoggerFactory
+import jakarta.inject.Inject
+
+// * RegisterController
 
 @Controller("api/v1")
 @Bean
@@ -26,42 +31,64 @@ import java.math.BigInteger
 class RegisterController @Inject constructor(
     private val server: ServerKeyServiceImpl,
     private val service: UserServiceImpl,
-    private val ecdh: ECDHkey
+    private val token: Token,
+    private val aes: AES
 ) {
 
     @Post(
-        uri = "/auth/open-channel",
+        uri = "/auth/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
-    suspend fun openChannel(
-        @Body payload: IdentityForm
+    suspend fun signUp(
+        @Header("UserName") name: String,
+        @Body payload: EncryptedData
     ): MutableHttpResponse<out Any?>? {
+        try {
+            LOG.info("Thread ${Thread.currentThread().name} executing signUp")
+            MDC.put("thread -> ", Thread.currentThread().name)
 
-        val serverPrivateKey = BigInteger(
-            server.getServerKey(1)?.privateKey,
-            16
-        )
-        val publicKey: String = serverPrivateKey.toPublicKey().compressed()
+            val shareKey = service.findUser(name)?.sharedKey.toString()
+            val decrypted = aes.decrypt(payload.toString(), shareKey)
 
-        val clientPublicKey: String = payload.authenKey
-        val name: String = payload.userName
-
-        val checkUserName = service.findUser(payload.userName)?.userName
-        if (checkUserName == payload.userName) {
-            return HttpResponse.badRequest("Invalid User Name: $checkUserName")
-        } else {
-            val sharedKey = ecdh.sharedSecret(
-                serverPrivateKey,
-                clientPublicKey
+            val data = UserProfileForm(
+                decrypted["firstName"].toString(),
+                decrypted["lastName"].toString(),
+                decrypted["email"].toString(),
+                decrypted["phoneNumber"].toString(),
+                decrypted["userType"].toString()
             )
-            // ทำสิ่งที่คุณต้องการกับ sharedKey
+
+            val statement: Boolean = service.updateMultiField(
+                name,
+                data
+            )
+
+            if (statement) {
+                val user = service.findUser(name)
+                val userId = user?.userID
+                val token = token.buildTokenPair(name)
+                if (userId != null) {
+                    AccountDirectory.createDirectory(data.userType, userId)
+                }
+                return HttpResponse.created(token)
+            } else {
+                return HttpResponse.serverError("Failed to create the account")
+            }
 
 
-            //val statement: Boolean = service.insert()
-
-
-            return HttpResponse.created(publicKey)
+        } catch (e: Exception) {
+            LOG.error("Error creating the account: ${e.message} $e")
+            return HttpResponse.serverError("Failed to create the account")
+        } finally {
+            MDC.clear()
         }
     }
+
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
+    }
+
+
 }

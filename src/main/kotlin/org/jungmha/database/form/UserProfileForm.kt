@@ -6,7 +6,6 @@ import io.micronaut.serde.annotation.Serdeable
 @Introspected
 @Serdeable.Deserializable
 data class UserProfileForm(
-    val imageProfile: String,
     val firstName: String,
     val lastName: String,
     val email: String,

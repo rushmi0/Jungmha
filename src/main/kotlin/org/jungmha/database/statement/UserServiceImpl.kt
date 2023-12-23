@@ -12,6 +12,7 @@ import org.jooq.Record
 import org.jooq.Result
 import org.jooq.TableField
 import org.jungmha.database.field.UserProfileField
+import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
@@ -98,31 +99,33 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun insert(payload: UserProfileForm): Boolean {
+    override suspend fun insert(payload: IdentityForm): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert")
 
-                query.insertInto(
+                val result = query.insertInto(
                     USERPROFILES,
-                    USERPROFILES.FIRST_NAME,
-                    USERPROFILES.LAST_NAME,
-                    USERPROFILES.EMAIL,
-                    USERPROFILES.PHONE_NUMBER,
-                    USERPROFILES.USER_TYPE
+                    USERPROFILES.USERNAME,
+                    USERPROFILES.AUTHEN_KEY,
+                    USERPROFILES.SHARE_KEY
                 )
                     .values(
-                        payload.firstName,
-                        payload.lastName,
-                        payload.email,
-                        payload.phoneNumber,
-                        payload.userType
+                        payload.userName,
+                        payload.authenKey,
+                        payload.shareKey
                     )
                     .execute()
 
-                LOG.info("Insert successful for User Profile")
+                val success = result > 0 // ตรวจสอบว่ามีการเพิ่มแถวในฐานข้อมูลหรือไม่
 
-                true
+                if (success) {
+                    LOG.info("Insert successful for User Profile")
+                } else {
+                    LOG.warn("No rows inserted for User Profile")
+                }
+
+                return@withContext success
             } catch (e: Exception) {
                 LOG.error("Error inserting User Profile", e)
                 false
@@ -130,15 +133,15 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
+
     override suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean {
         return withContext(Dispatchers.IO) {
             val currentThreadName = Thread.currentThread().name
-
             try {
                 LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
 
                 validateAndLogSize("First Name", payload.firstName, 50)
-                validateAndLogSize("Image Profile", payload.imageProfile, 300)
+                validateAndLogSize("Last Name", payload.lastName, 50)
                 validateAndLogSize("Email", payload.email, 50)
                 validateAndLogSize("Phone Number", payload.phoneNumber, 10)
                 validateAndLogSize("User Type", payload.userType, 255)
@@ -146,7 +149,6 @@ class UserServiceImpl @Inject constructor(
                 val updateRows = query.update(USERPROFILES)
                     .set(USERPROFILES.FIRST_NAME, payload.firstName)
                     .set(USERPROFILES.LAST_NAME, payload.lastName)
-                    .set(USERPROFILES.IMAGE_PROFILE, payload.imageProfile)
                     .set(USERPROFILES.EMAIL, payload.email)
                     .set(USERPROFILES.PHONE_NUMBER, payload.phoneNumber)
                     .set(USERPROFILES.USER_TYPE, payload.userType)
@@ -159,10 +161,10 @@ class UserServiceImpl @Inject constructor(
                     LOG.warn("Update did not affect any rows for user [$userName] on thread [$currentThreadName]")
                 }
 
-                updateRows > 0
+                return@withContext updateRows > 0
             } catch (e: Exception) {
                 LOG.error("An error occurred during update for user [$userName] on thread [$currentThreadName]", e)
-                false
+                return@withContext false
             }
         }
     }

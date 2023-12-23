@@ -1,6 +1,5 @@
 package org.jungmha.service
 
-import io.micronaut.test.annotation.TransactionMode
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import kotlinx.coroutines.runBlocking
 import org.jooq.DSLContext
@@ -25,7 +24,6 @@ class UserServiceImplTest {
             dslContext = DSL.using(connection)
             val rawData = UserServiceImpl(dslContext)
             val newData = UserProfileForm(
-                "N/A",
                 "Watcharapol",
                 "Phongwilai",
                 "ph.watcharapol_st@tni.ac.th",
