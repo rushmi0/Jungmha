@@ -19,6 +19,19 @@ class UserServiceImplTest {
     lateinit var dslContext: DSLContext
 
     @Test
+    fun testFindUser() = runBlocking {
+        DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
+            dslContext = DSL.using(connection)
+            val rawData = UserServiceImpl(dslContext)
+            val result = rawData.findUser("Aura")?.userName
+            Assertions.assertEquals(
+                "Aura",
+                result
+            )
+        }
+    }
+
+    @Test
     fun testUpdateMultiField() = runBlocking {
         DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
             dslContext = DSL.using(connection)

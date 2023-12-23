@@ -1,0 +1,48 @@
+### User 1
+# Private Key : e143924567f4a20128f4b3457d97145a7e1922864e9a1cf47d7efff8b7d85979
+# Public Key : 02f06f2580404d439896f002a6b77cbbc518ace934345c69b831a234a6dfbe54c8
+
+POST http://localhost:8080/api/v1/auth/open-channel
+Content-Type: application/json
+
+{
+  "userName" : "Aura",
+  "authenKey" : "02f06f2580404d439896f002a6b77cbbc518ace934345c69b831a234a6dfbe54c8"
+}
+
+
+### User 2
+# Private Key : 87137af82fe935333d2ee23a680304bb43a0fd3c111b340ef579ff9fd48b6ed6
+# Public Key : 03a65c7b847703c1890f8ba5ccbffc63a473d85e46a46ddba865d95848da6aa883
+
+POST http://localhost:8080/api/v1/auth/open-channel
+Content-Type: application/json
+
+{
+  "userName" : "Rushmi0",
+  "authenKey" : "03a65c7b847703c1890f8ba5ccbffc63a473d85e46a46ddba865d95848da6aa883"
+}
+
+### User 3
+# Private Key : fd1863fb5a5b5e8db387cc69cbd982cb5141262dfdb9ddffc00d6dbce2b3d044
+# Public Key : 026fc60af9565b57e997f2dc07728cb4d44c608ea506dc7dedc645aa38e68fb142
+
+POST http://localhost:8080/api/v1/auth/open-channel
+Content-Type: application/json
+
+{
+  "userName" : "สมหมาย",
+  "authenKey" : "026fc60af9565b57e997f2dc07728cb4d44c608ea506dc7dedc645aa38e68fb142"
+}
+
+### User 4
+# Private Key : f944e5c877615613c7edd16ed4d4eba5f4f6e9f432a4b807edc2152be522431b
+# Public Key : 03b21c03a682ce5b403ea04427f9e4eedb860087fa1ff87b66b558dd3fbdb466b6
+
+POST http://localhost:8080/api/v1/auth/open-channel
+Content-Type: application/json
+
+{
+  "userName" : "สมชาย",
+  "authenKey" : "03b21c03a682ce5b403ea04427f9e4eedb860087fa1ff87b66b558dd3fbdb466b6"
+}

@@ -44,12 +44,13 @@ class RegisterController @Inject constructor(
         @Header("UserName") name: String,
         @Body payload: EncryptedData
     ): MutableHttpResponse<out Any?>? {
+
         try {
             LOG.info("Thread ${Thread.currentThread().name} executing signUp")
             MDC.put("thread -> ", Thread.currentThread().name)
 
             val shareKey = service.findUser(name)?.sharedKey.toString()
-            val decrypted = aes.decrypt(payload.toString(), shareKey)
+            val decrypted = aes.decrypt(payload.content, shareKey)
 
             val data = UserProfileForm(
                 decrypted["firstName"].toString(),
@@ -73,22 +74,19 @@ class RegisterController @Inject constructor(
                 }
                 return HttpResponse.created(token)
             } else {
-                return HttpResponse.serverError("Failed to create the account")
+                LOG.error("Failed to create the account: Update operation failed")
+                return HttpResponse.serverError("Failed to create the account: Update operation failed")
             }
-
-
         } catch (e: Exception) {
-            LOG.error("Error creating the account: ${e.message} $e")
-            return HttpResponse.serverError("Failed to create the account")
+            LOG.error("Error creating the account: ${e.message}", e)
+            return HttpResponse.serverError("Failed to create the account: ${e.message}")
         } finally {
             MDC.clear()
         }
     }
 
-
     companion object {
         private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
     }
-
 
 }

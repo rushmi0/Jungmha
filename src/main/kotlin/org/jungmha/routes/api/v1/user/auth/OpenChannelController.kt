@@ -14,6 +14,7 @@ import jakarta.inject.Inject
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
+import org.jungmha.domain.request.Identity
 import org.jungmha.security.securekey.ECDHkey
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
@@ -39,7 +40,7 @@ class OpenChannelController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun openChannel(
-        @Body payload: IdentityForm
+        @Body payload: Identity
     ): MutableHttpResponse<out Any?>? {
 
         try {

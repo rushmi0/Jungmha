@@ -11,6 +11,7 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.Result
 import org.jooq.TableField
+import org.jooq.exception.DataAccessException
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
@@ -31,8 +32,10 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun findUser(accountName: String): UserProfileField? {
         return withContext(Dispatchers.IO) {
+            val currentThreadName = Thread.currentThread().name
+
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing findUser")
+                LOG.info("Thread $currentThreadName executing findUser")
 
                 val record: Record? = query.select()
                     .from(USERPROFILES)
@@ -40,7 +43,7 @@ class UserServiceImpl @Inject constructor(
                     .fetchOne()
 
                 if (record != null) {
-                    LOG.info("User found with account name [$accountName]")
+                    LOG.info("User found with account name [$accountName] on thread [$currentThreadName]")
                     return@withContext UserProfileField(
                         record[USERPROFILES.USER_ID],
                         record[USERPROFILES.AUTHEN_KEY],
@@ -55,15 +58,19 @@ class UserServiceImpl @Inject constructor(
                         record[USERPROFILES.USER_TYPE]
                     )
                 } else {
-                    LOG.info("User not found with account name [$accountName]")
+                    LOG.info("User not found with account name [$accountName] on thread [$currentThreadName]")
                     return@withContext null
                 }
+            } catch (e: DataAccessException) {
+                LOG.error("Error accessing data while finding user with account name [$accountName] on thread [$currentThreadName]", e)
+                null
             } catch (e: Exception) {
-                LOG.error("Error finding user with account name [$accountName]", e)
+                LOG.error("An unexpected error occurred while finding user with account name [$accountName] on thread [$currentThreadName]", e)
                 null
             }
         }
     }
+
 
 
     override suspend fun userAll(): List<UserProfileField> {

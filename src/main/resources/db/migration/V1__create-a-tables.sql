@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS ServerKey
 (
     key_id      SERIAL PRIMARY KEY,
-    private_key VARCHAR(70),
-    tag         VARCHAR(50)
+    private_key VARCHAR(70) DEFAULT 'N/A',
+    tag         VARCHAR(50) DEFAULT 'N/A'
 );
 
 -- สร้างตาราง UserProfiles
@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS UserProfiles
     authen_key VARCHAR(70) DEFAULT 'N/A',
     share_key  VARCHAR(70) DEFAULT 'N/A',
     image_profile VARCHAR(300) DEFAULT 'N/A',
-    username      VARCHAR(50) UNIQUE,
+    username      VARCHAR(50) DEFAULT 'N/A',
     first_name    VARCHAR(50) DEFAULT 'N/A',
     last_name     VARCHAR(50) DEFAULT 'N/A',
-    email         VARCHAR(50) CHECK (email LIKE '%_@_%._%') UNIQUE,
+    email         VARCHAR(50) DEFAULT 'N/A',
     phone_number  VARCHAR(10)  DEFAULT 'N/A',
     created_at    TIMESTAMPTZ  DEFAULT now(),
-    user_type     VARCHAR(10) CHECK (user_type IN ('Normal', 'DogWalkers'))
+    user_type     VARCHAR(10) DEFAULT 'N/A' CHECK (user_type IN ('Normal', 'DogWalkers', 'N/A'))
 );
 
 -- สร้างตาราง DogWalkers

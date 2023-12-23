@@ -38,16 +38,31 @@ class AES {
     }
 
     fun decrypt(encryptedData: String, sharedKey: String): Map<String, Any> {
+        try {
+            val (encryptedString, ivBase64) = encryptedData.split("?iv=")
+            val ivDecoded = Base64.getDecoder().decode(ivBase64)
 
-        val (encryptedString, ivBase64) = encryptedData.split("?iv=")
-        val ivDecoded = Base64.getDecoder().decode(ivBase64)
+            // ตรวจสอบ Shared Key ว่ามีขนาด 32 bytes (128 bits) หรือไม่
+            if (sharedKey.HexToByteArray().size != 32) {
+                throw IllegalArgumentException("Invalid shared key size. It should be 32 characters (128 bits).")
+            }
 
-        val decipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(sharedKey.HexToByteArray(), "AES"), IvParameterSpec(ivDecoded))
+            val decipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(sharedKey.HexToByteArray(), "AES"), IvParameterSpec(ivDecoded))
 
-        val decryptedString = decipher.doFinal(Base64.getDecoder().decode(encryptedString)).toString(Charsets.UTF_8)
+            val decryptedBytes = decipher.doFinal(Base64.getDecoder().decode(encryptedString))
+            val decryptedString = decryptedBytes.toString(Charsets.UTF_8)
 
-        return objectMapper.readValue(decryptedString)
+            val decryptedMap = objectMapper.readValue<Map<String, Any>>(decryptedString)
+            return decryptedMap
+        } catch (ex: Exception) {
+            // จัดการข้อผิดพลาดที่เกิดขึ้น
+            ex.printStackTrace() // หรือให้ทำการล็อกหรือรายงานข้อผิดพลาดตามความเหมาะสม
+            //throw RuntimeException("Failed to decrypt the data. Reason: ${ex.message}")
+            throw RuntimeException("Failed to decrypt the data. Reason: ${ex.localizedMessage}")
+            //throw RuntimeException("Failed to decrypt the data. Reason: ${ex.toString()}")
+
+        }
     }
 
 }
@@ -58,7 +73,7 @@ data class User(
 )
 
 fun main() {
-    val sharedKey = "8fda492e3522673b0b0561526e4b1b96b3bdf81484ca5a1db4f30125fc04be54"
+    val sharedKey = "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78"
     val data = User(
         "Mai na",
         344
@@ -72,8 +87,13 @@ fun main() {
     val dataToSend = AES.encrypt(data, sharedKey)
     println("Encrypted data: $dataToSend")
 
+    val demoData = "yt7ivc7x2/IeXb6jcP+WVccwmhuzlv3w5vb9kvbHZzo2UWzRdh79M4stx3FUaG4+231MgUOGSyscaL+dIvlju5J14cjRBfsUhUfodv5aQx7fVgpFN9upOjUgtkWntJLU+hRJQgGEEx/qsslXh9OuhTbFDlx2gNIE8MJh3xIyq0yUn5r47Lq/O/RHex2LaltJ?iv=pUQTcZ9GcqfAMQjWOuW96g=="
+
     // Decrypt
-    val decryptedData = AES.decrypt(dataToSend, sharedKey)
+    val decryptedData = AES.decrypt(
+        demoData,
+        "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78"
+        )
     println("Decrypted data: $decryptedData")
 
     // Access only the property

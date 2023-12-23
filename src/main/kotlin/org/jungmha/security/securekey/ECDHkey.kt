@@ -49,7 +49,7 @@ class ECDHkey {
 
 fun main() {
 
-    val privateKey = BigInteger("B885C70F190320D90AAECDBED18E4CB556D52AA9D8CD3E4040EC1582A960C43B", 16)
+    val privateKey = BigInteger("b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2", 16)
     val publicKey = privateKey.toPublicKey().compressed()
 
     println(publicKey)
@@ -58,7 +58,7 @@ fun main() {
 
     val sharedKey = ecdh.sharedSecret(
         privateKey,
-        "0321d0667dcc8f0cc83eda3c11a116ff315d995681b694f1d692fbde5f7c2fcf91"
+        "02f06f2580404d439896f002a6b77cbbc518ace934345c69b831a234a6dfbe54c8"
     )
     println(sharedKey)
 
