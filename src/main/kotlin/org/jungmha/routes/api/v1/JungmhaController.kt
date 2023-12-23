@@ -1,4 +1,4 @@
-package org.jungmha
+package org.jungmha.routes.api.v1
 
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
