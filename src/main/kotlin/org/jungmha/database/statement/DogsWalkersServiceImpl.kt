@@ -4,13 +4,17 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import org.jungmha.domain.response.WalkerContact
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
-import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
+import org.jungmha.domain.response.DogWalkerInfo
+import org.jungmha.domain.response.PriceData
+import org.jungmha.domain.response.WalkerDetail
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
+import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.service.DogsWalkersService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,34 +29,55 @@ class DogsWalkersServiceImpl  @Inject constructor(
 ) : DogsWalkersService {
 
 
-    override suspend fun dogWalkersAll(): List<DogWalkerField> {
+    override suspend fun dogWalkersAll(): List<DogWalkerInfo> {
         return withContext(Dispatchers.IO) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing dogWalkersAll")
 
-                val data = query.select()
-                    .from(DOGWALKERS).fetch()
+                val dw = DOGWALKERS
+                val up = USERPROFILES
 
-                LOG.info("Retrieved ${data.size} dog walkers from the database")
+                return@withContext query.select(
+                    dw.WALKER_ID,
+                    up.USERNAME,
+                    dw.VERIFICATION,
+                    dw.LOCATION_NAME,
+                    dw.PRICE_SMALL,
+                    dw.PRICE_MEDIUM,
+                    dw.PRICE_BIG,
+                    up.EMAIL,
+                    up.PHONE_NUMBER
+                )
+                    .from(dw)
+                    .join(up).on(dw.USER_ID.eq(up.USER_ID))
+                    .fetch { record ->
+                        DogWalkerInfo(
+                            walkerID = record[dw.WALKER_ID],
+                            detail = WalkerDetail(
+                                name = record[up.USERNAME],
+                                verify = record[dw.VERIFICATION],
+                                location = record[dw.LOCATION_NAME],
+                                price = PriceData(
+                                    small = record[dw.PRICE_SMALL],
+                                    medium = record[dw.PRICE_MEDIUM],
+                                    big = record[dw.PRICE_BIG]
+                                )
+                            ),
+                            contact = WalkerContact(
+                                email = record[up.EMAIL],
+                                phoneNumber = record[up.PHONE_NUMBER]
+                            )
+                        )
+                    }
 
-                return@withContext data.map { record ->
-                    DogWalkerField(
-                        record[DOGWALKERS.WALKER_ID],
-                        record[DOGWALKERS.USER_ID],
-                        record[DOGWALKERS.LOCATION_NAME],
-                        record[DOGWALKERS.ID_CARD_NUMBER].toString(),
-                        record[DOGWALKERS.VERIFICATION],
-                        record[DOGWALKERS.PRICE_SMALL],
-                        record[DOGWALKERS.PRICE_MEDIUM],
-                        record[DOGWALKERS.PRICE_BIG]
-                    )
-                }
             } catch (e: Exception) {
                 LOG.error("Error retrieving dog walkers from the database", e)
                 emptyList()
             }
         }
     }
+
+
 
 
     override suspend fun insert(payload: DogWalkerForm): Boolean {

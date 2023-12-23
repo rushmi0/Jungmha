@@ -6,13 +6,14 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.form.DogWalkerForm
+import org.jungmha.domain.response.DogWalkerInfo
 
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 interface DogsWalkersService {
 
-    suspend fun dogWalkersAll() : List<DogWalkerField>
+    suspend fun dogWalkersAll() : List<DogWalkerInfo>
 
     suspend fun insert(payload: DogWalkerForm): Boolean
 
