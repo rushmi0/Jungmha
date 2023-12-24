@@ -4,7 +4,7 @@ import org.jungmha.database.field.KeyField
 
 interface ServerKeyService {
 
-    suspend fun getServerKey(id: Int): KeyField?
+    fun getServerKey(id: Int): KeyField?
 
     suspend fun insert(privateKey: String): Boolean
 

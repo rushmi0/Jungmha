@@ -18,25 +18,23 @@ class ServerKeyServiceImpl(
     private val query: DSLContext
 ) : ServerKeyService {
 
-    override suspend fun getServerKey(id: Int): KeyField? {
-        return withContext(Dispatchers.IO) {
-            val record = query.select()
-                .from(SERVERKEY)
-                .where(SERVERKEY.KEY_ID.eq(id))
-                .fetchOne()
+    override fun getServerKey(id: Int): KeyField? {
+        val record = query.select()
+            .from(SERVERKEY)
+            .where(SERVERKEY.KEY_ID.eq(id))
+            .fetchOne()
 
-            if (record != null) {
-                return@withContext KeyField(
-                    record[SERVERKEY.KEY_ID],
-                    record[SERVERKEY.PRIVATE_KEY],
-                    record[SERVERKEY.TAG]
-                )
-            } else {
-                return@withContext null
-            }
-
+        return if (record != null) {
+            KeyField(
+                record[SERVERKEY.KEY_ID],
+                record[SERVERKEY.PRIVATE_KEY],
+                record[SERVERKEY.TAG]
+            )
+        } else {
+            null
         }
     }
+
 
 
     override suspend fun insert(privateKey: String): Boolean {

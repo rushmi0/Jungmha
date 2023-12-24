@@ -1,12 +1,14 @@
-GET http://localhost:8080/api/v1/home/filter?verify=true
+GET http://localhost:8080/api/v1/home/filter/auth?verify=true
+Content-Type: application/json
+Authorization: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjoxNzAzNDE1ODkyMDg0LCJpYXQiOjE3MDM0MTQ1OTYwODQsInNpZ25hdHVyZSI6IjMwNDQwMjIwNjU4MGUyOWFiNWJlOTA0Y2Y5MzVjM2JhODA3MmU4MTFiODI5OGFkYjY2MTNkZWJmMjYxZmE1ZmQyOGIyZDVhMjAyMjAwZTBlOWI4ODg2NTkwYWUyZDMzYTk0MWViMDI4OGRiMTNjZTVhNTFjZDIxZjA2MzU4YTA2MmVmMzE5N2Q1MTRmIn0=
+
+
+###
+
+GET http://localhost:8080/api/v1/home/filter?pSmall=50&max=3
 Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/v1/home/filter?pSmall=50
-Content-Type: application/json
-
-###
-
-GET http://localhost:8080/api/v1/home/filter?verify=true
+GET http://localhost:8080/api/v1/home/filter?location=Park4
 Content-Type: application/json

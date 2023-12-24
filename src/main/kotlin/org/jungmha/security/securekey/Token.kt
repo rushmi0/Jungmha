@@ -25,21 +25,39 @@ data class TokenObject(
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class Token @Inject constructor(
-    private val server: ServerKeyServiceImpl,
-){
+class Token {
 
-    private val privateKey: BigInteger = runBlocking {
-        BigInteger(server.getServerKey(1)?.privateKey, 16)
-    }
-    private val publicKey: String = runBlocking {
-        privateKey.toPublicKey().compressed()
+
+    private val privateKey =  BigInteger("b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2", 16)
+    private val publicKey = privateKey.toPublicKey().compressed()
+
+    private fun buildToken(permission: String, username: String, time: Long? = null): String? {
+        val currentTimeMillis = System.currentTimeMillis().toBigInteger()
+        val timePoint = time ?: 5
+        val exp = currentTimeMillis + 86_400.toBigInteger() * timePoint.toBigInteger()
+
+        val rawObject = TokenObject(
+            username,
+            permission,
+            exp,
+            currentTimeMillis,
+            ""
+        )
+        val message = jacksonObjectMapper().writeValueAsString(rawObject)
+        val signature = ECDSA.sign(privateKey, message)
+
+        return encodeToken(rawObject.copy(signature = signature))
     }
 
+    private fun encodeToken(tokenObject: TokenObject): String {
+        val data = jacksonObjectMapper().writeValueAsString(tokenObject)
+        val encode = data.toByteArray(Charsets.UTF_8)
+        return Base64.getEncoder().encodeToString(encode)
+    }
 
     fun buildTokenPair(username: String, time: Long? = null): TokenResponse {
-        val fullControlToken: String = buildToken("full-control", username, time)!!
-        val viewOnlyToken: String = buildToken("view-only", username, time)!!
+        val fullControlToken = buildToken("full-control", username, time)!!
+        val viewOnlyToken = buildToken("view-only", username, time)!!
 
         return TokenResponse(
             listOf(
@@ -51,37 +69,10 @@ class Token @Inject constructor(
         )
     }
 
-
-    private fun buildToken(permission: String, username: String, time: Long? = null): String? {
-        val currentTimeMillis: BigInteger = System.currentTimeMillis().toBigInteger()
-        val timePoint: Long = time ?: 5
-        val exp: BigInteger = currentTimeMillis + 86_400.toBigInteger() * timePoint.toBigInteger()
-
-        val rawObject = TokenObject(
-            username,
-            permission,
-            exp,
-            currentTimeMillis,
-            ""
-        )
-        val message: String = jacksonObjectMapper().writeValueAsString(rawObject)
-        val signature: String = ECDSA.sign(privateKey, message)
-
-        return encodeToken(rawObject.copy(signature = signature))
-    }
-
-    private fun encodeToken(tokenObject: TokenObject): String {
-        val data: String = jacksonObjectMapper().writeValueAsString(tokenObject)
-        val encode: ByteArray = data.toByteArray(Charsets.UTF_8)
-        return Base64.getEncoder().encodeToString(encode)
-    }
-
-
-
     fun verifyToken(token: String): Boolean {
         try {
-            val decodedBytes: ByteArray = Base64.getDecoder().decode(token)
-            val jsonMap: Map<String, Any> = jacksonObjectMapper().readValue<Map<String, Any>>(decodedBytes)
+            val decodedBytes = Base64.getDecoder().decode(token)
+            val jsonMap = jacksonObjectMapper().readValue<Map<String, Any>>(decodedBytes)
 
             val userName = jsonMap["userName"] as String
             val permission = jsonMap["permission"] as String
@@ -102,7 +93,7 @@ class Token @Inject constructor(
                 iat,
                 ""
             )
-            val message: String = jacksonObjectMapper().writeValueAsString(raw)
+            val message = jacksonObjectMapper().writeValueAsString(raw)
 
             return ECDSA.verify(message, publicKey, signature)
         } catch (e: Exception) {

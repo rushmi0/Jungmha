@@ -4,15 +4,13 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import org.jungmha.domain.response.WalkerContact
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jungmha.database.form.DogWalkerForm
-import org.jungmha.domain.response.DogWalkerInfo
-import org.jungmha.domain.response.PriceData
-import org.jungmha.domain.response.WalkerDetail
+import org.jungmha.domain.response.*
+import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.service.DogsWalkersService
@@ -23,13 +21,13 @@ import org.slf4j.LoggerFactory
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class DogsWalkersServiceImpl  @Inject constructor(
+class DogsWalkersServiceImpl @Inject constructor(
     @Bean
     private val query: DSLContext
 ) : DogsWalkersService {
 
 
-    override suspend fun dogWalkersAll(): List<DogWalkerInfo> {
+    override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(Dispatchers.IO) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing dogWalkersAll")
@@ -51,7 +49,60 @@ class DogsWalkersServiceImpl  @Inject constructor(
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
                     .fetch { record ->
-                        DogWalkerInfo(
+                        PublicDogWalkerInfo(
+                            walkerID = record[dw.WALKER_ID],
+                            detail = WalkerDetail(
+                                name = record[up.USERNAME],
+                                verify = record[dw.VERIFICATION],
+                                location = record[dw.LOCATION_NAME],
+                                price = PriceData(
+                                    small = record[dw.PRICE_SMALL],
+                                    medium = record[dw.PRICE_MEDIUM],
+                                    big = record[dw.PRICE_BIG]
+                                )
+                            )
+                        )
+                    }
+
+            } catch (e: Exception) {
+                LOG.error("Error retrieving dog walkers from the database", e)
+                emptyList()
+            }
+        }
+    }
+
+
+
+    override suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo> {
+        return withContext(Dispatchers.IO) {
+            try {
+                LOG.info("Thread ${Thread.currentThread().name} executing publicDogWalkersAll")
+
+                val dw = DOGWALKERS
+                val up = USERPROFILES
+                val dwr = DOGWALKERREVIEWS
+
+                return@withContext query.select(
+                    dw.WALKER_ID,
+                    up.USERNAME,
+                    dw.VERIFICATION,
+                    dw.LOCATION_NAME,
+                    dw.PRICE_SMALL,
+                    dw.PRICE_MEDIUM,
+                    dw.PRICE_BIG,
+                    up.EMAIL,
+                    up.PHONE_NUMBER,
+                    up.USER_ID,
+                    up.USERNAME,
+                    up.IMAGE_PROFILE,
+                    dwr.RATING,
+                    dwr.REVIEW_TEXT
+                )
+                    .from(dw)
+                    .join(up).on(dw.USER_ID.eq(up.USER_ID))
+                    .leftJoin(dwr).on(dw.WALKER_ID.eq(dwr.WALKER_ID))
+                    .fetch { record ->
+                        PrivateDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
@@ -66,18 +117,23 @@ class DogsWalkersServiceImpl  @Inject constructor(
                             contact = WalkerContact(
                                 email = record[up.EMAIL],
                                 phoneNumber = record[up.PHONE_NUMBER]
+                            ),
+                            review = WalkerReview(
+                                userID = record[up.USER_ID] ?: 0,
+                                name = record[up.USERNAME] ?: "",
+                                profileImage = record[up.IMAGE_PROFILE] ?: "",
+                                rating = record[dwr.RATING] ?: 0,
+                                reviewText = record[dwr.REVIEW_TEXT] ?: ""
                             )
                         )
                     }
 
             } catch (e: Exception) {
-                LOG.error("Error retrieving dog walkers from the database", e)
+                LOG.error("Error retrieving public dog walkers from the database", e)
                 emptyList()
             }
         }
     }
-
-
 
 
     override suspend fun insert(payload: DogWalkerForm): Boolean {

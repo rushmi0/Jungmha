@@ -3,12 +3,15 @@ package org.jungmha.domain.response
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 
+
+//PrivateDogWalkerInfo
 @Introspected
 @Serdeable.Serializable
-data class DogWalkerInfo(
+data class PrivateDogWalkerInfo(
     val walkerID: Int,
-    val detail: WalkerDetail?,
-    val contact: WalkerContact
+    val detail: WalkerDetail,
+    val contact: WalkerContact,
+    val review: WalkerReview
 )
 
 @Introspected
@@ -33,4 +36,14 @@ data class PriceData(
 data class WalkerContact(
     val email: String,
     val phoneNumber: String
+)
+
+@Introspected
+@Serdeable.Serializable
+data class WalkerReview(
+    val userID: Int,
+    val name: String,
+    val profileImage: String,
+    val rating: Int,
+    val reviewText: String
 )

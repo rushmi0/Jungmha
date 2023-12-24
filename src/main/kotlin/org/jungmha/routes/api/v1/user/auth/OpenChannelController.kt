@@ -96,7 +96,8 @@ class OpenChannelController @Inject constructor(
                 return HttpResponse.serverError("Failed to create a channel for the account")
             }
         } catch (e: Exception) {
-            LOG.error("Error during open channel operation", e)
+            // เพิ่มข้อมูลเพิ่มเติมใน LOG
+            LOG.error("Error during open channel operation. Payload: $payload", e)
             return HttpResponse.serverError("Unexpected error during open channel operation")
         }
     }

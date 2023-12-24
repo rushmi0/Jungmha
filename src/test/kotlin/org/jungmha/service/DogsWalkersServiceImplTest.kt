@@ -26,7 +26,7 @@ class DogsWalkersServiceImplTest {
         DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
             dslContext = DSL.using(connection)
             val rawData = DogsWalkersServiceImpl(dslContext)
-            val result = rawData.dogWalkersAll()//.toString()
+            val result = rawData.publicDogWalkersAll()//.toString()
 
             println(result)
         }

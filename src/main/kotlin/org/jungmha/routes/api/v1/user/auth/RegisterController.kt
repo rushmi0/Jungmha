@@ -59,10 +59,10 @@ class RegisterController @Inject constructor(
             LOG.info("Thread ${Thread.currentThread().name} executing signUp")
             MDC.put("thread -> ", Thread.currentThread().name)
 
-            // ดึงคีย์ที่ใช้ในการเข้ารหัสจากฐานข้อมูล
+            // ดึงกุญแจใช้ในการเข้ารหัสจากฐานข้อมูล
             val shareKey = service.findUser(name)?.sharedKey.toString()
 
-            // ถอดรหัสข้อมูลที่ถูกเข้ารหัสแล้ว
+            // ถอดรหัสข้อมูล
             val decrypted = aes.decrypt(payload.content, shareKey)
 
             // สร้าง Object UserProfileForm จากข้อมูลที่ถอดรหัสได้
@@ -121,7 +121,6 @@ class RegisterController @Inject constructor(
     }
 
     companion object {
-        // Logger สำหรับการลงทะเบียน
         private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
     }
 
