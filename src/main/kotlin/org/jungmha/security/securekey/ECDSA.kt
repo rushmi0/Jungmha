@@ -25,20 +25,17 @@ object ECDSA {
     private val curveDomain: Secp256K1.CurveParams = Secp256K1.getCurveParams()
     private val N: BigInteger = curveDomain.N
 
-    data class Point(
-        val R: BigInteger,
-        val S: BigInteger
-    )
 
-    private fun SignSignatures(privateKey: BigInteger, message: BigInteger): Point {
+
+    private fun SignSignatures(privateKey: BigInteger, message: BigInteger): PointField {
         try {
             val m = message
             val k = BigInteger(256, SecureRandom())
 
-            val point = multiplyPoint(k)
+            val PointField = multiplyPoint(k)
             val kInv: BigInteger = modinv(k, N)
 
-            val r: BigInteger = point.x % N
+            val r: BigInteger = PointField.x % N
             var s: BigInteger = ((m + r * privateKey) * kInv) % N
 
             // * https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki
@@ -46,7 +43,7 @@ object ECDSA {
                 s = N - s
             }
 
-            return Point(r, s)
+            return PointField(r, s)
         } catch (e: Exception) {
             throw e
         }
@@ -55,7 +52,7 @@ object ECDSA {
     private fun VerifySignature(
         publicKeyPoint: PointField,
         message: BigInteger,
-        signature: Point
+        signature: PointField
     ): Boolean {
         val (r, s) = signature
 
@@ -66,9 +63,9 @@ object ECDSA {
         val point1 = multiplyPoint(u1)
         val point2 = multiplyPoint(u2, publicKeyPoint)
 
-        val point = addPoint(point1, point2)
+        val PointField = addPoint(point1, point2)
 
-        val x = point.x % N
+        val x = PointField.x % N
 
         return x == r
     }
@@ -76,7 +73,7 @@ object ECDSA {
     // * https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
     // เมธอดสำหรับแปลงลายเซ็นให้อยู่ในรูปของ DER format
     // โดยรับคู่ของ BigInteger ที่แทนลายเซ็น (r, s) เป็น input
-    private fun toDERFormat(signature: Point): String {
+    private fun toDERFormat(signature: PointField): String {
         // แยกค่า r และ s จากคู่ของ BigInteger
         val (r, s) = signature
 
@@ -101,7 +98,7 @@ object ECDSA {
 
     // เมธอดสำหรับถอดรหัสลายเซ็นในรูปของ DER
     // และคืนค่าเป็นคู่ของ BigInteger (r, s)
-    private fun derRecovered(derSignature: String): Point? {
+    private fun derRecovered(derSignature: String): PointField? {
         try {
             // แปลงรหัสลายเซ็นในรูปของ DER จากฐาน 16 เป็น bytes
             val derBytes = derSignature.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
@@ -123,7 +120,7 @@ object ECDSA {
             val r = BigInteger(1, rBytes)
             val s = BigInteger(1, sBytes)
 
-            return Point(r, s)
+            return PointField(r, s)
         } catch (e: Exception) {
             println("ไม่สามารถถอดรหัสลายเซ็น: ${e.message}")
             return null
@@ -152,14 +149,10 @@ object ECDSA {
         signature: String
     ): Boolean {
 
-        val hashMessage = message.SHA256().ByteArrayToBigInteger()
-        val point = publicKey.getDecompress()!!
-        val signatureRecovered = derRecovered(signature)!!
-
         return VerifySignature(
-            point,
-            hashMessage,
-            signatureRecovered
+            publicKey.getDecompress()!!,
+            message.SHA256().ByteArrayToBigInteger(),
+            derRecovered(signature)!!
         )
 
     }

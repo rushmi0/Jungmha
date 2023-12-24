@@ -5,11 +5,17 @@ import io.micronaut.http.annotation.Controller
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import jakarta.inject.Inject
 
 
 @Controller("api/v1")
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class DogWalkersController {
+class DogWalkersController @Inject constructor(
+
+) {
+
+
+
 }
