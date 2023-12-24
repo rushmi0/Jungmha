@@ -20,9 +20,11 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogsServiceImpl @Inject constructor(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
+    coroutineDispatcher: CoroutineDispatcher?,
     private val query: DSLContext
 ) : DogsService {
+
+    private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: Dispatchers.IO
 
     override suspend fun dogsAll(): List<DogField> {
         return withContext(dispatcher) {

@@ -27,10 +27,11 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class UserServiceImpl @Inject constructor(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
+    taskDispatcher: CoroutineDispatcher?,
     private val query: DSLContext
 ) : UserService {
 
+    private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
     override suspend fun findUser(accountName: String): UserProfileField? {
         return withContext(dispatcher) {
@@ -64,16 +65,20 @@ class UserServiceImpl @Inject constructor(
                     null
                 }
             } catch (e: DataAccessException) {
-                LOG.error("Error accessing data while finding user with account name [$accountName] on thread [$currentThreadName]", e)
+                LOG.error(
+                    "Error accessing data while finding user with account name [$accountName] on thread [$currentThreadName]",
+                    e
+                )
                 null
             } catch (e: Exception) {
-                LOG.error("An unexpected error occurred while finding user with account name [$accountName] on thread [$currentThreadName]", e)
+                LOG.error(
+                    "An unexpected error occurred while finding user with account name [$accountName] on thread [$currentThreadName]",
+                    e
+                )
                 null
             }
         }
     }
-
-
 
 
     override suspend fun userAll(): List<UserProfileField> {
@@ -184,10 +189,6 @@ class UserServiceImpl @Inject constructor(
             LOG.error("Field [$fieldName] has a size exceeding the limit (max: $maxSize): $value")
         }
     }
-
-
-
-
 
 
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {

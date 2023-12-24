@@ -22,9 +22,11 @@ import java.time.OffsetDateTime
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkBookingsServiceImpl @Inject constructor(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
+    taskDispatcher: CoroutineDispatcher?,
     private val query: DSLContext
 ) : DogWalkBookingsService {
+
+    private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
     override suspend fun bookingsAll(): List<DogWalkBookingsField> {
         return withContext(dispatcher) {
