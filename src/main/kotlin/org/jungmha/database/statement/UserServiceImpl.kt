@@ -27,8 +27,8 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class UserServiceImpl @Inject constructor(
-    taskDispatcher: CoroutineDispatcher?,
-    private val query: DSLContext
+    private val query: DSLContext,
+    taskDispatcher: CoroutineDispatcher?
 ) : UserService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO

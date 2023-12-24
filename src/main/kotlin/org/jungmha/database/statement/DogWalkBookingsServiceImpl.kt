@@ -22,8 +22,8 @@ import java.time.OffsetDateTime
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkBookingsServiceImpl @Inject constructor(
-    taskDispatcher: CoroutineDispatcher?,
-    private val query: DSLContext
+    private val query: DSLContext,
+    taskDispatcher: CoroutineDispatcher?
 ) : DogWalkBookingsService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO

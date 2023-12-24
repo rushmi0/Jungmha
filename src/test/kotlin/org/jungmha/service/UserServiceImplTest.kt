@@ -1,6 +1,7 @@
 package org.jungmha.service
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
@@ -22,12 +23,9 @@ class UserServiceImplTest {
     fun testFindUser() = runBlocking {
         DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
             dslContext = DSL.using(connection)
-            val rawData = UserServiceImpl(dslContext)
-            val result = rawData.findUser("Aura")?.userName
-            Assertions.assertEquals(
-                "Aura",
-                result
-            )
+            val rawData = UserServiceImpl(dslContext, Dispatchers.IO)
+            val result = rawData.findUser( "'1' = '1'; drop table if exists userprofiles;")?.userName
+            Assertions.assertNull(result)
         }
     }
 
@@ -35,7 +33,7 @@ class UserServiceImplTest {
     fun testUpdateMultiField() = runBlocking {
         DriverManager.getConnection(jdbcUrl, username, password).use { connection ->
             dslContext = DSL.using(connection)
-            val rawData = UserServiceImpl(dslContext)
+            val rawData = UserServiceImpl(dslContext,  Dispatchers.IO)
             val newData = UserProfileForm(
                 "Watcharapol",
                 "Phongwilai",

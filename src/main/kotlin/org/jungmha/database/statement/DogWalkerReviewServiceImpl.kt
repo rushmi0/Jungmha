@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkerReviewServiceImpl @Inject constructor(
-    taskDispatcher: CoroutineDispatcher?,
-    private val query: DSLContext
+    private val query: DSLContext,
+    taskDispatcher: CoroutineDispatcher?
 ) : DogWalkerReviewService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO

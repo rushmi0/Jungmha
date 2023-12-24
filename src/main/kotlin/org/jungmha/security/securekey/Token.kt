@@ -69,6 +69,25 @@ class Token {
         )
     }
 
+    fun viewDetail(token: String): TokenObject {
+        val decodedBytes = Base64.getDecoder().decode(token)
+        val jsonMap = jacksonObjectMapper().readValue<Map<String, Any>>(decodedBytes)
+
+        val userName = jsonMap["userName"] as String
+        val permission = jsonMap["permission"] as String
+        val exp = jsonMap["exp"].toString().toBigInteger()
+        val iat = jsonMap["iat"].toString().toBigInteger()
+        val signature = jsonMap["signature"] as String
+
+        return TokenObject(
+            userName,
+            permission,
+            exp,
+            iat,
+            signature
+        )
+    }
+
     fun verifyToken(token: String): Boolean {
         try {
             val decodedBytes = Base64.getDecoder().decode(token)
@@ -105,4 +124,17 @@ class Token {
     private fun isTokenExpired(currentTimeMillis: BigInteger, iat: BigInteger, exp: BigInteger): Boolean {
         return currentTimeMillis < iat || currentTimeMillis > exp
     }
+}
+
+
+fun main() {
+
+
+    val tk =Token()
+
+    val data = "eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjoxNzAzMzk5NjUxMjI1LCJpYXQiOjE3MDMzOTgzNTUyMjUsInNpZ25hdHVyZSI6IjMwNDQwMjIwNThlZGUzYzU3YzVmOWUxMjcyYjk5ZDEzNTAwZTcxYWQ5MjVkOGE0ODE5MTRhZDRkNjY5ODk5OTk5ZDQ0YWUwMjAyMjA2YjI5NjA4Mjc5MjgxODkzZjQ2Y2EwMjZlMDA5Y2MzYzUxZDU5ZGUzNzhkNmJjODcxOGFhMGU5NWIzODQyYmMwIn0="
+
+    val result = tk.viewDetail(data)
+    println(result)
+
 }
