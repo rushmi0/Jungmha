@@ -125,16 +125,3 @@ class Token {
         return currentTimeMillis < iat || currentTimeMillis > exp
     }
 }
-
-
-fun main() {
-
-
-    val tk =Token()
-
-    val data = "eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjoxNzAzMzk5NjUxMjI1LCJpYXQiOjE3MDMzOTgzNTUyMjUsInNpZ25hdHVyZSI6IjMwNDQwMjIwNThlZGUzYzU3YzVmOWUxMjcyYjk5ZDEzNTAwZTcxYWQ5MjVkOGE0ODE5MTRhZDRkNjY5ODk5OTk5ZDQ0YWUwMjAyMjA2YjI5NjA4Mjc5MjgxODkzZjQ2Y2EwMjZlMDA5Y2MzYzUxZDU5ZGUzNzhkNmJjODcxOGFhMGU5NWIzODQyYmMwIn0="
-
-    val result = tk.viewDetail(data)
-    println(result)
-
-}
