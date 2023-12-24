@@ -16,6 +16,11 @@ import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.stream.Collectors
 
+// * Public Filter Controller
+
+/**
+ * คลาสนี้เป็น Controller สำหรับการกรองข้อมูล Public Dog Walker
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -24,6 +29,18 @@ class PublicFilterController @Inject constructor(
     private val service: DogsWalkersServiceImpl
 ) {
 
+    /**
+     * เมธอดสำหรับการดึงข้อมูล Public Dog Walker ตามเงื่อนไขที่ระบุ
+     *
+     * @param name ชื่อของ Dog Walker (ถ้ามี)
+     * @param verify สถานะการตรวจสอบ (ถ้ามี)
+     * @param location สถานที่ที่ Dog Walker ทำงาน (ถ้ามี)
+     * @param pSmall ราคาต่ำสุดสำหรับขนาดเล็ก (ถ้ามี)
+     * @param pMedium ราคาต่ำสุดสำหรับขนาดกลาง (ถ้ามี)
+     * @param pBig ราคาต่ำสุดสำหรับขนาดใหญ่ (ถ้ามี)
+     * @param max จำนวนข้อมูลสูงสุดที่ต้องการแสดงผล (ถ้าไม่ระบุให้ใช้ค่า Integer.MAX_VALUE)
+     * @return ข้อมูลสำหรับผู้ที่ไม่มีบัญชีในระบบ ตามเงื่อนไขที่ระบุ
+     */
     @Get(
         uri = "home/filter{?verify,location,name,pSmall,pMedium,pBig,max}",
         produces = [MediaType.APPLICATION_JSON]
@@ -60,9 +77,9 @@ class PublicFilterController @Inject constructor(
         }
     }
 
-
-
     companion object {
+        // Logger สำหรับการดึงข้อมูล Public Dog Walker
         private val LOG = LoggerFactory.getLogger(PublicFilterController::class.java)
     }
+
 }
