@@ -62,11 +62,10 @@ class UploadFileController @Inject constructor(
     ): MutableHttpResponse<String> {
 
         // ตรวจสอบ Token ว่าถูกต้องหรือไม่
+        val userDetails = token.viewDetail(access)
         val verify = token.verifyToken(access)
-
-        // ดึงข้อมูล UserName จาก Token
-        val user = token.viewDetail(access).userName
-        val permission = token.viewDetail(access).permission
+        val user = userDetails.userName
+        val permission = userDetails.permission
 
         return try {
             if (verify && permission == "full-control") {
@@ -95,8 +94,19 @@ class UploadFileController @Inject constructor(
                     )
                 }
 
-                LOG.info("File uploaded successfully: ${targetFile.absolutePath}")
-                HttpResponse.ok("File uploaded successfully")
+                val statement = service.updateSingleField(
+                    userId,
+                    "imageProfile",
+                    targetFile.absolutePath
+                )
+
+                if (statement) {
+                    LOG.info("File uploaded successfully: ${targetFile.absolutePath}")
+                    HttpResponse.ok("File uploaded successfully")
+                } else {
+                    LOG.error("Failed to update user profile image field")
+                    HttpResponse.serverError("Failed to update user profile image field")
+                }
             } else {
                 LOG.warn("Invalid token for file upload")
                 HttpResponse.badRequest("Invalid token")
@@ -108,8 +118,6 @@ class UploadFileController @Inject constructor(
     }
 
     companion object {
-        // Logger สำหรับการอัปโหลดไฟล์
         val LOG: Logger = LoggerFactory.getLogger(UploadFileController::class.java)
     }
-
 }
