@@ -1,4 +1,4 @@
-package org.jungmha.routes.api.v1.user
+package org.jungmha.routes.api.v1.user.file
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
@@ -25,19 +25,32 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
+// * Upload File Controller
+
+/**
+ * คลาสนี้เป็น Controller สำหรับการอัปโหลดไฟล์ของผู้ใช้
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class FileController @Inject constructor(
+class UploadFileController @Inject constructor(
     taskDispatcher: CoroutineDispatcher?,
     private val service: UserServiceImpl,
     private val token: Token
 ) {
 
+    // ตัวแปร dispatcher สำหรับใช้งาน Coroutine ใน IO context
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
     private val pathDirectory = "src/main/resources/images/account"
 
+    /**
+     * เมธอดสำหรับการอัปโหลดไฟล์
+     *
+     * @param access ข้อมูล Token สำหรับตรวจสอบสิทธิ์การอัปโหลด
+     * @param file ไฟล์ที่จะอัปโหลด
+     * @return HttpResponse แสดงผลลัพธ์ของการอัปโหลด
+     */
     @Post(
         uri = "/auth/user/upload",
         consumes = [MediaType.MULTIPART_FORM_DATA]
@@ -48,23 +61,32 @@ class FileController @Inject constructor(
         @Part file: CompletedFileUpload
     ): MutableHttpResponse<String> {
 
-        val verifyToken = token.verifyToken(access)
+        // ตรวจสอบ Token ว่าถูกต้องหรือไม่
+        val verify = token.verifyToken(access)
+
+        // ดึงข้อมูล UserName จาก Token
         val user = token.viewDetail(access).userName
+        val permission = token.viewDetail(access).permission
 
         return try {
-            if (verifyToken) {
+            if (verify && permission == "full-control") {
+                // ค้นหาข้อมูลผู้ใช้จากฐานข้อมูล
                 val user = service.findUser(user) ?: throw IllegalArgumentException("User not found")
 
+                // ดึงข้อมูล UserID และประเภทของผู้ใช้
                 val userId = user.userID
                 val typeAccount = user.userType
 
+                // กำหนดตำแหน่งที่จะบันทึกไฟล์
                 val targetDirectory = File("$pathDirectory/$typeAccount/usr_$userId/profileImage/")
                 val targetFile = File(targetDirectory, file.filename)
 
+                // ตรวจสอบว่ามี Directory หรือยัง ถ้าไม่มีให้สร้าง
                 if (!targetDirectory.exists()) {
                     targetDirectory.mkdirs()
                 }
 
+                // อัปโหลดไฟล์
                 withContext(dispatcher) {
                     Files.copy(
                         file.inputStream,
@@ -85,24 +107,9 @@ class FileController @Inject constructor(
         }
     }
 
-
-
-//    @Throws(IOException::class)
-//    suspend fun openFile() {
-//
-//    }
-//
-//
-//    @Throws(IOException::class)
-//    suspend fun openImage() {
-//
-//    }
-
-
     companion object {
-        val LOG: Logger = LoggerFactory.getLogger(FileController::class.java)
+        // Logger สำหรับการอัปโหลดไฟล์
+        val LOG: Logger = LoggerFactory.getLogger(UploadFileController::class.java)
     }
-
-
 
 }
