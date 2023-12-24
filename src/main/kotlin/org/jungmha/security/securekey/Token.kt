@@ -6,9 +6,6 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import jakarta.inject.Inject
-import kotlinx.coroutines.runBlocking
-import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import java.math.BigInteger
