@@ -51,10 +51,8 @@ class OpenChannelController @Inject constructor(
     suspend fun openChannel(
         @Body payload: Identity
     ): MutableHttpResponse<out Any?>? {
-
-        try {
-
-            // ดึง `Private Key` ของ Server 
+        return try {
+            // ดึง `Private Key` ของ Server
             val serverPrivateKey = BigInteger(
                 server.getServerKey(1)?.privateKey,
                 16
@@ -70,37 +68,38 @@ class OpenChannelController @Inject constructor(
             val checkUserName = service.findUser(payload.userName)?.userName
             if (checkUserName == payload.userName) {
                 LOG.warn("Invalid User Name: $checkUserName")
-                return HttpResponse.badRequest("Invalid User Name: $checkUserName")
-            }
-
-            // คำนวณ Shared Key จาก `Private Key` ของ Server และ `Public Key` ของผู้ใช้
-            val sharedKey = ecdh.sharedSecret(
-                serverPrivateKey,
-                clientPublicKey
-            )
-
-            // สร้าง Object IdentityForm เพื่อบันทึกข้อมูลตัวตนของผู้ใช้
-            val id = IdentityForm(
-                payload.userName,
-                clientPublicKey,
-                sharedKey
-            )
-
-            // บันทึกข้อมูลลงในฐานข้อมูล
-            val statement: Boolean = service.insert(id)
-            if (statement) {
-                LOG.info("Create channel successful for New User")
-                return HttpResponse.created(publicKey)
+                HttpResponse.badRequest("Invalid User Name: $checkUserName")
             } else {
-                LOG.error("Failed to create a channel for the account")
-                return HttpResponse.serverError("Failed to create a channel for the account")
+                // คำนวณ Shared Key จาก `Private Key` ของ Server และ `Public Key` ของผู้ใช้
+                val sharedKey = ecdh.sharedSecret(
+                    serverPrivateKey,
+                    clientPublicKey
+                )
+
+                // สร้าง Object IdentityForm เพื่อบันทึกข้อมูลตัวตนของผู้ใช้
+                val id = IdentityForm(
+                    payload.userName,
+                    clientPublicKey,
+                    sharedKey
+                )
+
+                // บันทึกข้อมูลลงในฐานข้อมูล
+                val statement: Boolean = service.insert(id)
+                if (statement) {
+                    LOG.info("Create channel successful for New User")
+                    HttpResponse.created(publicKey)
+                } else {
+                    LOG.error("Failed to create a channel for the account")
+                    HttpResponse.serverError("Failed to create a channel for the account")
+                }
             }
         } catch (e: Exception) {
             // เพิ่มข้อมูลเพิ่มเติมใน LOG
             LOG.error("Error during open channel operation. Payload: $payload", e)
-            return HttpResponse.serverError("Unexpected error during open channel operation")
+            HttpResponse.serverError("Unexpected error during open channel operation")
         }
     }
+
 
     companion object {
         val LOG: Logger = LoggerFactory.getLogger(OpenChannelController::class.java)
