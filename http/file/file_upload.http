@@ -1,4 +1,4 @@
 POST http://localhost:8086/images/upload
 Content-Type: multipart/form-data
 
-file=@C:\Users\Rushm\Downloads\This_is_the_BEST_Windows_DESKTOP_Customization__Super_Easy_\Wallpaper.jpg
+file=@C:\Users\Rushm\Pictures\Screenshots\Screenshot 2023-12-23 230650.png

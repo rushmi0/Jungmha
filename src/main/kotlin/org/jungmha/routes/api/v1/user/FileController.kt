@@ -17,8 +17,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -31,8 +32,7 @@ import java.nio.file.StandardCopyOption
 class FileController @Inject constructor(
     taskDispatcher: CoroutineDispatcher?,
     private val service: UserServiceImpl,
-    private val token: Token,
-    private val aes: AES
+    private val token: Token
 ) {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
@@ -51,7 +51,7 @@ class FileController @Inject constructor(
         val verifyToken = token.verifyToken(access)
         val user = token.viewDetail(access).userName
 
-        try {
+        return try {
             if (verifyToken) {
                 val user = service.findUser(user) ?: throw IllegalArgumentException("User not found")
 
@@ -73,13 +73,16 @@ class FileController @Inject constructor(
                     )
                 }
 
-                return HttpResponse.ok("File uploaded successfully")
+                LOG.info("File uploaded successfully: ${targetFile.absolutePath}")
+                HttpResponse.ok("File uploaded successfully")
+            } else {
+                LOG.warn("Invalid token for file upload")
+                HttpResponse.badRequest("Invalid token")
             }
         } catch (e: Exception) {
-            return HttpResponse.serverError("Failed to upload file: ${e.message}")
+            LOG.error("Failed to upload file", e)
+            HttpResponse.serverError("Failed to upload file: ${e.message}")
         }
-
-        return HttpResponse.badRequest("Invalid token")
     }
 
 
@@ -94,6 +97,12 @@ class FileController @Inject constructor(
 //    suspend fun openImage() {
 //
 //    }
+
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(FileController::class.java)
+    }
+
 
 
 }
