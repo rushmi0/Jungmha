@@ -16,6 +16,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.security.securekey.Token
 import org.slf4j.Logger
@@ -70,11 +71,11 @@ class UploadFileController @Inject constructor(
         return try {
             if (verify && permission == "full-control") {
                 // ค้นหาข้อมูลผู้ใช้จากฐานข้อมูล
-                val user = service.findUser(user) ?: throw IllegalArgumentException("User not found")
+                val user: UserProfileField = service.findUser(user) ?: throw IllegalArgumentException("User not found")
 
                 // ดึงข้อมูล UserID และประเภทของผู้ใช้
-                val userId = user.userID
-                val typeAccount = user.userType
+                val userId: Int = user.userID
+                val typeAccount: String = user.userType
 
                 // กำหนดตำแหน่งที่จะบันทึกไฟล์
                 val targetDirectory = File("$pathDirectory/$typeAccount/usr_$userId/profileImage/")
@@ -94,7 +95,7 @@ class UploadFileController @Inject constructor(
                     )
                 }
 
-                val statement = service.updateSingleField(
+                val statement: Boolean = service.updateSingleField(
                     userId,
                     "imageProfile",
                     targetFile.absolutePath
