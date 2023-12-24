@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -21,11 +22,12 @@ import java.time.OffsetDateTime
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkBookingsServiceImpl @Inject constructor(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val query: DSLContext
 ) : DogWalkBookingsService {
 
     override suspend fun bookingsAll(): List<DogWalkBookingsField> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Retrieve bookings operation started on thread [${Thread.currentThread().name}]")
 
@@ -64,7 +66,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
 
     override suspend fun insert(payload: DogWalkBookingsField): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -111,7 +113,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
 
     override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val status = when (fieldName) {
                     "dogID" -> query.update(DOGWALKBOOKINGS)
@@ -159,7 +161,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
             try {
                 LOG.info("Delete operation started on thread [$currentThreadName]")

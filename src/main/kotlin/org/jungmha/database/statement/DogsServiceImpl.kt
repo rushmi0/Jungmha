@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -19,11 +20,12 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogsServiceImpl @Inject constructor(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val query: DSLContext
 ) : DogsService {
 
     override suspend fun dogsAll(): List<DogField> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -56,7 +58,7 @@ class DogsServiceImpl @Inject constructor(
     }
 
     override suspend fun insert(payload: DogForm): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -90,7 +92,7 @@ class DogsServiceImpl @Inject constructor(
     }
 
     override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val field = when (fieldName) {
                     "dogImage" -> DOGS.DOG_IMAGE
@@ -102,11 +104,9 @@ class DogsServiceImpl @Inject constructor(
                     }
                 }
 
-                val status = query.update(DOGS)
+                val affectedRows = query.update(DOGS)
                     .set(field, newValue)
-                    .where(DOGS.DOG_ID.eq(id))
-
-                val affectedRows = status.execute()
+                    .where(DOGS.DOG_ID.eq(id)).execute()
 
                 if (affectedRows > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for Dog ID [$id]")
@@ -124,7 +124,7 @@ class DogsServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {

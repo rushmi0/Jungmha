@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -26,12 +27,13 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class UserServiceImpl @Inject constructor(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val query: DSLContext
 ) : UserService {
 
 
     override suspend fun findUser(accountName: String): UserProfileField? {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -42,9 +44,9 @@ class UserServiceImpl @Inject constructor(
                     .where(USERPROFILES.USERNAME.eq(accountName))
                     .fetchOne()
 
-                if (record != null) {
+                return@withContext if (record != null) {
                     LOG.info("User found with account name [$accountName] on thread [$currentThreadName]")
-                    return@withContext UserProfileField(
+                    UserProfileField(
                         record[USERPROFILES.USER_ID],
                         record[USERPROFILES.AUTHEN_KEY],
                         record[USERPROFILES.SHARE_KEY],
@@ -59,7 +61,7 @@ class UserServiceImpl @Inject constructor(
                     )
                 } else {
                     LOG.info("User not found with account name [$accountName] on thread [$currentThreadName]")
-                    return@withContext null
+                    null
                 }
             } catch (e: DataAccessException) {
                 LOG.error("Error accessing data while finding user with account name [$accountName] on thread [$currentThreadName]", e)
@@ -73,8 +75,9 @@ class UserServiceImpl @Inject constructor(
 
 
 
+
     override suspend fun userAll(): List<UserProfileField> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val result: Result<Record> = query.select()
                     .from(USERPROFILES)
@@ -107,7 +110,7 @@ class UserServiceImpl @Inject constructor(
 
 
     override suspend fun insert(payload: IdentityForm): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert")
 
@@ -142,7 +145,7 @@ class UserServiceImpl @Inject constructor(
 
 
     override suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
             try {
                 LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
@@ -188,7 +191,7 @@ class UserServiceImpl @Inject constructor(
 
 
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
 
                 LOG.info("Thread ${Thread.currentThread().name} executing update")
@@ -233,7 +236,7 @@ class UserServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing delete")
 

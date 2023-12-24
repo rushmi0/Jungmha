@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -19,11 +20,12 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogWalkerReviewServiceImpl @Inject constructor(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val query: DSLContext
 ) : DogWalkerReviewService {
 
     override suspend fun dogWalkerReviewAll(): List<DogWalkerReviewField> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -57,7 +59,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
     }
 
     override suspend fun insert(payload: DogWalkerReviewForm): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
@@ -93,7 +95,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
     }
 
     override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 val status = when (fieldName) {
                     "walkerID" -> query.update(DOGWALKERREVIEWS)
@@ -128,7 +130,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {

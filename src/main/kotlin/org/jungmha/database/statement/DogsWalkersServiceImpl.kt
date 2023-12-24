@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
@@ -22,13 +23,13 @@ import org.slf4j.LoggerFactory
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class DogsWalkersServiceImpl @Inject constructor(
-    @Bean
+    private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
     private val query: DSLContext
 ) : DogsWalkersService {
 
 
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing dogWalkersAll")
 
@@ -74,7 +75,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
 
     override suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing publicDogWalkersAll")
 
@@ -137,7 +138,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
 
     override suspend fun insert(payload: DogWalkerForm): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert for Dog Walker")
 
@@ -178,7 +179,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
 
     override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
@@ -220,7 +221,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
 
     override suspend fun delete(id: Int): Boolean {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing delete")
 
