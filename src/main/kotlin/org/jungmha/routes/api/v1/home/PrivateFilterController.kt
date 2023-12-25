@@ -49,7 +49,7 @@ class PrivateFilterController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPrivateDogWalker(
-        @Header("Authorization") access: String,
+        //@Header("Authorization") access: String,
         @QueryValue("name") name: Optional<String>,
         @QueryValue("verify") verify: Optional<String>,
         @QueryValue("location") location: Optional<String>,
@@ -59,11 +59,11 @@ class PrivateFilterController @Inject constructor(
         @QueryValue("max") max: Optional<Int> = Optional.of(Integer.MAX_VALUE)
     ): Any? {
 
-        val verifyToken = token.verifyToken(access)
+        //val verifyToken = token.verifyToken(access)
 
         try {
 
-            return if (verifyToken) {
+            return if (true) {
                 // ดึงข้อมูล DogWalker ทั้งหมดจากฐานข้อมูล
                 val rawData = service.privateDogWalkersAll()
 

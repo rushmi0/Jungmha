@@ -30,7 +30,7 @@ class Token {
 
     private fun buildToken(permission: String, username: String, time: Long? = null): String? {
         val currentTimeMillis = System.currentTimeMillis().toBigInteger()
-        val timePoint = time ?: 5
+        val timePoint = time ?: 15
         val exp = currentTimeMillis + 86_400.toBigInteger() * timePoint.toBigInteger()
 
         val rawObject = TokenObject(

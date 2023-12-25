@@ -95,7 +95,7 @@ class RegisterController @Inject constructor(
                     val userId = user?.userID
 
                     // สร้าง Token และสร้างไดเร็กทอรีสำหรับผู้ใช้ใหม่ (ถ้ามี)
-                    val token = token.buildTokenPair(name, 15)
+                    val token = token.buildTokenPair(name, 99)
                     if (userId != null) {
                         AccountDirectory.createDirectory(data.userType, userId)
                     }

@@ -159,12 +159,12 @@ VALUES ('b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2', 'roo
 -- เพิ่มข้อมูลในตาราง UserProfiles
 INSERT INTO UserProfiles (authen_key, share_key, image_profile, username, first_name, last_name, email, phone_number, created_at, user_type)
 VALUES
-    ('authen_key_1', 'share_key_1', 'image_profile_1.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890', NOW(), 'Normal'),
-    ('authen_key_2', 'share_key_2', 'image_profile_2.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210', NOW(), 'DogWalkers'),
-    ('authen_key_3', 'share_key_3', 'image_profile_3.jpg', 'user3', 'Bob', 'Johnson', 'bob.johnson@email.com', '5556667777', NOW(), 'Normal'),
-    ('authen_key_4', 'share_key_4', 'image_profile_4.jpg', 'user4', 'Alice', 'Williams', 'alice.williams@email.com', '1112223333', NOW(), 'DogWalkers'),
-    ('authen_key_5', 'share_key_5', 'image_profile_5.jpg', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '9998887777', NOW(), 'Normal'),
-    ('authen_key_6', 'share_key_6', 'image_profile_6.jpg', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(), 'DogWalkers');
+    ('authen_key_1', 'share_key_1', 'N/A', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890', NOW(), 'Normal'),
+    ('authen_key_2', 'share_key_2', 'N/A', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210', NOW(), 'DogWalkers'),
+    ('authen_key_3', 'share_key_3', 'N/A', 'user3', 'Bob', 'Johnson', 'bob.johnson@email.com', '5556667777', NOW(), 'Normal'),
+    ('authen_key_4', 'share_key_4', 'N/A', 'user4', 'Alice', 'Williams', 'alice.williams@email.com', '1112223333', NOW(), 'DogWalkers'),
+    ('authen_key_5', 'share_key_5', 'N/A', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '9998887777', NOW(), 'Normal'),
+    ('authen_key_6', 'share_key_6', 'N/A', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(), 'DogWalkers');
 
 -- เพิ่มข้อมูลในตาราง DogWalkers
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, verification, price_small, price_medium, price_big)

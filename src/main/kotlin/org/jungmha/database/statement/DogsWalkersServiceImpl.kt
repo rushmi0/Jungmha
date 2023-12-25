@@ -29,6 +29,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 ) : DogsWalkersService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
+    val BASE_URL = "http://localhost:8080/api/v1/user"
 
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(dispatcher) {
@@ -41,6 +42,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 return@withContext query.select(
                     dw.WALKER_ID,
                     up.USERNAME,
+                    up.IMAGE_PROFILE,
                     dw.VERIFICATION,
                     dw.LOCATION_NAME,
                     dw.PRICE_SMALL,
@@ -56,6 +58,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
+                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(
@@ -108,6 +111,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
+                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(
@@ -123,7 +127,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             review = WalkerReview(
                                 userID = record[up.USER_ID] ?: 0,
                                 name = record[up.USERNAME] ?: "",
-                                profileImage = record[up.IMAGE_PROFILE] ?: "",
+                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 rating = record[dwr.RATING] ?: 0,
                                 reviewText = record[dwr.REVIEW_TEXT] ?: ""
                             )

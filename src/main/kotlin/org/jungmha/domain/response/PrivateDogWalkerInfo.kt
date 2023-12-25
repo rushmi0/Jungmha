@@ -18,6 +18,7 @@ data class PrivateDogWalkerInfo(
 @Serdeable.Serializable
 data class WalkerDetail(
     val name: String,
+    val profileImage: String,
     val verify: String,
     val location: String,
     val price: PriceData
