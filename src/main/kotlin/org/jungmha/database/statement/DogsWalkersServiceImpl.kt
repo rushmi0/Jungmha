@@ -125,8 +125,8 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 phoneNumber = record[up.PHONE_NUMBER]
                             ),
                             review = WalkerReview(
-                                userID = record[up.USER_ID] ?: 0,
-                                name = record[up.USERNAME] ?: "",
+                                userID = record[up.USER_ID],
+                                name = record[up.USERNAME],
                                 profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 rating = record[dwr.RATING] ?: 0,
                                 reviewText = record[dwr.REVIEW_TEXT] ?: ""
