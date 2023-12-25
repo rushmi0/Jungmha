@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.jungmha.database.field.DogField
 import org.jungmha.database.form.DogForm
 import org.jungmha.infra.database.tables.Dogs.DOGS
@@ -73,9 +74,9 @@ class DogsServiceImpl @Inject constructor(
                     DOGS.SIZE
                 )
                     .values(
-                        payload.dogImage,
-                        payload.breedName,
-                        payload.size
+                        DSL.`val`(payload.dogImage),
+                        DSL.`val`(payload.breedName),
+                        DSL.`val`(payload.size)
                     )
                     .execute()
 
@@ -93,7 +94,8 @@ class DogsServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+
+    override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
                 val field = when (fieldName) {
@@ -107,7 +109,7 @@ class DogsServiceImpl @Inject constructor(
                 }
 
                 val affectedRows = query.update(DOGS)
-                    .set(field, newValue)
+                    .set(field, DSL.`val`(newValue))
                     .where(DOGS.DOG_ID.eq(id)).execute()
 
                 if (affectedRows > 0) {

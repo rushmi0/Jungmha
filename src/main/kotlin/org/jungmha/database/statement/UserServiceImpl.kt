@@ -13,9 +13,11 @@ import org.jooq.Record
 import org.jooq.Result
 import org.jooq.TableField
 import org.jooq.exception.DataAccessException
+import org.jooq.impl.DSL
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
+import org.jungmha.database.statement.ValidateData.validateAndLogSize
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
 import org.jungmha.service.UserService
@@ -42,7 +44,7 @@ class UserServiceImpl @Inject constructor(
 
                 val record: Record? = query.select()
                     .from(USERPROFILES)
-                    .where(USERPROFILES.USERNAME.eq(accountName))
+                    .where(USERPROFILES.USERNAME.eq(DSL.`val`(accountName).coerce(String::class.java)))
                     .fetchOne()
 
                 return@withContext if (record != null) {
@@ -126,18 +128,18 @@ class UserServiceImpl @Inject constructor(
                     USERPROFILES.SHARE_KEY
                 )
                     .values(
-                        payload.userName,
-                        payload.authenKey,
-                        payload.shareKey
+                        DSL.value(payload.userName).coerce(String::class.java),
+                        DSL.value(payload.authenKey).coerce(String::class.java),
+                        DSL.value(payload.shareKey).coerce(String::class.java)
                     )
                     .execute()
 
                 val success = result > 0 // ตรวจสอบว่ามีการเพิ่มแถวในฐานข้อมูลหรือไม่
 
                 if (success) {
-                    LOG.info("Insert successful for User Profile")
+                    LOG.info("Insert successful for User : ${payload.userName}")
                 } else {
-                    LOG.warn("No rows inserted for User Profile")
+                    LOG.warn("No rows inserted for User : ${payload.userName}")
                 }
 
                 return@withContext success
@@ -162,12 +164,12 @@ class UserServiceImpl @Inject constructor(
                 validateAndLogSize("User Type", payload.userType, 255)
 
                 val updateRows = query.update(USERPROFILES)
-                    .set(USERPROFILES.FIRST_NAME, payload.firstName)
-                    .set(USERPROFILES.LAST_NAME, payload.lastName)
-                    .set(USERPROFILES.EMAIL, payload.email)
-                    .set(USERPROFILES.PHONE_NUMBER, payload.phoneNumber)
-                    .set(USERPROFILES.USER_TYPE, payload.userType)
-                    .where(USERPROFILES.USERNAME.eq(userName))
+                    .set(USERPROFILES.FIRST_NAME, DSL.value(payload.firstName).coerce(String::class.java))
+                    .set(USERPROFILES.LAST_NAME, DSL.value(payload.lastName).coerce(String::class.java))
+                    .set(USERPROFILES.EMAIL, DSL.value(payload.email).coerce(String::class.java))
+                    .set(USERPROFILES.PHONE_NUMBER, DSL.value(payload.phoneNumber).coerce(String::class.java))
+                    .set(USERPROFILES.USER_TYPE, DSL.value(payload.userType).coerce(String::class.java))
+                    .where(USERPROFILES.USERNAME.eq(DSL.value(userName).coerce(String::class.java)))
                     .execute()
 
                 if (updateRows > 0) {
@@ -184,17 +186,10 @@ class UserServiceImpl @Inject constructor(
         }
     }
 
-    private fun validateAndLogSize(fieldName: String, value: String?, maxSize: Int) {
-        if (value != null && value.length > maxSize) {
-            LOG.error("Field [$fieldName] has a size exceeding the limit (max: $maxSize): $value")
-        }
-    }
-
 
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
-
                 LOG.info("Thread ${Thread.currentThread().name} executing update")
 
                 val field = getField(fieldName)
@@ -204,7 +199,7 @@ class UserServiceImpl @Inject constructor(
                 }
 
                 val updateRows = query.update(USERPROFILES)
-                    .set(field, newValue)
+                    .set(field, DSL.value(newValue).coerce(String::class.java))
                     .where(USERPROFILES.USER_ID.eq(id))
                     .execute()
 
@@ -214,10 +209,10 @@ class UserServiceImpl @Inject constructor(
                     LOG.warn("Update did not affect any rows for field [$fieldName] with new value [$newValue] for user ID [$id]")
                 }
 
-                updateRows > 0
+                return@withContext updateRows > 0
             } catch (e: Exception) {
                 LOG.error("Error updating field [$fieldName] for user ID [$id]", e)
-                false
+                return@withContext false
             }
         }
     }
@@ -242,7 +237,7 @@ class UserServiceImpl @Inject constructor(
                 LOG.info("Thread ${Thread.currentThread().name} executing delete")
 
                 val deletedRows = query.deleteFrom(USERPROFILES)
-                    .where(USERPROFILES.USER_ID.eq(id))
+                    .where(USERPROFILES.USER_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (deletedRows > 0) {
@@ -251,10 +246,10 @@ class UserServiceImpl @Inject constructor(
                     LOG.warn("Delete did not affect any rows for user with ID [$id]")
                 }
 
-                deletedRows > 0
+                return@withContext deletedRows > 0
             } catch (e: Exception) {
                 LOG.error("Error deleting user with ID [$id]", e)
-                false
+                return@withContext false
             }
         }
     }

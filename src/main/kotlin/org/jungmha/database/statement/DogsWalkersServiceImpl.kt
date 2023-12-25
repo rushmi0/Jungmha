@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.domain.response.*
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
@@ -72,7 +73,6 @@ class DogsWalkersServiceImpl @Inject constructor(
             }
         }
     }
-
 
 
     override suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo> {
@@ -153,12 +153,12 @@ class DogsWalkersServiceImpl @Inject constructor(
                     DOGWALKERS.PRICE_BIG
                 )
                     .values(
-                        payload.userID,
-                        payload.locationName,
-                        payload.idCardNumber,
-                        payload.priceSmall,
-                        payload.priceMedium,
-                        payload.priceBig
+                        DSL.`val`(payload.userID),
+                        DSL.`val`(payload.locationName),
+                        DSL.`val`(payload.idCardNumber),
+                        DSL.`val`(payload.priceSmall),
+                        DSL.`val`(payload.priceMedium),
+                        DSL.`val`(payload.priceBig)
                     )
                     .execute()
 
@@ -179,24 +179,30 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+    override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
                 val status = when (fieldName) {
                     "userID" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.USER_ID, Integer.valueOf(newValue))
+                        .set(DOGWALKERS.USER_ID, DSL.`val`(Integer.valueOf(newValue)))
+
                     "locationName" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.LOCATION_NAME, newValue)
+                        .set(DOGWALKERS.LOCATION_NAME, DSL.`val`(newValue))
+
                     "idCardNumber" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.ID_CARD_NUMBER, newValue)
+                        .set(DOGWALKERS.ID_CARD_NUMBER, DSL.`val`(newValue))
+
                     "priceSmall" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.PRICE_SMALL, Integer.valueOf(newValue))
+                        .set(DOGWALKERS.PRICE_SMALL, DSL.`val`(Integer.valueOf(newValue)))
+
                     "priceMedium" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.PRICE_MEDIUM, Integer.valueOf(newValue))
+                        .set(DOGWALKERS.PRICE_MEDIUM, DSL.`val`(Integer.valueOf(newValue)))
+
                     "priceBig" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.PRICE_BIG, Integer.valueOf(newValue))
+                        .set(DOGWALKERS.PRICE_BIG, DSL.`val`(Integer.valueOf(newValue)))
+
                     else -> {
                         LOG.error("Field name [$fieldName] not found!!!")
                         return@withContext false
@@ -220,14 +226,13 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing delete")
 
                 val deletedRows = query.deleteFrom(DOGWALKERS)
-                    .where(DOGWALKERS.WALKER_ID.eq(id))
+                    .where(DOGWALKERS.WALKER_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (deletedRows > 0) {

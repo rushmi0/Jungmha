@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkerReviewField
 import org.jungmha.database.form.DogWalkerReviewForm
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
@@ -75,10 +76,10 @@ class DogWalkerReviewServiceImpl @Inject constructor(
                     DOGWALKERREVIEWS.REVIEW_TEXT
                 )
                     .values(
-                        payload.walkerID,
-                        payload.userID,
-                        payload.rating,
-                        payload.reviewText
+                        DSL.`val`(payload.walkerID),
+                        DSL.`val`(payload.userID),
+                        DSL.`val`(payload.rating),
+                        DSL.`val`(payload.reviewText)
                     )
                     .execute()
 
@@ -96,25 +97,36 @@ class DogWalkerReviewServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+
+    override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
-                val status = when (fieldName) {
+                val affectedRows = when (fieldName) {
                     "walkerID" -> query.update(DOGWALKERREVIEWS)
-                        .set(DOGWALKERREVIEWS.WALKER_ID, Integer.valueOf(newValue))
+                        .set(DOGWALKERREVIEWS.WALKER_ID, DSL.`val`(Integer.valueOf(newValue)))
+                        .where(DOGWALKERREVIEWS.REVIEW_ID.eq(id))
+                        .execute()
+
                     "userID" -> query.update(DOGWALKERREVIEWS)
-                        .set(DOGWALKERREVIEWS.USER_ID, Integer.valueOf(newValue))
+                        .set(DOGWALKERREVIEWS.USER_ID, DSL.`val`(Integer.valueOf(newValue)))
+                        .where(DOGWALKERREVIEWS.REVIEW_ID.eq(id))
+                        .execute()
+
                     "rating" -> query.update(DOGWALKERREVIEWS)
-                        .set(DOGWALKERREVIEWS.RATING, Integer.valueOf(newValue))
+                        .set(DOGWALKERREVIEWS.RATING, DSL.`val`(Integer.valueOf(newValue)))
+                        .where(DOGWALKERREVIEWS.REVIEW_ID.eq(id))
+                        .execute()
+
                     "reviewText" -> query.update(DOGWALKERREVIEWS)
-                        .set(DOGWALKERREVIEWS.REVIEW_TEXT, newValue)
+                        .set(DOGWALKERREVIEWS.REVIEW_TEXT, DSL.`val`(newValue))
+                        .where(DOGWALKERREVIEWS.REVIEW_ID.eq(id))
+                        .execute()
+
                     else -> {
                         LOG.error("Field name [$fieldName] not found!!!")
                         return@withContext false
                     }
                 }
-
-                val affectedRows = status.where(DOGWALKERREVIEWS.REVIEW_ID.eq(id)).execute()
 
                 if (affectedRows > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for Dog Walker Review ID [$id]")
@@ -139,7 +151,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
                 LOG.info("Delete dog walker review operation started on thread [$currentThreadName]")
 
                 val result = query.deleteFrom(DOGWALKERREVIEWS)
-                    .where(DOGWALKERREVIEWS.REVIEW_ID.eq(id))
+                    .where(DOGWALKERREVIEWS.REVIEW_ID.eq(DSL.`val`(id))) // ใช้ DSL.`val` เพื่อทำเป็น bind parameter
                     .execute()
 
                 if (result > 0) {
@@ -150,13 +162,18 @@ class DogWalkerReviewServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during delete dog walker review operation for Dog Walker Review ID [$id] on thread [$currentThreadName]", e)
+                LOG.error(
+                    "Error during delete dog walker review operation for Dog Walker Review ID [$id] on thread [$currentThreadName]",
+                    e
+                )
                 return@withContext false
             }
         }
     }
 
+
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogWalkerReviewServiceImpl::class.java)
     }
+
 }

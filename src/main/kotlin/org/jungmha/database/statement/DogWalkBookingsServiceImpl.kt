@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkBookingsField
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.service.DogWalkBookingsService
@@ -66,7 +67,6 @@ class DogWalkBookingsServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun insert(payload: DogWalkBookingsField): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
@@ -87,15 +87,15 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     DOGWALKBOOKINGS.TIMESTAMP
                 )
                     .values(
-                        payload.walkerID,
-                        payload.userID,
-                        payload.dogID,
-                        payload.status,
-                        payload.timeStart,
-                        payload.timeEnd,
-                        payload.duration,
-                        payload.total,
-                        payload.timeStamp
+                        DSL.`val`(payload.walkerID),
+                        DSL.`val`(payload.userID),
+                        DSL.`val`(payload.dogID),
+                        DSL.`val`(payload.status),
+                        DSL.`val`(payload.timeStart),
+                        DSL.`val`(payload.timeEnd),
+                        DSL.`val`(payload.duration),
+                        DSL.`val`(payload.total),
+                        DSL.`val`(payload.timeStamp)
                     )
                     .execute()
 
@@ -114,30 +114,30 @@ class DogWalkBookingsServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun update(id: Int, fieldName: String, newValue: String): Boolean {
+    override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
-                val status = when (fieldName) {
+                val updateQuery = when (fieldName) {
                     "dogID" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.DOG_ID, Integer.valueOf(newValue))
+                        .set(DOGWALKBOOKINGS.DOG_ID, DSL.`val`(Integer.valueOf(newValue)))
 
                     "status" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.STATUS, newValue)
+                        .set(DOGWALKBOOKINGS.STATUS, DSL.`val`(newValue))
 
                     "timeStart" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.TIME_START, LocalTime.parse(newValue))
+                        .set(DOGWALKBOOKINGS.TIME_START, DSL.`val`(LocalTime.parse(newValue)))
 
                     "timeEnd" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.TIME_END, LocalTime.parse(newValue))
+                        .set(DOGWALKBOOKINGS.TIME_END, DSL.`val`(LocalTime.parse(newValue)))
 
                     "duration" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.DURATION, LocalTime.parse(newValue))
+                        .set(DOGWALKBOOKINGS.DURATION, DSL.`val`(LocalTime.parse(newValue)))
 
                     "total" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.TOTAL, Integer.valueOf(newValue))
+                        .set(DOGWALKBOOKINGS.TOTAL, DSL.`val`(Integer.valueOf(newValue)))
 
                     "timeStamp" -> query.update(DOGWALKBOOKINGS)
-                        .set(DOGWALKBOOKINGS.TIMESTAMP, OffsetDateTime.parse(newValue))
+                        .set(DOGWALKBOOKINGS.TIMESTAMP, DSL.`val`(OffsetDateTime.parse(newValue)))
 
                     else -> {
                         LOG.error("Field name [$fieldName] not found!!!")
@@ -145,7 +145,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     }
                 }
 
-                val affectedRows = status.where(DOGWALKBOOKINGS.BOOKING_ID.eq(id)).execute()
+                val affectedRows = updateQuery.where(DOGWALKBOOKINGS.BOOKING_ID.eq(id)).execute()
 
                 if (affectedRows > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for DogWalkBooking ID [$id]")
@@ -169,7 +169,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 LOG.info("Delete operation started on thread [$currentThreadName]")
 
                 val deletedRows = query.deleteFrom(DOGWALKBOOKINGS)
-                    .where(DOGWALKBOOKINGS.BOOKING_ID.eq(id))
+                    .where(DOGWALKBOOKINGS.BOOKING_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (deletedRows > 0) {
