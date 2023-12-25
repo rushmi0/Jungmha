@@ -22,9 +22,21 @@ repositories {
 }
 
 dependencies {
+
+    compileOnly("io.micronaut:micronaut-http-client")
+    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
+
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly("org.postgresql:postgresql")
+
+    jooqGenerator("org.postgresql:postgresql:42.5.1")
+
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.openapi:micronaut-openapi")
     ksp("io.micronaut.serde:micronaut-serde-processor")
+
+    testImplementation("io.micronaut:micronaut-http-client")
+
     implementation("io.micronaut:micronaut-websocket")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
@@ -32,14 +44,7 @@ dependencies {
     implementation("io.micronaut.sql:micronaut-jooq")
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
-    compileOnly("io.micronaut:micronaut-http-client")
-    compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
-    runtimeOnly("ch.qos.logback:logback-classic")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    runtimeOnly("org.postgresql:postgresql")
-    testImplementation("io.micronaut:micronaut-http-client")
-
-    jooqGenerator("org.postgresql:postgresql:42.5.1")
 
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0")
