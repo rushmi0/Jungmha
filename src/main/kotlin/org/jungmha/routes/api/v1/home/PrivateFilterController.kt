@@ -45,7 +45,7 @@ class PrivateFilterController @Inject constructor(
      * @return ข้อมูลสำหรับผู้ที่ลงทะเบียนแล้ว ตามเงื่อนไขที่ระบุ
      */
     @Get(
-        uri = "home/filter/auth{?verify,location,name,pSmall,pMedium,pBig,max}",
+        uri = "/auth/home/filter{?verify,location,name,pSmall,pMedium,pBig,max}",
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPrivateDogWalker(
