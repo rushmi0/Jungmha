@@ -16,7 +16,7 @@ interface DogsService {
 
     suspend fun insert(payload: DogForm): Boolean
 
-    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+    suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
     suspend fun delete(id: Int): Boolean
 

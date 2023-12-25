@@ -19,7 +19,7 @@ interface DogsWalkersService {
 
     suspend fun insert(payload: DogWalkerForm): Boolean
 
-    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+    suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
     suspend fun delete(id: Int): Boolean
 

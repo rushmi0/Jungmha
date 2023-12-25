@@ -15,7 +15,7 @@ interface DogWalkBookingsService {
 
     suspend fun insert(payload: DogWalkBookingsField): Boolean
 
-    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+    suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
     suspend fun delete(id: Int): Boolean
 

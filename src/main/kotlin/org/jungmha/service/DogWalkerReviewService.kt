@@ -16,7 +16,7 @@ interface DogWalkerReviewService {
 
     suspend fun insert(payload: DogWalkerReviewForm): Boolean
 
-    suspend fun update(id: Int, fieldName: String, newValue: String): Boolean
+    suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
     suspend fun delete(id: Int): Boolean
 
