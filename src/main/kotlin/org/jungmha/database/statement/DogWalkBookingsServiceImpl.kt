@@ -11,8 +11,9 @@ import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkBookingsField
+import org.jungmha.domain.request.DogWalkBookings
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
-import org.jungmha.service.DogWalkBookingsService
+import org.jungmha.database.service.DogWalkBookingsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.LocalTime
@@ -67,7 +68,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun insert(payload: DogWalkBookingsField): Boolean {
+    override suspend fun insert(userID: Int, payload: DogWalkBookings): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
@@ -79,23 +80,15 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     DOGWALKBOOKINGS.WALKER_ID,
                     DOGWALKBOOKINGS.USER_ID,
                     DOGWALKBOOKINGS.DOG_ID,
-                    DOGWALKBOOKINGS.STATUS,
                     DOGWALKBOOKINGS.TIME_START,
                     DOGWALKBOOKINGS.TIME_END,
-                    DOGWALKBOOKINGS.DURATION,
-                    DOGWALKBOOKINGS.TOTAL,
-                    DOGWALKBOOKINGS.TIMESTAMP
                 )
                     .values(
                         DSL.`val`(payload.walkerID),
-                        DSL.`val`(payload.userID),
+                        DSL.`val`(userID),
                         DSL.`val`(payload.dogID),
-                        DSL.`val`(payload.status),
                         DSL.`val`(payload.timeStart),
                         DSL.`val`(payload.timeEnd),
-                        DSL.`val`(payload.duration),
-                        DSL.`val`(payload.total),
-                        DSL.`val`(payload.timeStamp)
                     )
                     .execute()
 

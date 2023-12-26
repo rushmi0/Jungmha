@@ -1,4 +1,4 @@
-package org.jungmha.service
+package org.jungmha.database.service
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope

@@ -1,4 +1,4 @@
-GET http://localhost:8080/api/v1/auth/home/filter?verify=true
+GET http://localhost:8080/api/v1/auth/home/filter
 Content-Type: application/json
 Authorization: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZnVsbC1jb250cm9sIiwiZXhwIjoxNzAzNTM0ODg5ODA4LCJpYXQiOjE3MDM1MjYzMzYyMDgsInNpZ25hdHVyZSI6IjMwNDUwMjIxMDA4ZWRmOWJkZTQ2YWFiZTI2ZmQ0NjMyOTg5ODhkNjMyMmZkMDE4NmE1NGM0MWYwYTM3Y2JmY2Y2YjYzN2YyOTlmMDIyMDM2ZjQ0MGI1OTAwMGUwYTMxY2RhYzViZWQxYTFmMWYyYTlmMTVjMWUwMTIyNDU0ZDkzYTY3MWYyNTEwYjk5N2IifQ==
 

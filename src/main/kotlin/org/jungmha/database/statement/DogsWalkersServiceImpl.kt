@@ -15,7 +15,7 @@ import org.jungmha.domain.response.*
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
-import org.jungmha.service.DogsWalkersService
+import org.jungmha.database.service.DogsWalkersService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,7 +34,7 @@ class DogsWalkersServiceImpl @Inject constructor(
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing dogWalkersAll")
+                LOG.info("Thread ${Thread.currentThread().name} executing publicDogWalkersAll")
 
                 val dw = DOGWALKERS
                 val up = USERPROFILES
@@ -58,7 +58,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
-                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(
@@ -81,7 +81,7 @@ class DogsWalkersServiceImpl @Inject constructor(
     override suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo> {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing publicDogWalkersAll")
+                LOG.info("Thread ${Thread.currentThread().name} executing privateDogWalkersAll")
 
                 val dw = DOGWALKERS
                 val up = USERPROFILES
@@ -91,6 +91,8 @@ class DogsWalkersServiceImpl @Inject constructor(
                     dw.WALKER_ID,
                     up.USERNAME,
                     dw.VERIFICATION,
+                    dw.COUNT_REVIEW,
+                    dw.TOTAL_REVIEW,
                     dw.LOCATION_NAME,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
@@ -109,9 +111,11 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .fetch { record ->
                         PrivateDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
+                            countReview = record[dw.COUNT_REVIEW],
+                            totalReview = record[dw.TOTAL_REVIEW],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
-                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(
@@ -127,7 +131,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             review = WalkerReview(
                                 userID = record[up.USER_ID],
                                 name = record[up.USERNAME],
-                                profileImage = if (up.IMAGE_PROFILE.toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
                                 rating = record[dwr.RATING] ?: 0,
                                 reviewText = record[dwr.REVIEW_TEXT] ?: ""
                             )

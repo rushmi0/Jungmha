@@ -7,7 +7,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jooq.DSLContext
 import org.jungmha.database.field.KeyField
 import org.jungmha.infra.database.tables.Serverkey.SERVERKEY
-import org.jungmha.service.ServerKeyService
+import org.jungmha.database.service.ServerKeyService
 
 @Bean
 @RequestScope

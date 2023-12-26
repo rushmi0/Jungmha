@@ -13,7 +13,7 @@ import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkerReviewField
 import org.jungmha.database.form.DogWalkerReviewForm
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
-import org.jungmha.service.DogWalkerReviewService
+import org.jungmha.database.service.DogWalkerReviewService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

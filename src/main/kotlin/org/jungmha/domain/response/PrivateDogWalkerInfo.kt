@@ -4,12 +4,13 @@ import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 
 
-//PrivateDogWalkerInfo
 @Introspected
 @Serdeable.Serializable
 data class PrivateDogWalkerInfo(
     val walkerID: Int,
     val detail: WalkerDetail,
+    val countReview: Int,
+    val totalReview: Int,
     val contact: WalkerContact,
     val review: WalkerReview
 )

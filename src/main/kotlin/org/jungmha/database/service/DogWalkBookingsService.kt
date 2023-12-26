@@ -1,20 +1,20 @@
-package org.jungmha.service
+package org.jungmha.database.service
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import org.jungmha.database.field.DogField
-import org.jungmha.database.form.DogForm
+import org.jungmha.database.field.DogWalkBookingsField
+import org.jungmha.domain.request.DogWalkBookings
 
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-interface DogsService {
+interface DogWalkBookingsService {
 
-    suspend fun dogsAll(): List<DogField>
+    suspend fun bookingsAll(): List<DogWalkBookingsField>
 
-    suspend fun insert(payload: DogForm): Boolean
+    suspend fun insert(userID: Int, payload: DogWalkBookings): Boolean
 
     suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 

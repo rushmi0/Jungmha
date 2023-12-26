@@ -20,7 +20,7 @@ import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.ValidateData.validateAndLogSize
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
-import org.jungmha.service.UserService
+import org.jungmha.database.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

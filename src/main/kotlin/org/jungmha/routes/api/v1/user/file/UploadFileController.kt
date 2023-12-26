@@ -82,6 +82,7 @@ class UploadFileController @Inject constructor(
             LOG.error("Failed to upload file", e)
             HttpResponse.serverError("Failed to upload file: ${e.message}")
         }
+
     }
 
     /**

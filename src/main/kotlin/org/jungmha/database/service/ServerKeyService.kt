@@ -1,4 +1,4 @@
-package org.jungmha.service
+package org.jungmha.database.service
 
 import org.jungmha.database.field.KeyField
 

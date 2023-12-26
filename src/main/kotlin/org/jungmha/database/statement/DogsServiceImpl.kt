@@ -13,7 +13,7 @@ import org.jooq.impl.DSL
 import org.jungmha.database.field.DogField
 import org.jungmha.database.form.DogForm
 import org.jungmha.infra.database.tables.Dogs.DOGS
-import org.jungmha.service.DogsService
+import org.jungmha.database.service.DogsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 

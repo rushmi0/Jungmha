@@ -21,7 +21,7 @@ class AES {
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
-    fun encrypt(data: User, sharedKey: String): String {
+    fun encrypt(data: String, sharedKey: String): String {
         val jsonString = objectMapper.writeValueAsString(data)
 
         val iv = ByteArray(16)
@@ -65,39 +65,19 @@ class AES {
 
 }
 
-data class User(
-    val name: String,
-    val age: Int
-)
 
 fun main() {
+
+    val aes = AES()
+
+    val encryptedData = "OpDX/jCYm1GiJC9UgH2QAEQWv8xeupr3nzfugwghegwz7lJyncZD2ZwIihznd3W6OqGr/KPpt1K11y6dHRudxZ6lr/rViut3gsPrER3iXOZVN4MqlK9yZEEeELFwPLsdqwDNAs01EE8qlJePITxhwb+ajqBOuPdkcdiC5naLGo5mFmKEEkRy4pQYrfSMNkFX?iv=pYGE7zJUMjwxsQ07g/0spg=="
     val sharedKey = "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78"
-    val data = User(
-        "Mai na",
-        344
+
+    val result = aes.decrypt(
+        encryptedData,
+        sharedKey
     )
 
-    println(data)
+    println(result)
 
-    val AES = AES()
-
-    // Encrypt
-    val dataToSend = AES.encrypt(data, sharedKey)
-    println("Encrypted data: $dataToSend")
-
-    val demoData = "yt7ivc7x2/IeXb6jcP+WVccwmhuzlv3w5vb9kvbHZzo2UWzRdh79M4stx3FUaG4+231MgUOGSyscaL+dIvlju5J14cjRBfsUhUfodv5aQx7fVgpFN9upOjUgtkWntJLU+hRJQgGEEx/qsslXh9OuhTbFDlx2gNIE8MJh3xIyq0yUn5r47Lq/O/RHex2LaltJ?iv=pUQTcZ9GcqfAMQjWOuW96g=="
-
-    // Decrypt
-    val decryptedData = AES.decrypt(
-        demoData,
-        "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78"
-        )
-    println("Decrypted data: $decryptedData")
-
-    // Access only the property
-    val name = decryptedData["name"]
-    println("Name: $name")
-
-    val age = decryptedData["age"]
-    println("Age: $age")
 }
