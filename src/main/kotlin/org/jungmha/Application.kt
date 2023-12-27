@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.info.*
 @OpenAPIDefinition(
     info = Info(
         title = "Jungmha",
-        version = "0.1"
+        version = "0.1",
+        description = "Jungmha API Document"
     )
 )
 object Api {

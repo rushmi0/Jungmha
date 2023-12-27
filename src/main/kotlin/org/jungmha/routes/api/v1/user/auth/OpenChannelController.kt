@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.auth
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.context.annotation.Value
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
@@ -12,7 +13,6 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.form.IdentityForm
-import org.jungmha.database.statement.ServerKeyServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.request.Identity
 import org.jungmha.security.securekey.ECDHkey
@@ -32,7 +32,7 @@ import java.math.BigInteger
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class OpenChannelController @Inject constructor(
-    private val server: ServerKeyServiceImpl,
+    @Value("\${org.jungmha.security.securekey.secret}") private val secretKey: String,
     private val service: UserServiceImpl,
     private val ecdh: ECDHkey
 ) {
@@ -54,7 +54,7 @@ class OpenChannelController @Inject constructor(
         return try {
             // ดึง `Private Key` ของ Server
             val serverPrivateKey = BigInteger(
-                server.getServerKey(1)?.privateKey,
+                secretKey,
                 16
             )
 

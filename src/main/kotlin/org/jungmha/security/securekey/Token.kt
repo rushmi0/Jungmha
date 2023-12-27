@@ -3,9 +3,11 @@ package org.jungmha.security.securekey
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micronaut.context.annotation.Bean
+import io.micronaut.context.annotation.Value
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import jakarta.inject.Inject
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import java.math.BigInteger
@@ -22,7 +24,9 @@ data class TokenObject(
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class Token {
+class Token @Inject constructor(
+    @Value("\${org.jungmha.security.securekey.secret}") private val secretKey: String,
+){
 
 
     private val privateKey =  BigInteger("b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2", 16)

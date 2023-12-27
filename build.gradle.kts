@@ -4,12 +4,12 @@ import org.jooq.meta.jaxb.Property
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.9.21"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.9.21"
-    id("com.google.devtools.ksp") version "1.9.21-1.0.16"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("io.micronaut.application") version "4.2.0"
     id("io.micronaut.test-resources") version "4.2.0"
     id("io.micronaut.aot") version "4.2.0"
     id("nu.studer.jooq") version "8.2"
+    id("com.google.devtools.ksp") version "1.9.21-1.0.16"
 }
 
 version = "0.1"
@@ -35,8 +35,11 @@ dependencies {
     ksp("io.micronaut.openapi:micronaut-openapi")
     ksp("io.micronaut.serde:micronaut-serde-processor")
 
+    annotationProcessor("io.micronaut.openapi:micronaut-openapi:2.1.1")
+
     testImplementation("io.micronaut:micronaut-http-client")
 
+    implementation("io.swagger.core.v3:swagger-annotations")
     implementation("io.micronaut:micronaut-websocket")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
@@ -65,6 +68,10 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
 
 }
+
+
+
+
 
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
