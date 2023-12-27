@@ -20,6 +20,9 @@ import java.util.stream.Collectors
 
 // * Private Filter Controller
 
+/**
+ * คลาสนี้เป็น Controller สำหรับการดึงข้อมูล Dog Walker จากฐานข้อมูลโดยให้บริการเฉพาะผู้ใช้ที่มีสิทธิ์ view-only
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -29,6 +32,19 @@ class PrivateFilterController @Inject constructor(
     private val token: Token
 ) {
 
+    /**
+     * เมธอดสำหรับการดึงข้อมูล Dog Walker จากฐานข้อมูล
+     *
+     * @param access ข้อมูล Token ที่ใช้ในการตรวจสอบสิทธิ์
+     * @param name ชื่อของ Dog Walker (สามารถไม่ระบุ)
+     * @param verify สถานะการตรวจสอบข้อมูล (สามารถไม่ระบุ)
+     * @param location สถานที่ที่ Dog Walker ทำงาน (สามารถไม่ระบุ)
+     * @param pSmall ราคาสำหรับการเดินสุนัขขนเล็ก (สามารถไม่ระบุ)
+     * @param pMedium ราคาสำหรับการเดินสุนัขขนกลาง (สามารถไม่ระบุ)
+     * @param pBig ราคาสำหรับการเดินสุนัขขนใหญ่ (สามารถไม่ระบุ)
+     * @param max จำนวนข้อมูลสูงสุดที่ต้องการแสดงผล (สามารถไม่ระบุ, ค่าเริ่มต้นคือ Integer.MAX_VALUE)
+     * @return HttpResponse สำหรับผลลัพธ์ของการดึงข้อมูล Dog Walker
+     */
     @Get(
         uri = "/auth/home/filter{?verify,location,name,pSmall,pMedium,pBig,max}",
         produces = [MediaType.APPLICATION_JSON]
@@ -55,7 +71,7 @@ class PrivateFilterController @Inject constructor(
                 return HttpResponse.badRequest("Invalid token")
             }
 
-            // ดึงข้อมูล DogWalker ทั้งหมดจากฐานข้อมูล
+            // ดึงข้อมูล Dog Walker ทั้งหมดจากฐานข้อมูล
             val rawData = service.privateDogWalkersAll()
 
             // กรองข้อมูลตามเงื่อนไข
@@ -80,7 +96,6 @@ class PrivateFilterController @Inject constructor(
             return HttpResponse.serverError("Internal Server Error: ${e.message}")
         }
     }
-
 
     companion object {
         private val LOG = LoggerFactory.getLogger(PrivateFilterController::class.java)
