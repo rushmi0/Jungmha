@@ -12,6 +12,7 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
+import org.jungmha.domain.response.PrivateDogWalkerInfo
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.LoggerFactory
@@ -72,7 +73,7 @@ class PrivateFilterController @Inject constructor(
             }
 
             // ดึงข้อมูล Dog Walker ทั้งหมดจากฐานข้อมูล
-            val rawData = service.privateDogWalkersAll()
+            val rawData: List<PrivateDogWalkerInfo> = service.privateDogWalkersAll()
 
             // กรองข้อมูลตามเงื่อนไข
             val filteredData = rawData.stream()
