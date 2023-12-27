@@ -1,4 +1,4 @@
-package org.jungmha.routes.api.v1.home
+package org.jungmha.routes.api.v1.home.filter
 
 
 import io.micronaut.context.annotation.Bean
@@ -67,11 +67,11 @@ class PublicFilterController @Inject constructor(
                 val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
 
                 verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
-            }.limit(max.orElse(Integer.MAX_VALUE).toLong()).collect(Collectors.toList())
+            }.limit(max.orElse(Integer.MAX_VALUE).toLong())
+                .collect(Collectors.toList())
 
         } catch (e: Exception) {
             LOG.error("Error during getPublicDogWalker operation: ${e.message}", e)
-            // เพิ่มการแสดง path file ที่มีปัญหา
             LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
             return emptyList()
         }
