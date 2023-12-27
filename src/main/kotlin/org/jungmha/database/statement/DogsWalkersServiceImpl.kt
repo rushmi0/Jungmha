@@ -11,11 +11,11 @@ import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.jungmha.database.form.DogWalkerForm
+import org.jungmha.database.service.DogsWalkersService
 import org.jungmha.domain.response.*
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
-import org.jungmha.database.service.DogsWalkersService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -54,6 +54,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
                     .fetch { record ->
+
                         PublicDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
@@ -68,6 +69,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 )
                             )
                         )
+
                     }
 
             } catch (e: Exception) {
@@ -87,7 +89,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 val up = USERPROFILES
                 val dwr = DOGWALKERREVIEWS
 
-                return@withContext query.select(
+                val mainQuery = query.select(
                     dw.WALKER_ID,
                     up.USERNAME,
                     dw.VERIFICATION,
@@ -101,18 +103,26 @@ class DogsWalkersServiceImpl @Inject constructor(
                     up.PHONE_NUMBER,
                     up.USER_ID,
                     up.USERNAME,
-                    up.IMAGE_PROFILE,
-                    dwr.RATING,
-                    dwr.REVIEW_TEXT
+                    up.IMAGE_PROFILE
                 )
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
-                    .leftJoin(dwr).on(dw.WALKER_ID.eq(dwr.WALKER_ID))
                     .fetch { record ->
+
+                        val subQuery = query
+                            .select(
+                                dwr.USER_ID,
+                                dwr.RATING,
+                                dwr.REVIEW_TEXT
+                            )
+                            .from(dwr)
+                            .where(dwr.WALKER_ID.eq(record[dw.WALKER_ID]))
+
                         PrivateDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
                             countReview = record[dw.COUNT_REVIEW],
                             totalReview = record[dw.TOTAL_REVIEW],
+
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
                                 profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
@@ -124,19 +134,25 @@ class DogsWalkersServiceImpl @Inject constructor(
                                     big = record[dw.PRICE_BIG]
                                 )
                             ),
+
                             contact = WalkerContact(
                                 email = record[up.EMAIL],
                                 phoneNumber = record[up.PHONE_NUMBER]
                             ),
-                            review = WalkerReview(
-                                userID = record[up.USER_ID],
-                                name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
-                                rating = record[dwr.RATING] ?: 0,
-                                reviewText = record[dwr.REVIEW_TEXT] ?: ""
-                            )
+
+                            review = subQuery.fetch { subRecord ->
+                                WalkerReview(
+                                    userID = subRecord[dwr.USER_ID],
+                                    name = record[up.USERNAME],
+                                    profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                    rating = subRecord[dwr.RATING] ?: 0,
+                                    reviewText = subRecord[dwr.REVIEW_TEXT] ?: ""
+                                )
+                            }
                         )
                     }
+
+                return@withContext mainQuery
 
             } catch (e: Exception) {
                 LOG.error("Error retrieving public dog walkers from the database", e)
@@ -144,6 +160,7 @@ class DogsWalkersServiceImpl @Inject constructor(
             }
         }
     }
+
 
 
     override suspend fun insert(payload: DogWalkerForm): Boolean {

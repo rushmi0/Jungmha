@@ -12,7 +12,7 @@ data class PrivateDogWalkerInfo(
     val countReview: Int,
     val totalReview: Int,
     val contact: WalkerContact,
-    val review: WalkerReview
+    val review: List<WalkerReview>
 )
 
 @Introspected

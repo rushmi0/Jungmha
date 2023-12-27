@@ -1,4 +1,4 @@
-package org.jungmha.routes.api.v1.home
+package org.jungmha.routes.api.v1.home.filter
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
@@ -76,21 +76,18 @@ class PrivateFilterController @Inject constructor(
             val rawData: List<PrivateDogWalkerInfo> = service.privateDogWalkersAll()
 
             // กรองข้อมูลตามเงื่อนไข
-            val filteredData = rawData.stream()
-                .filter { data ->
-                    val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
-                    val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
-                    val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
-                    val pSmallMatch = !pSmall.isPresent || data.detail.price.small <= pSmall.get()
-                    val pMediumMatch = !pMedium.isPresent || data.detail.price.medium <= pMedium.get()
-                    val pBigMatch = !pBig.isPresent || data.detail.price.big <= pBig.get()
+            return rawData.stream().filter { data ->
+                val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
+                val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
+                val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
+                val pSmallMatch = (!pSmall.isPresent || data.detail.price.small <= pSmall.get())
+                val pMediumMatch = (!pMedium.isPresent || data.detail.price.medium <= pMedium.get())
+                val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
 
-                    verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
-                }
-                .limit(max.orElse(Integer.MAX_VALUE).toLong())
+                verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
+            }.limit(max.orElse(Integer.MAX_VALUE).toLong())
                 .collect(Collectors.toList())
 
-            return HttpResponse.ok(filteredData)
         } catch (e: Exception) {
             LOG.error("Error during getPrivateDogWalker operation: ${e.message}", e)
             LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
