@@ -70,17 +70,51 @@ CREATE TABLE IF NOT EXISTS Dogs
 -- สร้างตาราง DogWalkBookings
 CREATE TABLE IF NOT EXISTS DogWalkBookings
 (
-    booking_id SERIAL PRIMARY KEY,
-    walker_id  INTEGER REFERENCES DogWalkers (walker_id),
-    user_id    INTEGER REFERENCES UserProfiles (user_id),
-    dog_id     INTEGER REFERENCES Dogs (dog_id),
-    status     VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
-    time_start TIME,
-    time_end   TIME,
-    duration   TIME,
-    total      INTEGER              DEFAULT 0,
-    timestamp  TIMESTAMPTZ          DEFAULT now()
+    booking_id   SERIAL PRIMARY KEY,
+    walker_id    INTEGER REFERENCES DogWalkers (walker_id),
+    user_id      INTEGER REFERENCES UserProfiles (user_id),
+    dog_id       INTEGER REFERENCES Dogs (dog_id),
+    status       VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
+    booking_date DATE                 DEFAULT CURRENT_DATE,
+    time_start   TIME,
+    time_end     TIME,
+    duration     TIME,
+    total        INTEGER              DEFAULT 0,
+    timestamp    TIMESTAMPTZ          DEFAULT now()
 );
+
+-- ///////////////////////////////////////////////////////////////////////////////////////////
+
+-- สร้างฟังก์ชันเพื่อตรวจสอบการจองทับซ้อน
+CREATE OR REPLACE FUNCTION check_booking_conflict()
+    RETURNS TRIGGER AS
+$$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM DogWalkBookings
+        WHERE
+            booking_date = NEW.booking_date
+          AND walker_id = NEW.walker_id
+          AND (
+            (time_start, time_end) OVERLAPS (NEW.time_start, NEW.time_end)
+            )
+    ) THEN
+        RAISE EXCEPTION 'Booking conflict: Walker % is already booked at this time on %', NEW.walker_id, NEW.booking_date;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- สร้างทริกเกอร์เพื่อเรียกใช้ฟังก์ชันเมื่อมีการเพิ่มข้อมูล
+CREATE TRIGGER tr_check_booking_conflict
+    BEFORE INSERT
+    ON DogWalkBookings
+    FOR EACH ROW
+EXECUTE FUNCTION check_booking_conflict();
+
+
+-- ///////////////////////////////////////////////////////////////////////////////////////////
 
 
 CREATE OR REPLACE FUNCTION calculate_total()
@@ -222,7 +256,6 @@ CREATE TRIGGER tr_dogwalkerreviews_update_count_review
 EXECUTE FUNCTION update_count_review();
 
 
-
 -- b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2
 INSERT INTO ServerKey (private_key, tag)
 VALUES ('b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2', 'root');
@@ -293,14 +326,14 @@ VALUES (1, 2, 5, 'Great service!'),
 
 -- เพิ่มข้อมูลในตาราง DogWalkerReviews อีก 3 แถว
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating)
-VALUES   (1, 3, 4),
-         (2, 4, 5),
-         (3, 5, 3),
-         (4, 6, 4),
-         (5, 1, 5),
-         (6, 2, 2),
-         (1, 4, 4),
-         (2, 3, 3),
-         (3, 6, 5),
-         (4, 5, 2);
+VALUES (1, 3, 4),
+       (2, 4, 5),
+       (3, 5, 3),
+       (4, 6, 4),
+       (5, 1, 5),
+       (6, 2, 2),
+       (1, 4, 4),
+       (2, 3, 3),
+       (3, 6, 5),
+       (4, 5, 2);
 

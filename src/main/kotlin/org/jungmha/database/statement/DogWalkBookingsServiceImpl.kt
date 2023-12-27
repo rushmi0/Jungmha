@@ -80,6 +80,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     DOGWALKBOOKINGS.WALKER_ID,
                     DOGWALKBOOKINGS.USER_ID,
                     DOGWALKBOOKINGS.DOG_ID,
+                    DOGWALKBOOKINGS.BOOKING_DATE,
                     DOGWALKBOOKINGS.TIME_START,
                     DOGWALKBOOKINGS.TIME_END,
                 )
@@ -87,6 +88,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                         DSL.`val`(payload.walkerID),
                         DSL.`val`(userID),
                         DSL.`val`(payload.dogID),
+                        DSL.`val`(payload.bookingDate),
                         DSL.`val`(payload.timeStart),
                         DSL.`val`(payload.timeEnd),
                     )

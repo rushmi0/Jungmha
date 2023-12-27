@@ -2,6 +2,7 @@ package org.jungmha.domain.request
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
+import java.time.LocalDate
 import java.time.LocalTime
 
 @Introspected
@@ -9,6 +10,7 @@ import java.time.LocalTime
 data class DogWalkBookings(
     val walkerID: Int,
     val dogID: Int,
+    val bookingDate: LocalDate,
     val timeStart: LocalTime,
     val timeEnd: LocalTime,
 )
