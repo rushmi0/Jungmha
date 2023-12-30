@@ -16,10 +16,9 @@ VALUES ('authen_key_1', 'share_key_1', 'N/A', 'user1', 'John', 'Doe', 'john.doe@
 
 
 -- เพิ่มข้อมูลลงในตาราง Signature
-INSERT INTO Signature (user_id, signature, nonce, timestamp)
+INSERT INTO Signature (user_id, signature, timestamp)
 VALUES (1,
         '30450221009aeceef8a4bce7f99493161903c8a2345dbcc773428406838911c39c87f6acbd02202f1adefb1dd27a3bcbb0fe0cbebba2876c43a2ee5d65a1566ae3bb5c3cfeadf0',
-        '',
         '2023-12-29T12:00:00Z'),
        (2,
         '304402201183d806fe7f4797bb09ca8c2d8142378b9893a6e370623c9dde21802b0e19310220181bb7851221f22426656480b45cfc5f8fae43a5e252117d08cfb2318771a181',

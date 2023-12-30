@@ -1,6 +1,7 @@
 package org.jungmha.database.field
 
 import io.micronaut.serde.annotation.Serdeable
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
@@ -11,6 +12,7 @@ data class DogWalkBookingsField(
     val userID: Int,
     val dogID: Int,
     val status: String,
+    val bookingDate: LocalDate,
     val timeStart: LocalTime,
     val timeEnd: LocalTime,
     val duration: LocalTime,

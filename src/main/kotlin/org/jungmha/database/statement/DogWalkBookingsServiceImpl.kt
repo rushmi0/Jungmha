@@ -45,6 +45,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                         record[DOGWALKBOOKINGS.USER_ID],
                         record[DOGWALKBOOKINGS.DOG_ID],
                         record[DOGWALKBOOKINGS.STATUS],
+                        record[DOGWALKBOOKINGS.BOOKING_DATE],
                         record[DOGWALKBOOKINGS.TIME_START],
                         record[DOGWALKBOOKINGS.TIME_END],
                         record[DOGWALKBOOKINGS.DURATION],

@@ -2,10 +2,10 @@
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
     user_id       SERIAL PRIMARY KEY,
-    authen_key    VARCHAR(33)  DEFAULT 'N/A',
-    share_key     VARCHAR(32)  DEFAULT 'N/A',
-    image_profile VARCHAR(300) DEFAULT 'N/A',
-    username      VARCHAR(15)  DEFAULT 'N/A',
+    authen_key    VARCHAR(255)  DEFAULT 'N/A',
+    share_key     VARCHAR(255)  DEFAULT 'N/A',
+    image_profile VARCHAR(255) DEFAULT 'N/A',
+    username      VARCHAR(20)  DEFAULT 'N/A',
     first_name    VARCHAR(20)  DEFAULT 'N/A',
     last_name     VARCHAR(20)  DEFAULT 'N/A',
     email         VARCHAR(30)  DEFAULT 'N/A',
@@ -19,8 +19,7 @@ CREATE TABLE IF NOT EXISTS Signature
 (
     sig_id    SERIAL PRIMARY KEY,
     user_id   INTEGER REFERENCES UserProfiles (user_id),
-    signature VARCHAR(256) unique,
-    nonce     VARCHAR(10),
+    signature VARCHAR(255) unique,
     timestamp TIMESTAMPTZ DEFAULT now()
 );
 
@@ -65,7 +64,7 @@ EXECUTE FUNCTION update_verification();
 CREATE TABLE IF NOT EXISTS Dogs
 (
     dog_id     SERIAL PRIMARY KEY,
-    dog_image  VARCHAR(300) NOT NULL DEFAULT 'N/A',
+    dog_image  VARCHAR(255) NOT NULL DEFAULT 'N/A',
     breed_name VARCHAR(30)  NOT NULL DEFAULT 'N/A',
     size       VARCHAR(10)  NOT NULL DEFAULT 'N/A' CHECK (size IN ('Small', 'Medium', 'Big', 'N/A'))
 );
@@ -189,7 +188,7 @@ CREATE TABLE IF NOT EXISTS DogWalkerReviews
     walker_id   INTEGER REFERENCES DogWalkers (walker_id),
     user_id     INTEGER REFERENCES UserProfiles (user_id),
     rating      INTEGER CHECK (rating >= 1 AND rating <= 5),
-    review_text VARCHAR(500) DEFAULT 'N/A'
+    review_text VARCHAR(255) DEFAULT 'N/A'
 );
 
 -- สร้างฟังก์ชันเพื่อคำนวณและอัปเดตคะแนนรีวิวทั้งหมดของ DogWalkers

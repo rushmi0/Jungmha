@@ -17,10 +17,15 @@ import org.jooq.impl.DSL
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
+import org.jungmha.database.service.UserService
 import org.jungmha.database.statement.ValidateData.validateAndLogSize
+import org.jungmha.domain.response.NormalInfo
+import org.jungmha.domain.response.TxBooking
+import org.jungmha.infra.database.tables.Dogs.DOGS
+import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
+import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
-import org.jungmha.database.service.UserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -34,6 +39,87 @@ class UserServiceImpl @Inject constructor(
 ) : UserService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
+
+    override suspend fun getUserInfo(accountName: String): NormalInfo? {
+        return withContext(dispatcher) {
+
+            val up = USERPROFILES.`as`("up")
+            val dw = DOGWALKERS.`as`("dw")
+            val d = DOGS.`as`("d")
+            val up2 = USERPROFILES.`as`("up2")
+            val dk = DOGWALKBOOKINGS.`as`("dk")
+
+            val subQuery = query.select(
+                dk.BOOKING_ID,
+                up2.USERNAME.`as`("walker_name"),
+                d.BREED_NAME,
+                d.SIZE,
+                dk.BOOKING_DATE,
+                dk.TIME_START,
+                dk.TIME_END,
+                dk.DURATION,
+                dk.TOTAL,
+                dk.STATUS,
+                dk.TIMESTAMP
+            )
+                .from(dk)
+                .join(up)
+                .on(up.USER_ID.eq(dk.USER_ID))
+                .join(dw)
+                .on(dw.WALKER_ID.eq(dk.WALKER_ID))
+                .join(up2)
+                .on(up2.USER_ID.eq(dw.USER_ID))
+                .join(d)
+                .on(d.DOG_ID.eq(dk.DOG_ID))
+                .where(up.USERNAME.eq(accountName))
+                .fetch { subRecord ->
+                    TxBooking(
+                        subRecord[dk.BOOKING_ID],
+                        subRecord["walker_name"].toString(),
+                        subRecord[d.BREED_NAME],
+                        subRecord[d.SIZE],
+                        subRecord[dk.STATUS],
+                        subRecord[dk.BOOKING_DATE],
+                        subRecord[dk.TIME_START],
+                        subRecord[dk.TIME_END],
+                        subRecord[dk.DURATION],
+                        subRecord[dk.TOTAL],
+                        subRecord[dk.TIMESTAMP]
+                    )
+                }
+
+            val mainQuery = query.select(
+                up.USER_ID,
+                up.USERNAME,
+                up.IMAGE_PROFILE,
+                up.FIRST_NAME,
+                up.LAST_NAME,
+                up.EMAIL,
+                up.PHONE_NUMBER
+            )
+                .from(up)
+                .join(dk)
+                .on(up.USER_ID.eq(dk.USER_ID))
+                .where(up.USERNAME.eq(accountName))
+                .fetchOne { record ->
+                    NormalInfo(
+                        UserID = record[up.USER_ID],
+                        profileImage = record[up.IMAGE_PROFILE],
+                        userName = record[up.USERNAME],
+                        firstName = record[up.FIRST_NAME],
+                        lastName = record[up.LAST_NAME],
+                        email = record[up.EMAIL],
+                        phoneNumber = record[up.PHONE_NUMBER],
+                        booking = subQuery
+                    )
+                }
+
+            return@withContext mainQuery
+        }
+    }
+
+
+
 
     override suspend fun findUser(accountName: String): UserProfileField? {
         return withContext(dispatcher) {

@@ -7,11 +7,14 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
+import org.jungmha.domain.response.NormalInfo
 
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 interface UserService {
+
+    suspend fun getUserInfo(accountName: String): NormalInfo?
 
     suspend fun userAll(): List<UserProfileField>
 
