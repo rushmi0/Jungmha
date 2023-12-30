@@ -1,8 +1,8 @@
-# Jungmha API Documentation
+# เอกสาร API ของ Jungmha
 
-This document provides information on the Jungmha API, a service for connecting dog owners with dog walkers. Below is a list of available API paths, their functionalities, and symbols indicating whether the API is ready for use.
+เอกสารนี้ให้ข้อมูลเกี่ยวกับ API ของ Jungmha ซึ่งเป็นบริการที่เชื่อมโยงเจ้าของสุนัขกับผู้เดินสุนัข (Dog Walkers) ด้านล่างนี้คือรายการของเส้นทาง API ที่พร้อมให้บริการ พร้อมกับความสามารถและสัญลักษณ์ที่บ่งชี้ว่า API พร้อมใช้งานหรือไม่
 
-## Table of Contents
+## สารบัญ
 - [Authentication](#authentication)
 - [Dog Walker](#dog-walker)
   - ✅ [Private Dog Walker](#private-dog-walker)
@@ -16,124 +16,110 @@ This document provides information on the Jungmha API, a service for connecting 
   - ✅ [Get Dogs](#get-dogs)
   - ✅ [Dog Image](#dog-image)
 - [Home](#home)
-  - [Filter](#filter)
-     - ✅ [Private Filter](#private-filter) 
-     - ✅ [Public Filter](#public-filter)
-- [Miscellaneous](#miscellaneous)
+  - ✅ [Filter](#filter)
+    - ✅ [Private Filter](#private-filter)
+    - ✅ [Public Filter](#public-filter)
+- [etc](#etc)
   - ✅ [Open Image URL](#open-image-url)
   - ✅ [Index](#index)
 
 ## Authentication
 
 ### Access Token
-- **Description:** This API uses an access token for authentication.
-- **Scopes:**
-  - `view-only`: View-only access
-  - `full-control`: Full control access
+- **คำอธิบาย:** API นี้ใช้ Access Token เพื่อการยืนยันตัวตน
+- **Scope:**
+  - `view-only`: การเข้าถึงเฉพาะการดู
+  - `full-control`: การเข้าถึงทั้งหมด
 
 ## Dog Walker
 
 ### Private Dog Walker
 
 #### GET /api/v1/auth/home/filter
-- **Summary:** Retrieve Dog Walker information from the database.
-- **Parameters:**
-  - `Access-Token` (Header, Required): Token for authentication.
-  - `name` (Query, Optional): Name of the Dog Walker.
-  - `verify` (Query, Optional): Verification status (can be omitted).
-  - `location` (Query, Optional): Location where the Dog Walker works.
-  - `pSmall` (Query, Optional): Price for walking small dogs.
-  - `pMedium` (Query, Optional): Price for walking medium dogs.
-  - `pBig` (Query, Optional): Price for walking big dogs.
-  - `max` (Query, Optional): Maximum number of records to display (default is Integer.MAX_VALUE).
+- **สรุป:** ดึงข้อมูล Dog Walker จากฐานข้อมูล
+- **พารามิเตอร์:**
+  - `Access-Token` (Header, จำเป็น): Token สำหรับการยืนยันตัวตน
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
 - **Responses:**
-  - `200`: Successful response with Dog Walker information.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูล Dog Walker
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ### Public Dog Walker
 
 #### GET /api/v1/home/filter
-- **Summary:** Retrieve public Dog Walker information based on specified conditions.
-- **Parameters:**
-  - `name` (Query, Optional): Name of the Dog Walker.
-  - `verify` (Query, Optional): Verification status (can be omitted).
-  - `location` (Query, Optional): Location where the Dog Walker works.
-  - `pSmall` (Query, Optional): Minimum price for small dogs.
-  - `pMedium` (Query, Optional): Minimum price for medium dogs.
-  - `pBig` (Query, Optional): Minimum price for big dogs.
-  - `max` (Query, Optional): Maximum number of records to display (default is Integer.MAX_VALUE).
+- **สรุป:** ดึงข้อมูล Dog Walker สาธารณะตามเงื่อนไขที่ระบุ
+- **พารามิเตอร์:**
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
 - **Responses:**
-  - `200`: Data for users without an account based on the specified conditions.
-  - `401`: Unauthorized access.
+  - `200`: ข้อมูลสำหรับผู้ใช้ที่ไม่มีบัญชีตามเงื่อนไขที่ระบุ
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ## User
 
 ### User Sign-In
 
 #### GET /api/v1/auth/sign-in/{username}
-- **Summary:** Perform user sign-in.
-- **Parameters:**
-  - `Signature` (Header, Required): Signature used for data integrity verification.
-  - `username` (Path, Required): User's username.
+- **สรุป:** กระทำการเข้าสู่ระบบผู้ใช้
+- **พารามิเตอร์:**
+  - `Signature` (Header, จำเป็น): ลายเซ็นที่ใช้สำหรับการตรวจสอบความสมบูรณ์ข้อมูล
+  - `username` (Path, จำเป็น): ชื่อผู้ใช้
 - **Responses:**
-  - `200`: Successful sign-in response with token data.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูล Token
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ### User Sign-Up
 
 #### PATCH /api/v1/auth/sign-up
-- **Summary:** Register a new user.
-- **Parameters:**
-  - `UserName` (Header, Required): User's username.
+- **สรุป:** ลงทะเบียนผู้ใช้ใหม่
+- **พารามิเตอร์:**
+  - `UserName` (Header, จำเป็น): ชื่อผู้ใช้
 - **Request Body:**
-  - `UserProfileForm` (JSON, Required): Encrypted user registration data.
+  - `UserProfileForm` (JSON, จำเป็น): ข้อมูลการลงทะเบียนผู้ใช้ที่ถูกเข้ารหัส
 - **Responses:**
-  - `200`: Registration successful response with token data.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูล Token
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ### User Booking
 
 #### POST /api/v1/auth/user/booking
-- **Summary:** Method for making a dog walking service booking.
-- **Parameters:**
-  - `Access-Token` (Header, Required): Token for authentication.
+- **สรุป:** วิธีทำการจองบริการเดินสุนัข
+- **พารามิเตอร์:**
+  - `Access-Token` (Header, จำเป็น): Token สำหรับการยืนยันตัวตน
 - **Request Body:**
-  - `DogWalkBookings` (JSON, Required): Booking information.
+  - `DogWalkBookings` (JSON, จำเป็น): ข้อมูลการจอง
 - **Responses:**
-  - `200`: Response for the booking result.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองสำหรับผลการจอง
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ### User Upload
 
 #### POST /api/v1/auth/user/upload
-- **Summary:** Method for uploading files.
-- **Parameters:**
-  - `Access-Token` (Header, Required): Token for upload authorization.
+- **สรุป:** วิธีการอัปโหลดไฟล์
+- **พารามิเตอร์:**
+  - `Access-Token` (Header, จำเป็น): Token สำหรับการอัปโหลด
 - **Request Body:**
-  - `multipart/form-data` (Required): File to upload.
+  - `multipart/form-data` (จำเป็น): ไฟล์ที่จะอัปโหลด
 - **Responses:**
-  - `200`: Upload result response.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองสำหรับผลการอัปโหลด
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ## Dog
 
 ### Get Dogs
 
 #### GET /api/v1/dogs
-- **Summary:** Retrieve information about dogs.
+- **สรุป:** ดึงข้อมูลเกี่ยวกับสุนัข
 - **Responses:**
-  - `200`: Successful response with dog information.
+  - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูลสุนัข
 
 ### Dog Image
 
 #### GET /api/v1/dog/{name}/image/{fingerprint}/{file}
-- **Summary:** Display profile images of dogs.
-- **Parameters:**
-  - `name` (Path, Required): Dog's name.
-  - `fingerprint` (Path, Required): Image fingerprint.
-  - `file` (Path, Required): Image file name.
+- **สรุป:** แสดงรูปภาพโปรไฟล์ของสุนัข
+- **พารามิเตอร์:**
+  - `name`, `fingerprint`, `file` (Path, จำเป็น): ชื่อสุนัข, ลายนิ้วมือของรูปภาพ, และชื่อไฟล์
 - **Responses:**
-  - `200`: Response with image data.
+  - `200`: การตอบสนองพร้อมข้อมูลรูปภาพ
 
 ## Home
 
@@ -142,45 +128,41 @@ This document provides information on the Jungmha API, a service for connecting 
 ### Private Filter
 
 #### GET /api/v1/auth/home/filter
-- **Summary:** Retrieve Dog Walker information from the database.
-- **Parameters:**
-  - `Access-Token` (Header, Required): Token for authentication.
-  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, Optional): Parameters for filtering the results.
+- **สรุป:** ดึงข้อมูล Dog Walker จากฐานข้อมูล
+- **พารามิเตอร์:**
+  - `Access-Token` (Header, จำเป็น): Token สำหรับการยืนยันตัวตน
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
 - **Responses:**
-  - `200`: Successful response with Dog Walker information.
-  - `401`: Unauthorized access.
+  - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูล Dog Walker
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
 ### Public Filter
 
 #### GET /api/v1/home/filter
-- **Summary:** Retrieve public Dog Walker information based on specified conditions.
-- **Parameters:**
-  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, Optional): Parameters for filtering the results.
+- **สรุป:** ดึงข้อมูล Dog Walker สาธารณะตามเงื่อนไขที่ระบุ
+- **พารามิเตอร์:**
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
 - **Responses:**
-  - `200`: Data for users without an account based on the specified conditions.
-  - `401`: Unauthorized access.n account based on the specified conditions.
-  - `401`: Unauthorized access.
+  - `200`: ข้อมูลสำหรับผู้ใช้ที่ไม่มีบัญชีตามเงื่อนไขที่ระบุ
+  - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
-<br>
-
-## Miscellaneous
+## etc
 
 ### Open Image URL
 
 #### GET /api/v1/user/{name}/image/{fingerprint}
-- **Summary:** Method for opening the URL of a user's image.
-- **Parameters:**
-  - `name` (Path, Required): User's name.
-  - `fingerprint` (Path, Required): Image fingerprint.
+- **สรุป:** วิธีการเปิด URL ของรูปภาพผู้ใช้
+- **พารามิเตอร์:**
+  - `name`, `fingerprint` (Path, จำเป็น): ชื่อผู้ใช้และลายนิ้วมือของรูปภาพ
 - **Responses:**
-  - `200`: Response with image file data.
+  - `200`: การตอบสนองพร้อมข้อมูลไฟล์รูปภาพ
 
 ### Index
 
 #### GET /jungmha
-- **Summary:** Index endpoint.
+- **สรุป:** เส้นทางดัชนี
 - **Responses:**
-  - `200`: Index response.
+  - `200`: การตอบสนองดัชนี
 
 ---
 
