@@ -5,21 +5,23 @@ This document provides information on the Jungmha API, a service for connecting 
 ## Table of Contents
 - [Authentication](#authentication)
 - [Dog Walker](#dog-walker)
-  - [Private Dog Walker](#private-dog-walker)
-  - [Public Dog Walker](#public-dog-walker)
+  - [X] [Private Dog Walker](#private-dog-walker)
+  - [X] [Public Dog Walker](#public-dog-walker)
 - [User](#user)
-  - [User Sign-In](#user-sign-in)
-  - [User Sign-Up](#user-sign-up)
-  - [User Booking](#user-booking)
-  - [User Upload](#user-upload)
+  - [X] [User Sign-In](#user-sign-in)
+  - [X] [User Sign-Up](#user-sign-up)
+  - [X] [User Booking](#user-booking)
+  - [X] [User Upload Profile image](#user-upload)
 - [Dog](#dog)
-  - [Get Dogs](#get-dogs)
-  - [Dog Image](#dog-image)
+  - [X] [Get Dogs](#get-dogs)
+  - [X] [Dog Image](#dog-image)
 - [Home](#home)
   - [Filter](#filter)
+     - [x] [Private Filter](#private-filter) 
+     - [x] [Public Filter](#public-filter)
 - [Miscellaneous](#miscellaneous)
-  - [Open Image URL](#open-image-url)
-  - [Index](#index)
+  - [X] [Open Image URL](#open-image-url)
+  - [X] [Index](#index)
 
 ## Authentication
 
@@ -135,21 +137,31 @@ This document provides information on the Jungmha API, a service for connecting 
 
 ## Home
 
-### Filter
+## Filter
+
+### Private Filter
+
+#### GET /api/v1/auth/home/filter
+- **Summary:** Retrieve Dog Walker information from the database.
+- **Parameters:**
+  - `Access-Token` (Header, Required): Token for authentication.
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, Optional): Parameters for filtering the results.
+- **Responses:**
+  - `200`: Successful response with Dog Walker information.
+  - `401`: Unauthorized access.
+
+### Public Filter
 
 #### GET /api/v1/home/filter
-- **Summary:** Method for retrieving public Dog Walker data based on specified conditions.
+- **Summary:** Retrieve public Dog Walker information based on specified conditions.
 - **Parameters:**
-  - `name` (Query, Optional): Name of the Dog Walker.
-  - `verify` (Query, Optional): Verification status (can be omitted).
-  - `location` (Query, Optional): Location where the Dog Walker works.
-  - `pSmall` (Query, Optional): Minimum price for small dogs.
-  - `pMedium` (Query, Optional): Minimum price for medium dogs.
-  - `pBig` (Query, Optional): Minimum price for big dogs.
-  - `max` (Query, Optional): Maximum number of records to display (default is Integer.MAX_VALUE).
+  - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, Optional): Parameters for filtering the results.
 - **Responses:**
   - `200`: Data for users without an account based on the specified conditions.
+  - `401`: Unauthorized access.n account based on the specified conditions.
   - `401`: Unauthorized access.
+
+<br>
 
 ## Miscellaneous
 
