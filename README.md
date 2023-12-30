@@ -104,6 +104,20 @@ Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIj
 - **สรุป:** ดึงข้อมูล Dog Walker สาธารณะตามเงื่อนไขที่ระบุ
 - **พารามิเตอร์:**
   - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
+
+- ตัวอย่างการใช้งาน:
+```http request
+GET http://localhost:8080/api/v1/home/filter?veryfi=true
+
+###
+
+GET http://localhost:8080/api/v1/home/filter?pSmall=50&max=3
+
+###
+
+GET http://localhost:8080/api/v1/home/filter?location=Park4
+
+```
 - **Responses:**
   - ตัวอย่าง
     ```json
