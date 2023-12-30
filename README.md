@@ -1,6 +1,6 @@
 # เอกสาร API ของ Jungmha
 
-เอกสารนี้ให้ข้อมูลเกี่ยวกับ API ของ Jungmha ซึ่งเป็นบริการที่เชื่อมโยงเจ้าของสุนัขกับผู้เดินสุนัข (Dog Walkers) ด้านล่างนี้คือรายการของเส้นทาง API ที่พร้อมให้บริการ พร้อมกับความสามารถและสัญลักษณ์ที่บ่งชี้ว่า API พร้อมใช้งานหรือไม่
+เอกสารนี้ให้ข้อมูลเกี่ยวกับ API ของ Jungmha ซึ่งเป็นบริการที่เชื่อมโยงเจ้าของสุนัขกับผู้พาสุนัขเดินเล่น (Dog Walkers) ด้านล่างนี้คือรายการของเส้นทาง API ที่พร้อมให้บริการ พร้อมกับความสามารถและสัญลักษณ์ที่บ่งชี้ว่า API พร้อมใช้งานหรือไม่
 
 ## สารบัญ
 - [Authentication](#authentication)
@@ -40,7 +40,64 @@
 - **พารามิเตอร์:**
   - `Access-Token` (Header, จำเป็น): Token สำหรับการยืนยันตัวตน
   - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
+
+- ตัวอย่างการใช้งาน:
+```http request
+GET http://localhost:8080/api/v1/auth/home/filter
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjo4NjQwMDE3MDM2NzM5NzE1NDUsImlhdCI6MTcwMzY3NDA1Nzk0NSwic2lnbmF0dXJlIjoiMzA0NDAyMjA1NDQ5MDkwMTk4NDllYmY5MDk4OTkzMWVlZWY1YmZjNDdjZDRiOWFjOGIwYjJkZGRhYjZjMjdjNjc0MGFhMDY1MDIyMDE3Y2E4YzY0ZTBkM2Y3MWIwOGZkMmRlNWNmNDczOTI5MDk5M2RmMGI1NjIzZTRlMmUwMzc5MzM4NzIxMGZjMzQifQ==
+
+###
+
+GET http://localhost:8080/api/v1/auth/home/filter?pSmall=50&max=3
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjo4NjQwMDE3MDM2NzM5NzE1NDUsImlhdCI6MTcwMzY3NDA1Nzk0NSwic2lnbmF0dXJlIjoiMzA0NDAyMjA1NDQ5MDkwMTk4NDllYmY5MDk4OTkzMWVlZWY1YmZjNDdjZDRiOWFjOGIwYjJkZGRhYjZjMjdjNjc0MGFhMDY1MDIyMDE3Y2E4YzY0ZTBkM2Y3MWIwOGZkMmRlNWNmNDczOTI5MDk5M2RmMGI1NjIzZTRlMmUwMzc5MzM4NzIxMGZjMzQifQ==
+
+###
+
+GET http://localhost:8080/api/v1/auth/home/filter?name=user4
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIjo4NjQwMDE3MDM2NzM5NzE1NDUsImlhdCI6MTcwMzY3NDA1Nzk0NSwic2lnbmF0dXJlIjoiMzA0NDAyMjA1NDQ5MDkwMTk4NDllYmY5MDk4OTkzMWVlZWY1YmZjNDdjZDRiOWFjOGIwYjJkZGRhYjZjMjdjNjc0MGFhMDY1MDIyMDE3Y2E4YzY0ZTBkM2Y3MWIwOGZkMmRlNWNmNDczOTI5MDk5M2RmMGI1NjIzZTRlMmUwMzc5MzM4NzIxMGZjMzQifQ==
+
+```
+
 - **Responses:**
+  - ตัวอย่าง
+    ```json
+    [
+      {
+        "walkerID": 0,
+        "detail": {
+          "name": "string",
+          "profileImage": "string",
+          "verify": "string",
+          "location": "string",
+          "price": {
+            "small": 0,
+            "medium": 0,
+            "big": 0
+          }
+        },
+        "countReview": 0,
+        "totalReview": 0,
+        "contact": {
+          "email": "string",
+          "phoneNumber": "string"
+        },
+        "review": [
+          {
+            "userID": 0,
+            "name": "string",
+            "profileImage": "string",
+            "rating": 0,
+            "reviewText": "string"
+          }
+        ]
+      },
+       .....
+    ]
+    ```
+
   - `200`: การตอบสนองที่ประสบความสำเร็จพร้อมข้อมูล Dog Walker
   - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
@@ -51,6 +108,27 @@
 - **พารามิเตอร์:**
   - `name`, `verify`, `location`, `pSmall`, `pMedium`, `pBig`, `max` (Query, ไม่บังคับ): พารามิเตอร์สำหรับกรองผลลัพธ์
 - **Responses:**
+  - ตัวอย่าง
+    ```json
+    [
+      {
+        "walkerID": 0,
+        "detail": {
+          "name": "string",
+          "profileImage": "string",
+          "verify": "string",
+          "location": "string",
+          "price": {
+            "small": 0,
+            "medium": 0,
+            "big": 0
+          }
+        }
+      },
+       .....
+    ]
+    ```
+
   - `200`: ข้อมูลสำหรับผู้ใช้ที่ไม่มีบัญชีตามเงื่อนไขที่ระบุ
   - `401`: การเข้าถึงไม่ได้รับอนุญาต
 
