@@ -13,7 +13,9 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.UserServiceImpl
+import org.jungmha.domain.response.EncryptedData
 import org.jungmha.domain.response.NormalInfo
+import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.Logger
@@ -26,7 +28,8 @@ import org.slf4j.LoggerFactory
 @ExecuteOn(TaskExecutors.IO)
 class NormalController @Inject constructor(
     private val  userService: UserServiceImpl,
-    private val token: Token
+    private val token: Token,
+    private val aes: AES
 ) {
 
 
@@ -35,21 +38,26 @@ class NormalController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        //@Header("Access-Token") access: String
-    ): MutableHttpResponse<NormalInfo> {
+        @Header("Access-Token") access: String
+    ): MutableHttpResponse<Any>? {
 
         // ตรวจสอบความถูกต้องของ Token
-        /*val userDetails: TokenObject = token.viewDetail(access)
+        val userDetails: TokenObject = token.viewDetail(access)
         val permission: String = userDetails.permission
+        val name = userDetails.userName
 
         // ตรวจสอบสิทธิ์การใช้งาน
         if (!token.verifyToken(access) || permission != "view") {
             LOG.warn("Invalid token")
-        }*/
+        }
 
+        val serInfoo = userService.getUserInfo(name).toString()
+        val shareKey = userService.findUser(name)?.sharedKey.toString()
 
-        val user: NormalInfo? = userService.getUserInfo("user1")
-        return HttpResponse.ok(user)
+        val encrypted = aes.encrypt(serInfoo, shareKey)
+        val data = EncryptedData(encrypted)
+
+        return HttpResponse.ok(data)
 
     }
 

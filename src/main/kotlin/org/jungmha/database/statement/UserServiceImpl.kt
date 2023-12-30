@@ -101,7 +101,7 @@ class UserServiceImpl @Inject constructor(
                 .join(dk)
                 .on(up.USER_ID.eq(dk.USER_ID))
                 .where(up.USERNAME.eq(accountName))
-                .fetchOne { record ->
+                .fetch { record ->
                     NormalInfo(
                         UserID = record[up.USER_ID],
                         profileImage = record[up.IMAGE_PROFILE],
@@ -114,9 +114,10 @@ class UserServiceImpl @Inject constructor(
                     )
                 }
 
-            return@withContext mainQuery
+            return@withContext mainQuery.firstOrNull()
         }
     }
+
 
 
 

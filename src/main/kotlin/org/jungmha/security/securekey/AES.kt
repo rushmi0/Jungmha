@@ -29,7 +29,13 @@ class AES {
         random.nextBytes(iv)
 
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(sharedKey.HexToByteArray(), "AES"), IvParameterSpec(iv))
+        cipher.init(
+            Cipher.ENCRYPT_MODE,
+            SecretKeySpec(sharedKey.HexToByteArray(),
+                "AES"
+            ),
+            IvParameterSpec(iv)
+        )
 
         val encryptedData = cipher.doFinal(jsonString.toByteArray(Charsets.UTF_8))
 

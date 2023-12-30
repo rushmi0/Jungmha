@@ -58,7 +58,7 @@ class DogWalkBookingController @Inject constructor(
             val permission: String = userDetails.permission
 
             // ตรวจสอบสิทธิ์การใช้งาน
-            if (!token.verifyToken(access) || permission != "full-control") {
+            if (!token.verifyToken(access) || permission != "edit") {
                 LOG.warn("Invalid token for Booking")
                 return HttpResponse.badRequest("Invalid token")
             }

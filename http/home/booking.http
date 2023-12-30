@@ -8,8 +8,8 @@ Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZnVsbC1jb250cm9sIiwiZX
 
 {
   "walkerID": 2,
-  "dogID" : 2,
-  "bookingDate" : "2023-11-15",
-  "timeStart" : "19:30",
-  "timeEnd" : "22:00"
+  "dogID" : 1,
+  "bookingDate" : "2024-11-15",
+  "timeStart" : "15:00",
+  "timeEnd" : "19:30"
 }

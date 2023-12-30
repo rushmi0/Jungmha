@@ -70,7 +70,7 @@ class UploadFileController @Inject constructor(
             val permission = userDetails.permission
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
-            val response = if (verify && permission == "full-control") {
+            val response = if (verify && permission == "edit") {
                 processFileUpload(user, file)
             } else {
                 LOG.warn("Invalid token for file upload")

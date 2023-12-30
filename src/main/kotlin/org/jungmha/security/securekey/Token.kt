@@ -15,7 +15,7 @@ import java.util.*
 
 data class TokenObject(
     val userName: String,
-    val permission: String, // full-control, view-only
+    val permission: String,
     val exp: BigInteger,
     val iat: BigInteger,
     val signature: String,
@@ -57,8 +57,8 @@ class Token @Inject constructor(
     }
 
     fun buildTokenPair(username: String, time: Long? = null): TokenResponse {
-        val fullControlToken = buildToken("full-control", username, time)!!
-        val viewOnlyToken = buildToken("view-only", username, time)!!
+        val fullControlToken = buildToken("edit", username, time)!!
+        val viewOnlyToken = buildToken("view", username, time)!!
 
         return TokenResponse(
             listOf(

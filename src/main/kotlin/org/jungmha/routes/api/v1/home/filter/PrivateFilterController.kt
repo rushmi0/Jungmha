@@ -91,7 +91,7 @@ class PrivateFilterController @Inject constructor(
             val permission: String = userDetails.permission
 
             // ตรวจสอบสิทธิ์การใช้งาน
-            if (!token.verifyToken(access) || permission != "view-only") {
+            if (!token.verifyToken(access) || permission != "view") {
                 LOG.warn("Invalid token for getting Private Dog Walker")
             }
 
