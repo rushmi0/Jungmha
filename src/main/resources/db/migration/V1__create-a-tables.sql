@@ -2,16 +2,26 @@
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
     user_id       SERIAL PRIMARY KEY,
-    authen_key    VARCHAR(70)  DEFAULT 'N/A',
-    share_key     VARCHAR(70)  DEFAULT 'N/A',
+    authen_key    VARCHAR(33)  DEFAULT 'N/A',
+    share_key     VARCHAR(32)  DEFAULT 'N/A',
     image_profile VARCHAR(300) DEFAULT 'N/A',
-    username      VARCHAR(50)  DEFAULT 'N/A',
-    first_name    VARCHAR(50)  DEFAULT 'N/A',
-    last_name     VARCHAR(50)  DEFAULT 'N/A',
-    email         VARCHAR(50)  DEFAULT 'N/A',
+    username      VARCHAR(15)  DEFAULT 'N/A',
+    first_name    VARCHAR(20)  DEFAULT 'N/A',
+    last_name     VARCHAR(20)  DEFAULT 'N/A',
+    email         VARCHAR(30)  DEFAULT 'N/A',
     phone_number  VARCHAR(10)  DEFAULT 'N/A',
     created_at    TIMESTAMPTZ  DEFAULT now(),
     user_type     VARCHAR(10)  DEFAULT 'N/A' CHECK (user_type IN ('Normal', 'DogWalkers', 'N/A'))
+);
+
+
+CREATE TABLE IF NOT EXISTS Signature
+(
+    sig_id    SERIAL PRIMARY KEY,
+    user_id   INTEGER REFERENCES UserProfiles (user_id),
+    signature VARCHAR(256) unique,
+    nonce     VARCHAR(10),
+    timestamp TIMESTAMPTZ DEFAULT now()
 );
 
 -- สร้างตาราง DogWalkers
@@ -83,16 +93,13 @@ CREATE OR REPLACE FUNCTION check_booking_conflict()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF EXISTS (
-        SELECT 1
-        FROM DogWalkBookings
-        WHERE
-            booking_date = NEW.booking_date
-          AND walker_id = NEW.walker_id
-          AND (
-            (time_start, time_end) OVERLAPS (NEW.time_start, NEW.time_end)
-            )
-    ) THEN
+    IF EXISTS (SELECT 1
+               FROM DogWalkBookings
+               WHERE booking_date = NEW.booking_date
+                 AND walker_id = NEW.walker_id
+                 AND (
+                   (time_start, time_end) OVERLAPS (NEW.time_start, NEW.time_end)
+                   )) THEN
         RAISE EXCEPTION 'Booking conflict: Walker % is already booked at this time on %', NEW.walker_id, NEW.booking_date;
     END IF;
     RETURN NEW;

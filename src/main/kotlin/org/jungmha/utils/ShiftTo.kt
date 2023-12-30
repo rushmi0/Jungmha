@@ -1,6 +1,7 @@
 package org.jungmha.utils
 
 import org.jungmha.utils.ShiftTo.encodeBase64
+import java.io.File
 import java.math.BigInteger
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -228,12 +229,11 @@ object ShiftTo {
     }
 
 
+    fun String.toFileName(): String {
+        val fileName = File(this).name
+        return fileName.substringAfterLast(File.separator)
+    }
 
-}
 
 
-fun main() {
-
-    val key = "060e4d82ee7087bff782f6f0ae303c1fff20d62768c57322c7878eea262b2ab2".encodeBase64()
-    println(key)
 }

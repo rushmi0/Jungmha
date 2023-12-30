@@ -7,6 +7,7 @@ import org.jungmha.security.securekey.EllipticCurve.modinv
 import org.jungmha.security.securekey.EllipticCurve.multiplyPoint
 import org.jungmha.utils.ShiftTo.ByteArrayToBigInteger
 import org.jungmha.utils.ShiftTo.SHA256
+import java.io.File
 import java.math.BigInteger
 import java.security.SecureRandom
 
@@ -159,4 +160,17 @@ object ECDSA {
 
 
 
+}
+
+fun main() {
+
+    val key = BigInteger("12345")
+
+    val mass = "sfdafnsevn"
+
+    val signature = ECDSA.sign(
+        key,
+        mass
+    )
+    //println(signature)
 }

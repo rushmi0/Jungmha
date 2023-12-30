@@ -1,6 +1,7 @@
 package org.jungmha.database.field
 
 import io.micronaut.serde.annotation.Serdeable
+import java.time.OffsetDateTime
 
 @Serdeable.Serializable
 data class UserProfileField(
@@ -13,6 +14,6 @@ data class UserProfileField(
     val lastName: String,
     val email: String,
     val phoneNumber: String,
-    val createAt: String,
+    val createAt: OffsetDateTime,
     val userType: String
 )

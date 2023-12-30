@@ -29,7 +29,7 @@ class Token @Inject constructor(
 ){
 
 
-    private val privateKey =  BigInteger("b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2", 16)
+    private val privateKey =  BigInteger(secretKey, 16)
     private val publicKey = privateKey.toPublicKey().compressed()
 
     private fun buildToken(permission: String, username: String, time: Long? = null): String? {

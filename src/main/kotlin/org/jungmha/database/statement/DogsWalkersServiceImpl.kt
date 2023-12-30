@@ -16,6 +16,8 @@ import org.jungmha.domain.response.*
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
+import org.jungmha.utils.ShiftTo.ByteArrayToHex
+import org.jungmha.utils.ShiftTo.SHA256
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -59,7 +61,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(

@@ -59,7 +59,7 @@ class UploadFileController @Inject constructor(
     )
     @Throws(IOException::class)
     suspend fun uploadFile(
-        @Header("Authorization") access: String,
+        @Header("Access-Token") access: String,
         @Part file: CompletedFileUpload
     ): MutableHttpResponse<String> {
         return try {

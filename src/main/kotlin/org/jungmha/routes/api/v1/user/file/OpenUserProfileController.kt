@@ -25,7 +25,7 @@ import java.nio.file.Path
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
-class OpenFileController @Inject constructor(
+class OpenUserProfileController @Inject constructor(
     private val service: UserServiceImpl
 ) {
 
@@ -36,11 +36,12 @@ class OpenFileController @Inject constructor(
      * @return HttpResponse ที่มีข้อมูลของไฟล์รูปภาพ
      */
     @Get(
-        uri = "/user/{name}/image"
+        uri = "/user/{name}/image/{fingerprint}"
     )
     @Throws(IOException::class)
     suspend fun openImageURL(
-        name: String
+        name: String,
+        fingerprint: String
     ): HttpResponse<ByteArray> {
         try {
             LOG.info("Thread ${Thread.currentThread().name} executing openImageURL for user: $name")
@@ -72,7 +73,8 @@ class OpenFileController @Inject constructor(
         }
     }
 
+
     companion object {
-        private val LOG: Logger = LoggerFactory.getLogger(OpenFileController::class.java)
+        private val LOG: Logger = LoggerFactory.getLogger(OpenUserProfileController::class.java)
     }
 }

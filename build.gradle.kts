@@ -69,8 +69,9 @@ dependencies {
 
 }
 
+ksp {
 
-
+}
 
 
 java {

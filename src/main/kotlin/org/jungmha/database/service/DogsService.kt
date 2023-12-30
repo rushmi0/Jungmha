@@ -12,6 +12,8 @@ import org.jungmha.database.form.DogForm
 @ExecuteOn(TaskExecutors.IO)
 interface DogsService {
 
+    suspend fun findDog(dogName: String): DogField?
+
     suspend fun dogsAll(): List<DogField>
 
     suspend fun insert(payload: DogForm): Boolean

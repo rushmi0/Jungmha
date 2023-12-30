@@ -7,10 +7,16 @@ import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Header
-import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Patch
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.response.EncryptedData
@@ -21,6 +27,7 @@ import org.jungmha.utils.AccountDirectory
 import org.slf4j.MDC
 import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
+import org.jungmha.security.securekey.TokenResponse
 
 
 // * RegisterController
@@ -28,6 +35,7 @@ import jakarta.inject.Inject
 /**
  * คลาสนี้เป็น Controller สำหรับดำเนินการลงทะเบียนผู้ใช้
  */
+@SecurityRequirement(name = "Access-Token")
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -45,7 +53,32 @@ class RegisterController @Inject constructor(
      * @param payload ข้อมูลที่ถูกเข้ารหัสแล้วที่จะถูกใช้ในการลงทะเบียน
      * @return HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการลงทะเบียน
      */
-    @Post(
+    @Operation(
+        summary = "สำหรับการลงทะเบียนผู้ใช้",
+        description = "ทำการ Encrypt ชุดข้อมูลส่วนบุคคลด้วย AES ก่อนส่งไปที่ Server ด้วยรูปแบบข้อมูลนี้ \n \"content\" : \"string\"",
+        requestBody = RequestBody(
+            required = true,
+            content = [
+                Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = UserProfileForm::class),
+                )
+            ]
+        ),
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการลงทะเบียน",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = TokenResponse::class)
+                    )
+                ]
+            )
+        ]
+    )
+    @Patch(
         uri = "/auth/sign-up",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
@@ -95,7 +128,7 @@ class RegisterController @Inject constructor(
                     val userId = user?.userID
 
                     // สร้าง Token และสร้างไดเร็กทอรีสำหรับผู้ใช้ใหม่ (ถ้ามี)
-                    val token = token.buildTokenPair(name, 9999999999999)
+                    val token = token.buildTokenPair(name, 999999999999999999)
                     if (userId != null) {
                         AccountDirectory.createDirectory(data.userType, userId)
                     }

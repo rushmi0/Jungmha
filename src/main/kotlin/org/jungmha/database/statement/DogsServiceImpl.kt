@@ -9,11 +9,17 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.Record
+import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL
 import org.jungmha.database.field.DogField
 import org.jungmha.database.form.DogForm
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import org.jungmha.database.service.DogsService
+import org.jungmha.utils.ShiftTo.ByteArrayToHex
+import org.jungmha.utils.ShiftTo.SHA256
+import org.jungmha.utils.ShiftTo.encodeBase64
+import org.jungmha.utils.ShiftTo.toFileName
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -26,6 +32,48 @@ class DogsServiceImpl @Inject constructor(
 ) : DogsService {
 
     private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: Dispatchers.IO
+    val BASE_URL = "http://localhost:8080/api/v1/dog"
+
+
+    override suspend fun findDog(dogName: String): DogField? {
+        return withContext(dispatcher) {
+            val currentThreadName = Thread.currentThread().name
+
+            try {
+                LOG.info("Thread $currentThreadName executing findDog")
+
+                val record: Record? = query.select()
+                    .from(DOGS)
+                    .where(DOGS.BREED_NAME.eq(DSL.`val`(dogName).coerce(String::class.java)))
+                    .fetchOne()
+
+                return@withContext if (record != null) {
+                    LOG.info("Dog found with name [$dogName] on thread [$currentThreadName]")
+                    DogField(
+                        record[DOGS.DOG_ID],
+                        record[DOGS.DOG_IMAGE],
+                        record[DOGS.BREED_NAME],
+                        record[DOGS.SIZE]
+                    )
+                } else {
+                    null
+                }
+            } catch (e: DataAccessException) {
+                LOG.error(
+                    "Error accessing data while finding dog with name [$dogName]",
+                    e
+                )
+                null
+            } catch (e: Exception) {
+                LOG.error(
+                    "An unexpected error occurred while finding dog with name [$dogName]",
+                    e
+                )
+                null
+            }
+        }
+    }
+
 
     override suspend fun dogsAll(): List<DogField> {
         return withContext(dispatcher) {
@@ -37,12 +85,12 @@ class DogsServiceImpl @Inject constructor(
                 val data = query.select()
                     .from(DOGS)
 
-                val result = data.map { record ->
+                val result = data.fetch { record ->
                     DogField(
-                        record[DOGS.DOG_ID],
-                        record[DOGS.DOG_IMAGE],
-                        record[DOGS.BREED_NAME],
-                        record[DOGS.SIZE]
+                        dogId = record[DOGS.DOG_ID],
+                        dogImage = if (record[DOGS.DOG_IMAGE].toString() != "N/A") "$BASE_URL/${record[DOGS.BREED_NAME]}/image/${record[DOGS.DOG_IMAGE].SHA256().ByteArrayToHex().substring(0, 8)}/${record[DOGS.DOG_IMAGE].toFileName()}" else "N/A",
+                        breedName = record[DOGS.BREED_NAME],
+                        size = record[DOGS.SIZE]
                     )
                 }
 
@@ -59,6 +107,7 @@ class DogsServiceImpl @Inject constructor(
             }
         }
     }
+
 
     override suspend fun insert(payload: DogForm): Boolean {
         return withContext(dispatcher) {

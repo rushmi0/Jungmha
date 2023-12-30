@@ -14,6 +14,36 @@ VALUES ('authen_key_1', 'share_key_1', 'N/A', 'user1', 'John', 'Doe', 'john.doe@
        ('authen_key_6', 'share_key_6', 'N/A', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(),
         'DogWalkers');
 
+
+-- เพิ่มข้อมูลลงในตาราง Signature
+INSERT INTO Signature (user_id, signature, nonce, timestamp)
+VALUES (1,
+        '30450221009aeceef8a4bce7f99493161903c8a2345dbcc773428406838911c39c87f6acbd02202f1adefb1dd27a3bcbb0fe0cbebba2876c43a2ee5d65a1566ae3bb5c3cfeadf0',
+        '',
+        '2023-12-29T12:00:00Z'),
+       (2,
+        '304402201183d806fe7f4797bb09ca8c2d8142378b9893a6e370623c9dde21802b0e19310220181bb7851221f22426656480b45cfc5f8fae43a5e252117d08cfb2318771a181',
+        '2023-12-29T12:15:00Z'),
+       (3,
+        '304502210097c8bfceb2428a4939fe51fe4c76c7533b42d721d7b9fb12e499ae180b3a2b9a02205cebb99eebb72d9544578e847659c7bdfd0721a1b923f7c9ec8453c97ef79c72',
+        '2023-12-29T12:30:00Z'),
+       (4,
+        '304402206e26d06d1814f54852851dcf4c4d0269300619461731c2b291b6799a0ff6c8e102206ffa20cad231a82176dd9c4f30b277572573335564af55752965e20203697ab1',
+        '2023-12-29T12:45:00Z'),
+       (5,
+        '3045022100c5dde364e1cb44852819023cd0f1fe077930340a129f30a7e13f976b6fb4f51002207a1a7cd2d1912858056a311d998254135b4ef340c244a2987a560f7e12cbb859',
+        '2023-12-29T13:00:00Z'),
+       (6,
+        '3045022100a7a926fbdb452f44b2cc8bc736e16465a114c92bbb6effdfcbfe3d95f140b0c4022050dcf5d95c3f7498f370728f452d1f52b6c8291bf185e5c628162c1c1124234b',
+        '2023-12-29T13:15:00Z'),
+       (1,
+        '3045022100ce47030f90b2a0f6f3fe7278273a1fabebdb764abe506424e1ab18560cb6730c022029e94026db62906b43aa7b9c68492e5d0c2c8fce5c699ff99a8b8b3149fb8d37',
+        '2023-12-29T13:00:00Z'),
+       (1,
+        '304402201439ba63837c45528f19f927c050bfa926724cdb80262d9e87aa0b3edf6427d302206c25a5b6596c86cb0ce741b0356154eb76bc6bddb8c190b5897a88da9c9b95c2',
+        '2023-12-29T12:15:00Z');
+
+
 -- เพิ่มข้อมูลในตาราง DogWalkers
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, verification, price_small, price_medium, price_big)
 VALUES (1, 'Park1', 'ID123456', 'true', 20, 30, 40),
@@ -23,14 +53,21 @@ VALUES (1, 'Park1', 'ID123456', 'true', 20, 30, 40),
        (5, 'Park5', 'ID333444', 'false', 15, 25, 35),
        (6, 'Park6', 'ID555666', 'true', 30, 40, 50);
 
+
 -- เพิ่มข้อมูลในตาราง Dogs
 INSERT INTO Dogs (dog_image, breed_name, size)
-VALUES ('dog_image_1.jpg', 'Bulldog', 'Medium'),
-       ('dog_image_2.jpg', 'Golden Retriever', 'Big'),
-       ('dog_image_3.jpg', 'Poodle', 'Small'),
-       ('dog_image_4.jpg', 'Labrador Retriever', 'Big'),
-       ('dog_image_5.jpg', 'Beagle', 'Small'),
-       ('dog_image_6.jpg', 'German Shepherd', 'Medium');
+VALUES ('src/main/resources/images/dogs/dog-big/Americanpitbull-large.jpg', 'Americanpitbull', 'Big'),
+       ('src/main/resources/images/dogs/dog-big/Germanshepherd-large.jpg', 'Germanshepherd', 'Big'),
+       ('src/main/resources/images/dogs/dog-big/Siberianhusky-large.jpg', 'Siberianhusky', 'Big'),
+
+       ('src/main/resources/images/dogs/dog-medium/Goldenretriever-medium.jpg', 'Goldenretriever', 'Medium'),
+       ('src/main/resources/images/dogs/dog-medium/Jackrussell-medium.jpg', 'Jackrussell', 'Medium'),
+       ('src/main/resources/images/dogs/dog-medium/Maltese-medium.jpg', 'Maltese', 'Medium'),
+
+       ('src/main/resources/images/dogs/dog-small/Chihuahua-small.jpg', 'Chihuahua', 'Small'),
+       ('src/main/resources/images/dogs/dog-small/Pomeranian-small.jpg', 'Pomeranian', 'Small'),
+       ('src/main/resources/images/dogs/dog-small/Shihtzu-small.jpg', 'Shihtzu', 'Small');
+
 
 -- เพิ่มข้อมูลในตาราง DogWalkBookings
 INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end)

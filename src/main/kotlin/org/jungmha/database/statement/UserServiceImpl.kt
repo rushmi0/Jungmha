@@ -59,7 +59,7 @@ class UserServiceImpl @Inject constructor(
                         record[USERPROFILES.LAST_NAME],
                         record[USERPROFILES.EMAIL],
                         record[USERPROFILES.PHONE_NUMBER],
-                        record[USERPROFILES.CREATED_AT].toString(),
+                        record[USERPROFILES.CREATED_AT],
                         record[USERPROFILES.USER_TYPE]
                     )
                 } else {
@@ -104,7 +104,7 @@ class UserServiceImpl @Inject constructor(
                         record[USERPROFILES.LAST_NAME],
                         record[USERPROFILES.EMAIL],
                         record[USERPROFILES.PHONE_NUMBER],
-                        record[USERPROFILES.CREATED_AT].toString(),
+                        record[USERPROFILES.CREATED_AT],
                         record[USERPROFILES.USER_TYPE]
                     )
                 }

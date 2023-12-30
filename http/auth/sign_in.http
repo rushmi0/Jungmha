@@ -1,0 +1,8 @@
+### New
+GET http://localhost:8080/api/v1/auth/sign-in/user1
+Signature: 30440220744f8169cb487bda48cacdf9fbc1752c78d704160b0da708ee5c504e004762f8022008c38ba4560c55e9e9425f39c4bae1a0652c59373ccadff3ce8b3bc2af0d65f2
+
+
+### Old
+GET http://localhost:8080/api/v1/auth/sign-in/user1
+Signature: 30450221009aeceef8a4bce7f99493161903c8a2345dbcc773428406838911c39c87f6acbd02202f1adefb1dd27a3bcbb0fe0cbebba2876c43a2ee5d65a1566ae3bb5c3cfeadf0

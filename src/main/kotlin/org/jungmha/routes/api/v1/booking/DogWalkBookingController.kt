@@ -11,6 +11,7 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogWalkBookingsServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory
 /**
  * คลาสนี้เป็น Controller สำหรับการจองบริการพาเดินสุนัขเดินเล่น
  */
+@SecurityRequirement(name = "Access-Token")
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -46,7 +48,7 @@ class DogWalkBookingController @Inject constructor(
         consumes = [MediaType.APPLICATION_JSON]
     )
     suspend fun booking(
-        @Header("Authorization") access: String,
+        @Header("Access-Token") access: String,
         @Body payload: DogWalkBookings
     ): MutableHttpResponse<String> {
         return try {

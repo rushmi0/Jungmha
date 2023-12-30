@@ -10,9 +10,16 @@ import io.micronaut.http.annotation.QueryValue
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.domain.response.PrivateDogWalkerInfo
+import org.jungmha.domain.response.PublicDogWalkerInfo
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.LoggerFactory
@@ -46,12 +53,29 @@ class PrivateFilterController @Inject constructor(
      * @param max จำนวนข้อมูลสูงสุดที่ต้องการแสดงผล (สามารถไม่ระบุ, ค่าเริ่มต้นคือ Integer.MAX_VALUE)
      * @return HttpResponse สำหรับผลลัพธ์ของการดึงข้อมูล Dog Walker
      */
+    @Operation(
+        summary = "เมธอดสำหรับการดึงข้อมูล Dog Walker จากฐานข้อมูล",
+        description = "เมธอดสำหรับการดึงข้อมูล Dog Walker จากฐานข้อมูล",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "HttpResponse สำหรับผลลัพธ์ของการดึงข้อมูล Dog Walker",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = PrivateDogWalkerInfo::class)
+                    )
+                ]
+            )
+        ]
+    )
+
     @Get(
         uri = "/auth/home/filter{?verify,location,name,pSmall,pMedium,pBig,max}",
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPrivateDogWalker(
-        @Header("Authorization") access: String,
+        @Header("Access-Token") access: String,
         @QueryValue("name") name: Optional<String>,
         @QueryValue("verify") verify: Optional<String>,
         @QueryValue("location") location: Optional<String>,
@@ -59,7 +83,7 @@ class PrivateFilterController @Inject constructor(
         @QueryValue("pMedium") pMedium: Optional<Long>,
         @QueryValue("pBig") pBig: Optional<Long>,
         @QueryValue("max") max: Optional<Int> = Optional.of(Integer.MAX_VALUE)
-    ): Any? {
+    ): List<PrivateDogWalkerInfo> {
 
         try {
             // ตรวจสอบความถูกต้องของ Token
@@ -69,7 +93,6 @@ class PrivateFilterController @Inject constructor(
             // ตรวจสอบสิทธิ์การใช้งาน
             if (!token.verifyToken(access) || permission != "view-only") {
                 LOG.warn("Invalid token for getting Private Dog Walker")
-                return HttpResponse.badRequest("Invalid token")
             }
 
             // ดึงข้อมูล Dog Walker ทั้งหมดจากฐานข้อมูล
@@ -91,7 +114,7 @@ class PrivateFilterController @Inject constructor(
         } catch (e: Exception) {
             LOG.error("Error during getPrivateDogWalker operation: ${e.message}", e)
             LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
-            return HttpResponse.serverError("Internal Server Error: ${e.message}")
+            return emptyList()
         }
     }
 
