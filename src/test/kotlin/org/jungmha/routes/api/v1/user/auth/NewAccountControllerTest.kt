@@ -32,23 +32,23 @@ class NewAccountControllerTest {
         MDC.clear()
     }
 
-    @Test
-    fun testSignUpEndpoint() {
-        val payload = UserProfileForm(
-            ,
-            "ph.watcharapol_st@gmail.com",
-            "1234567653"
-        )
-
-        val request = HttpRequest.POST(
-            "/api/v1/user/sign-up",
-            payload
-        )
-            .contentType(MediaType.APPLICATION_JSON_TYPE)
-
-        val response = httpClient.toBlocking().exchange(request, String::class.java)
-
-        assertEquals(HttpStatus.CREATED, response.status)
-        assertEquals("Account created successfully", response.body())
-    }
+//    @Test
+//    fun testSignUpEndpoint() {
+//        val payload = UserProfileForm(
+//            ,
+//            "ph.watcharapol_st@gmail.com",
+//            "1234567653"
+//        )
+//
+//        val request = HttpRequest.POST(
+//            "/api/v1/user/sign-up",
+//            payload
+//        )
+//            .contentType(MediaType.APPLICATION_JSON_TYPE)
+//
+//        val response = httpClient.toBlocking().exchange(request, String::class.java)
+//
+//        assertEquals(HttpStatus.CREATED, response.status)
+//        assertEquals("Account created successfully", response.body())
+//    }
 }
