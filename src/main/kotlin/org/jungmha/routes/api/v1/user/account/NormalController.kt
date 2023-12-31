@@ -14,7 +14,6 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.response.EncryptedData
-import org.jungmha.domain.response.AccountInfo
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject

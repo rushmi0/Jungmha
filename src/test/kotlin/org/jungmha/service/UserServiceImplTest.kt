@@ -51,17 +51,17 @@ class UserServiceImplTest {
     }
 
 
-//    @Test
-//    fun testGetUserInfo() = runBlocking {
-//        DriverManager.getConnection(
-//            "jdbc:postgresql://localhost:5432/postgres",
-//            "postgres",
-//            "sql@min").use { connection ->
-//            dslContext = DSL.using(connection)
-//            val rawData = UserServiceImpl(dslContext, Dispatchers.IO)
-//            val result = rawData.getUserInfo("user2")
-//            println(result)
-//        }
-//    }
+    @Test
+    fun testGetUserInfo() = runBlocking {
+        DriverManager.getConnection(
+            "jdbc:postgresql://localhost:5432/postgres",
+            "postgres",
+            "sql@min").use { connection ->
+            dslContext = DSL.using(connection)
+            val rawData = UserServiceImpl(dslContext, Dispatchers.IO)
+            val result = rawData.getUserInfo("Aura")
+            println(result)
+        }
+    }
 
 }

@@ -16,6 +16,7 @@ data class NormalInfo(
     val lastName: String,
     val email: String,
     val phoneNumber: String,
+    val accountType: String,
     val booking: List<TxBooking>
 )
 
@@ -32,5 +33,6 @@ data class TxBooking(
     val timeEnd: LocalTime,
     val duration: LocalTime,
     val total: Int,
-    val timeStamp: OffsetDateTime
+    val timeStamp: OffsetDateTime,
+    val serviceStatus: String
 )

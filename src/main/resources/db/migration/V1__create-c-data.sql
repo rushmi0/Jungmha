@@ -69,13 +69,14 @@ VALUES ('src/main/resources/images/dogs/dog-big/Americanpitbull-large.jpg', 'Ame
 
 
 -- เพิ่มข้อมูลในตาราง DogWalkBookings
-INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end)
-VALUES (1, 2, 3, 'Confirm', '09:00:00', '10:30:00'),
-       (2, 1, 2, 'Pending', '14:00:00', '16:00:00'),
-       (3, 4, 1, 'Confirm', '11:30:00', '13:00:00'),
-       (4, 3, 5, 'Pending', '08:00:00', '09:30:00'),
-       (5, 6, 4, 'Confirm', '16:30:00', '18:00:00'),
-       (6, 5, 6, 'Pending', '10:00:00', '11:30:00');
+INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end, service_status)
+VALUES (1, 2, 3, 'Confirm', '09:00:00', '10:30:00', 'Completed'),
+       (2, 1, 2, 'Pending', '14:00:00', '16:00:00', 'In Progress'),
+       (3, 4, 1, 'Confirm', '11:30:00', '13:00:00', 'Completed'),
+       (4, 3, 5, 'Pending', '08:00:00', '09:30:00', 'In Progress'),
+       (5, 6, 4, 'Confirm', '16:30:00', '18:00:00', 'Completed'),
+       (6, 5, 6, 'Pending', '10:00:00', '11:30:00', 'In Progress');
+
 
 -- เพิ่มข้อมูลในตาราง DogWalkerReviews
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating, review_text)

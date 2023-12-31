@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
     user_id       SERIAL PRIMARY KEY,
-    authen_key    VARCHAR(255)  DEFAULT 'N/A',
-    share_key     VARCHAR(255)  DEFAULT 'N/A',
+    authen_key    VARCHAR(255) DEFAULT 'N/A',
+    share_key     VARCHAR(255) DEFAULT 'N/A',
     image_profile VARCHAR(255) DEFAULT 'N/A',
     username      VARCHAR(20)  DEFAULT 'N/A',
     first_name    VARCHAR(20)  DEFAULT 'N/A',
@@ -28,16 +28,16 @@ CREATE TABLE IF NOT EXISTS DogWalkers
 (
     walker_id      SERIAL PRIMARY KEY,
     user_id        INTEGER UNIQUE REFERENCES UserProfiles (user_id),
+    count_used     INTEGER     NOT NULL DEFAULT 0,
     count_review   INTEGER     NOT NULL DEFAULT 0,
     total_review   INTEGER     NOT NULL DEFAULT 0,
     location_name  VARCHAR(50) NOT NULL DEFAULT 'N/A',
     id_card_number VARCHAR(60) NOT NULL DEFAULT 'N/A',
-    verification   VARCHAR(6)           DEFAULT 'false' CHECK (verification IN ('true', 'false')),
+    verification   VARCHAR(10)          DEFAULT 'false' CHECK (verification IN ('true', 'false')),
     price_small    INTEGER     NOT NULL DEFAULT 0,
     price_medium   INTEGER     NOT NULL DEFAULT 0,
     price_big      INTEGER     NOT NULL DEFAULT 0
 );
-
 
 -- ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,18 +72,20 @@ CREATE TABLE IF NOT EXISTS Dogs
 -- สร้างตาราง DogWalkBookings
 CREATE TABLE IF NOT EXISTS DogWalkBookings
 (
-    booking_id   SERIAL PRIMARY KEY,
-    walker_id    INTEGER REFERENCES DogWalkers (walker_id),
-    user_id      INTEGER REFERENCES UserProfiles (user_id),
-    dog_id       INTEGER REFERENCES Dogs (dog_id),
-    status       VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
-    booking_date DATE                 DEFAULT CURRENT_DATE,
-    time_start   TIME,
-    time_end     TIME,
-    duration     TIME,
-    total        INTEGER              DEFAULT 0,
-    timestamp    TIMESTAMPTZ          DEFAULT now()
+    booking_id     SERIAL PRIMARY KEY,
+    walker_id      INTEGER REFERENCES DogWalkers (walker_id),
+    user_id        INTEGER REFERENCES UserProfiles (user_id),
+    dog_id         INTEGER REFERENCES Dogs (dog_id),
+    status         VARCHAR(10) NOT NULL DEFAULT 'Pending' CHECK (status IN ('Confirm', 'Cancel', 'Pending')),
+    booking_date   DATE                 DEFAULT CURRENT_DATE,
+    time_start     TIME,
+    time_end       TIME,
+    duration       TIME,
+    total          INTEGER              DEFAULT 0,
+    timestamp      TIMESTAMPTZ          DEFAULT now(),
+    service_status VARCHAR(20)          DEFAULT 'In Progress' CHECK (service_status IN ('In Progress', 'Completed'))
 );
+
 
 -- ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -179,6 +181,39 @@ CREATE TRIGGER tr_dogwalkbookings_calculate_duration
     ON DogWalkBookings
     FOR EACH ROW
 EXECUTE FUNCTION calculate_duration();
+
+-- ////////////////////////////////////////////////////////////////////////////////////////
+
+-- สร้างฟังก์ชันเพื่อคำนวณจำนวณการให้บริการและอัปเดตฟิลด์ count_used ในตาราง DogWalkers
+CREATE OR REPLACE FUNCTION update_count_used()
+    RETURNS TRIGGER AS
+$$
+DECLARE
+    used_count INTEGER;
+BEGIN
+    -- นับจำนวณการให้บริการทั้งหมดที่มี service_status เป็น 'Completed'
+    SELECT COALESCE(COUNT(*), 0)
+    INTO used_count
+    FROM DogWalkBookings
+    WHERE walker_id = NEW.walker_id
+      AND service_status = 'Completed';
+
+    -- อัปเดตฟิลด์ count_used ในตาราง DogWalkers
+    UPDATE DogWalkers
+    SET count_used = used_count
+    WHERE walker_id = NEW.walker_id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- สร้างทริกเกอร์เพื่อเรียกใช้ฟังก์ชัน update_count_used() เมื่อมีการเพิ่มหรืออัปเดตข้อมูลใน DogWalkBookings
+CREATE TRIGGER tr_dogwalkbookings_update_count_used
+    AFTER INSERT OR UPDATE
+    ON DogWalkBookings
+    FOR EACH ROW
+EXECUTE FUNCTION update_count_used();
+
 
 
 -- สร้างตาราง DogWalkerReviews

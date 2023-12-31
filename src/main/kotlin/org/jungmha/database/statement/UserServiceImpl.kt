@@ -19,7 +19,7 @@ import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
 import org.jungmha.database.statement.ValidateData.validateAndLogSize
-import org.jungmha.domain.response.AccountInfo
+import org.jungmha.domain.response.NormalInfo
 import org.jungmha.domain.response.TxBooking
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
@@ -40,7 +40,7 @@ class UserServiceImpl @Inject constructor(
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun getUserInfo(accountName: String): AccountInfo? {
+    override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
 
             val up = USERPROFILES.`as`("up")
@@ -60,7 +60,8 @@ class UserServiceImpl @Inject constructor(
                 dk.DURATION,
                 dk.TOTAL,
                 dk.STATUS,
-                dk.TIMESTAMP
+                dk.TIMESTAMP,
+                dk.SERVICE_STATUS
             )
                 .from(dk)
                 .join(up)
@@ -84,7 +85,8 @@ class UserServiceImpl @Inject constructor(
                         subRecord[dk.TIME_END],
                         subRecord[dk.DURATION],
                         subRecord[dk.TOTAL],
-                        subRecord[dk.TIMESTAMP]
+                        subRecord[dk.TIMESTAMP],
+                        subRecord[dk.SERVICE_STATUS]
                     )
                 }
 
@@ -103,7 +105,7 @@ class UserServiceImpl @Inject constructor(
                 .on(up.USER_ID.eq(dk.USER_ID))
                 .where(up.USERNAME.eq(accountName))
                 .fetch { record ->
-                    AccountInfo(
+                    NormalInfo(
                         UserID = record[up.USER_ID],
                         profileImage = record[up.IMAGE_PROFILE],
                         userName = record[up.USERNAME],
