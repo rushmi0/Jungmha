@@ -72,7 +72,7 @@ class UserServiceImpl @Inject constructor(
                 .on(up2.USER_ID.eq(dw.USER_ID))
                 .join(d)
                 .on(d.DOG_ID.eq(dk.DOG_ID))
-                .where(up.USERNAME.eq(accountName))
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
                 .fetch { subRecord ->
                     TxBooking(
                         subRecord[dk.BOOKING_ID],
@@ -103,7 +103,7 @@ class UserServiceImpl @Inject constructor(
                 .from(up)
                 .join(dk)
                 .on(up.USER_ID.eq(dk.USER_ID))
-                .where(up.USERNAME.eq(accountName))
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
                 .fetch { record ->
                     NormalInfo(
                         UserID = record[up.USER_ID],
@@ -121,6 +121,7 @@ class UserServiceImpl @Inject constructor(
             return@withContext mainQuery.firstOrNull()
         }
     }
+
 
 
 
@@ -245,12 +246,6 @@ class UserServiceImpl @Inject constructor(
             val currentThreadName = Thread.currentThread().name
             try {
                 LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
-
-                validateAndLogSize("First Name", payload.firstName, 50)
-                validateAndLogSize("Last Name", payload.lastName, 50)
-                validateAndLogSize("Email", payload.email, 50)
-                validateAndLogSize("Phone Number", payload.phoneNumber, 10)
-                validateAndLogSize("User Type", payload.userType, 255)
 
                 val updateRows = query.update(USERPROFILES)
                     .set(USERPROFILES.FIRST_NAME, DSL.value(payload.firstName).coerce(String::class.java))

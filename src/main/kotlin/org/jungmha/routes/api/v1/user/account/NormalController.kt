@@ -78,7 +78,6 @@ class NormalController @Inject constructor(
         val shareKey = userService.findUser(name)?.sharedKey.toString()
         val encrypted = aes.encrypt(this.toString(), shareKey)
         return HttpResponse.ok(EncryptedData(encrypted))
-        //return HttpResponse.ok(this)
     }
 
 
