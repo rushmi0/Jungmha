@@ -5,6 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.form.DogWalkerForm
+import org.jungmha.domain.response.DogWalkersInfo
 import org.jungmha.domain.response.PrivateDogWalkerInfo
 import org.jungmha.domain.response.PublicDogWalkerInfo
 
@@ -12,6 +13,8 @@ import org.jungmha.domain.response.PublicDogWalkerInfo
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 interface DogsWalkersService {
+
+    suspend fun getDogWalkersInfo(accountName: String): DogWalkersInfo?
 
     suspend fun publicDogWalkersAll() : List<PublicDogWalkerInfo>
 

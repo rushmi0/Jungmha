@@ -25,6 +25,8 @@ import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
+import org.jungmha.utils.ShiftTo.ByteArrayToHex
+import org.jungmha.utils.ShiftTo.SHA256
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -38,6 +40,7 @@ class UserServiceImpl @Inject constructor(
 ) : UserService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
+    val BASE_URL = "http://localhost:8080/api/v1/user"
 
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
@@ -106,7 +109,7 @@ class UserServiceImpl @Inject constructor(
                 .fetch { record ->
                     NormalInfo(
                         UserID = record[up.USER_ID],
-                        profileImage = record[up.IMAGE_PROFILE],
+                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
                         userName = record[up.USERNAME],
                         firstName = record[up.FIRST_NAME],
                         lastName = record[up.LAST_NAME],

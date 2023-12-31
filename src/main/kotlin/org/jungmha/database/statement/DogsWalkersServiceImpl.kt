@@ -13,6 +13,8 @@ import org.jooq.impl.DSL
 import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.database.service.DogsWalkersService
 import org.jungmha.domain.response.*
+import org.jungmha.infra.database.tables.Dogs
+import org.jungmha.infra.database.tables.Dogwalkbookings
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
@@ -32,6 +34,120 @@ class DogsWalkersServiceImpl @Inject constructor(
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
     val BASE_URL = "http://localhost:8080/api/v1/user"
+
+
+    override suspend fun getDogWalkersInfo(accountName: String): DogWalkersInfo? {
+        return withContext(dispatcher) {
+
+            val up = USERPROFILES.`as`("up")
+            val dw = DOGWALKERS.`as`("dw")
+            val d = Dogs.DOGS.`as`("d")
+            val up2 = USERPROFILES.`as`("up2")
+            val dk = Dogwalkbookings.DOGWALKBOOKINGS.`as`("dk")
+
+            val subQuery = query.select(
+                dk.BOOKING_ID,
+                up2.USERNAME.`as`("walker_name"),
+                d.BREED_NAME,
+                d.SIZE,
+                dk.BOOKING_DATE,
+                dk.TIME_START,
+                dk.TIME_END,
+                dk.DURATION,
+                dk.TOTAL,
+                dk.STATUS,
+                dk.TIMESTAMP,
+                dk.SERVICE_STATUS
+            )
+                .from(dk)
+                .join(up)
+                .on(up.USER_ID.eq(dk.USER_ID))
+                .join(dw)
+                .on(dw.WALKER_ID.eq(dk.WALKER_ID))
+                .join(up2)
+                .on(up2.USER_ID.eq(dw.USER_ID))
+                .join(d)
+                .on(d.DOG_ID.eq(dk.DOG_ID))
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
+                .fetch { subRecord ->
+                    TxBooking(
+                        subRecord[dk.BOOKING_ID],
+                        subRecord["walker_name"].toString(),
+                        subRecord[d.BREED_NAME],
+                        subRecord[d.SIZE],
+                        subRecord[dk.STATUS],
+                        subRecord[dk.BOOKING_DATE],
+                        subRecord[dk.TIME_START],
+                        subRecord[dk.TIME_END],
+                        subRecord[dk.DURATION],
+                        subRecord[dk.TOTAL],
+                        subRecord[dk.TIMESTAMP],
+                        subRecord[dk.SERVICE_STATUS]
+                    )
+                }
+
+            val mainQuery = query.select(
+                up.USER_ID,
+                up.USERNAME,
+                up.IMAGE_PROFILE,
+                up.FIRST_NAME,
+                up.LAST_NAME,
+                up.EMAIL,
+                up.PHONE_NUMBER,
+                up.USER_TYPE,
+                dw.COUNT_USED,
+                dw.COUNT_REVIEW,
+                dw.TOTAL_REVIEW,
+                dw.LOCATION_NAME,
+                dw.ID_CARD_NUMBER,
+                dw.VERIFICATION,
+                dw.PRICE_SMALL,
+                dw.PRICE_MEDIUM,
+                dw.PRICE_BIG
+            )
+                .from(up)
+                .join(dk)
+                .on(up.USER_ID.eq(dk.USER_ID))
+                .join(dw)
+                .on(up.USER_ID.eq(dw.USER_ID))
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
+                .fetch { record ->
+
+                    DogWalkersInfo(
+                        UserID = record[up.USER_ID],
+                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                        userName = record[up.USERNAME],
+                        firstName = record[up.FIRST_NAME],
+                        lastName = record[up.LAST_NAME],
+                        email = record[up.EMAIL],
+                        phoneNumber = record[up.PHONE_NUMBER],
+                        accountType = record[up.USER_TYPE],
+
+                        insights = Insights(
+                            countUsed = record[dw.COUNT_USED],
+                            countReview = record[dw.COUNT_REVIEW],
+                            totalReview = record[dw.TOTAL_REVIEW],
+                            location = record[dw.LOCATION_NAME],
+                            idCard = record[dw.ID_CARD_NUMBER],
+                            verify = record[dw.VERIFICATION],
+
+                            price = PriceData(
+                                small = record[dw.PRICE_SMALL],
+                                medium = record[dw.PRICE_MEDIUM],
+                                big = record[dw.PRICE_BIG]
+                            )
+
+                        ),
+
+                        booking = subQuery
+                    )
+                }
+
+            return@withContext mainQuery.firstOrNull()
+        }
+    }
+
+
 
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(dispatcher) {
