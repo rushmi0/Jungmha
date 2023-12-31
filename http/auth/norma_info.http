@@ -1,8 +1,30 @@
+### Aura user
+# เรียกดูข้อมูล
+
 GET http://localhost:8080/api/v1/auth/user/normal
 Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldyIsImV4cCI6ODY0MDAwMDAwMDE3MDM5NjUzOTgzMjYsImlhdCI6MTcwMzk2NTQ4NDcyNiwic2lnbmF0dXJlIjoiMzA0NDAyMjAzZjZlN2JjNDk0ZWMyMTdhNTc5NzQ0YWI4MzNlMTE1NTQ5MmJiODk3ZmE1MmU0MTQ4ODVhNDYxYmQwOGNjMDU4MDIyMDQzNGUwNzQ5MmI0MmRhMmRmNDI5YTM2MWZhOTU0ZWU0YzVkZTI0OTliODVmNDc2ZWU2NzI4MGUyMGE1MTMwMjEifQ==
 
 
-###
+### Aura user
+# แก้ไขข้อมูล "email" : "sample1@gmail.com"
+# เป็น "email" : "lnwzaa007@gmail.com"
 
 PATCH http://localhost:8080/api/v1/auth/user/normal
+Content-Type: application/json
 Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDQwMTUxNjIyNDEsImlhdCI6MTcwNDAxNTI0ODY0MSwic2lnbmF0dXJlIjoiMzA0NDAyMjA2ZmJkMDI3YzZjMTlmNzkyYmVhYzQ5ZWU4NjYxMmIyY2I0MGIyNmRmN2IwZDU0MDZjNzlmNTBiOTc0ZTA3NDhjMDIyMDcxNTAzMWRiNGI2ZGQwNjUyZmIwM2Y2ZmQ4YTljNjkxYTE5MjEyYjliNDI5ZmE3MGQ4NGM1MjY3OWIyYjljMmUifQ==
+
+{
+  "content" : "+0FQL/K6z625U/xYVqJQ14DODDymqMxi7u54plktFdk=?iv=4IiKExdkEukppeiDRkgpvg=="
+}
+
+### Aura user
+# แก้ไขข้อมูล "phoneNumber" : "0987654321"
+# เป็น "phoneNumber" : "0811223344"
+
+PATCH http://localhost:8080/api/v1/auth/user/normal
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDQwMTUxNjIyNDEsImlhdCI6MTcwNDAxNTI0ODY0MSwic2lnbmF0dXJlIjoiMzA0NDAyMjA2ZmJkMDI3YzZjMTlmNzkyYmVhYzQ5ZWU4NjYxMmIyY2I0MGIyNmRmN2IwZDU0MDZjNzlmNTBiOTc0ZTA3NDhjMDIyMDcxNTAzMWRiNGI2ZGQwNjUyZmIwM2Y2ZmQ4YTljNjkxYTE5MjEyYjliNDI5ZmE3MGQ4NGM1MjY3OWIyYjljMmUifQ==
+
+{
+  "content" : "Fat+eilAH5+9jRzGs94eKbk0jwZgY9Ujg/y/TTh2GIk=?iv=STwvgxYOtoQXbZ4ovYS0Ng=="
+}

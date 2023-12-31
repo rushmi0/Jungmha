@@ -35,11 +35,9 @@ class NewAccountControllerTest {
     @Test
     fun testSignUpEndpoint() {
         val payload = UserProfileForm(
-            "Watcharapol",
-            "Phongwilai",
+            ,
             "ph.watcharapol_st@gmail.com",
-            "1234567653",
-            "Normal"
+            "1234567653"
         )
 
         val request = HttpRequest.POST(

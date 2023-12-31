@@ -70,20 +70,3 @@ class AES {
     }
 
 }
-
-
-fun main() {
-
-    val aes = AES()
-
-    val encryptedData = "OpDX/jCYm1GiJC9UgH2QAEQWv8xeupr3nzfugwghegwz7lJyncZD2ZwIihznd3W6OqGr/KPpt1K11y6dHRudxZ6lr/rViut3gsPrER3iXOZVN4MqlK9yZEEeELFwPLsdqwDNAs01EE8qlJePITxhwb+ajqBOuPdkcdiC5naLGo5mFmKEEkRy4pQYrfSMNkFX?iv=pYGE7zJUMjwxsQ07g/0spg=="
-    val sharedKey = "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78"
-
-    val result = aes.decrypt(
-        encryptedData,
-        sharedKey
-    )
-
-    println(result)
-
-}

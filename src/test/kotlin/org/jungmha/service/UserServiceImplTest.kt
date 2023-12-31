@@ -35,11 +35,9 @@ class UserServiceImplTest {
             dslContext = DSL.using(connection)
             val rawData = UserServiceImpl(dslContext,  Dispatchers.IO)
             val newData = UserProfileForm(
-                "Watcharapol",
-                "Phongwilai",
+                ,
                 "ph.watcharapol_st@tni.ac.th",
-                "0991857733",
-                "Normal"
+                "0991857733"
             )
             val result = rawData.updateMultiField(
                 "user1",

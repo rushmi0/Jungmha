@@ -4,6 +4,7 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
+import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
@@ -19,9 +20,15 @@ import org.jungmha.domain.response.NormalInfo
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
+import org.jungmha.security.xss.XssDetector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
+// * Normal Controller
+
+/**
+ * คลาสนี้เป็น Controller สำหรับการจัดการข้อมูลบัญชีผู้ใช้ทั่วไป
+ */
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -32,6 +39,12 @@ class NormalController @Inject constructor(
     private val aes: AES
 ) {
 
+    /**
+     * เมธอดสำหรับดึงข้อมูลส่วนตัวของผู้ใช้
+     *
+     * @param access ข้อมูล Token ที่ใช้ในการตรวจสอบสิทธิ์
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลส่วนตัว
+     */
     @Get(
         "auth/user/normal",
         produces = [MediaType.APPLICATION_JSON]
@@ -40,7 +53,7 @@ class NormalController @Inject constructor(
         @Header("Access-Token") access: String
     ): MutableHttpResponse<out Any?>? {
         return try {
-            // ตรวจสอบความถูกต้องของโทเค็นและการอนุญาตของผู้ใช้
+            // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
             val userDetails: TokenObject = token.viewDetail(access)
             val verify = token.verifyToken(access)
             val permission: String = userDetails.permission
@@ -61,8 +74,14 @@ class NormalController @Inject constructor(
         }
     }
 
+    /**
+     * เมธอดที่ใช้ในการประมวลผลข้อมูลการค้นหาของผู้ใช้
+     *
+     * @param name ชื่อผู้ใช้
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลส่วนตัว
+     */
     private suspend fun processSearching(name: String): MutableHttpResponse<out Any?> {
-        // เรียกดูข้อมูล ขอบัญชีผู้ใช้คนนั้นๆ
+        // เรียกดูข้อมูลบัญชีผู้ใช้คนนั้นๆ
         val userInfo: NormalInfo? = userService.getUserInfo(name)
 
         return if (userInfo != null) {
@@ -73,36 +92,124 @@ class NormalController @Inject constructor(
         }
     }
 
+    /**
+     * เมธอดที่ใช้ในการประมวลผลข้อมูลที่ต้องการนำไป Encrypt
+     *
+     * @param name ชื่อผู้ใช้
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูก Encrypt
+     */
     private suspend fun NormalInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
         val encrypted = aes.encrypt(this.toString(), shareKey)
-        return HttpResponse.ok(EncryptedData(encrypted))
+        //return HttpResponse.ok(EncryptedData(encrypted))
+        return HttpResponse.ok(this)
     }
 
 
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
 
 
+    /**
+     * เมธอดสำหรับแก้ไขข้อมูลส่วนตัวของผู้ใช้
+     *
+     * @param access ข้อมูล Token ที่ใช้ในการตรวจสอบสิทธิ์
+     * @param payload ข้อมูลที่ถูก Encrypt ที่ต้องการนำมาแก้ไข
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูกแก้ไข
+     */
     @Patch(
         "auth/user/normal",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
-    suspend fun editPersonalInfo(@Header("Access-Token") access: String) {
-        // ตรวจสอบความถูกต้องของ Token
-        val userDetails: TokenObject = token.viewDetail(access)
-        val permission: String = userDetails.permission
+    suspend fun editPersonalInfo(
+        @Header("Access-Token") access: String,
+        @Body payload: EncryptedData
+    ): MutableHttpResponse<out Any?>? {
+        return try {
+            // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
+            val userDetails: TokenObject = token.viewDetail(access)
+            val verify = token.verifyToken(access)
+            val permission: String = userDetails.permission
+            val name = userDetails.userName
 
-        // ตรวจสอบสิทธิ์การใช้งาน
-        if (!token.verifyToken(access) || permission != "edit") {
-            LOG.warn("Invalid token or insufficient permission during editPersonalInfo")
-        } else {
-            LOG.info("User ${userDetails.userName} is editing personal information")
+            // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
+            return if (verify && permission == "edit") {
+                coroutineScope {
+                    processDecrypting(name, payload)
+                }
+            } else {
+                LOG.warn("Invalid token or insufficient permission for user: $name")
+                HttpResponse.badRequest("Invalid token or insufficient permission")
+            }
+        } catch (e: Exception) {
+            LOG.error("Error processing editPersonalInfo", e)
+            HttpResponse.serverError("Internal server error: ${e.message}")
+        }
+    }
+
+    /**
+     * เมธอดที่ใช้ในการประมวลผลข้อมูลที่ถูก Encrypt และทำการแก้ไข
+     *
+     * @param name ชื่อผู้ใช้
+     * @param payload ข้อมูลที่ถูก Encrypt ที่ต้องการนำมาแก้ไข
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูกแก้ไข
+     */
+    private suspend fun processDecrypting(name: String, payload: EncryptedData): MutableHttpResponse<out Any?> {
+        return try {
+            val userInfo = userService.findUser(name)
+            val userID = userInfo?.userID!!
+            val shareKey = userInfo.sharedKey
+
+            // ถอดรหัสข้อมูล
+            val decryptedData = aes.decrypt(payload.content, shareKey)
+            val newEmail = decryptedData["email"]?.toString()
+            val newPhoneNumber = decryptedData["phoneNumber"]?.toString()
+
+            return when {
+                newEmail != null -> processFieldUpdate(userID, "email", newEmail)
+                newPhoneNumber != null -> processFieldUpdate(userID, "phoneNumber", newPhoneNumber)
+                else -> HttpResponse.badRequest("No valid field data found")
+            }
+        } catch (e: IllegalArgumentException) {
+            LOG.warn("Invalid Field", e)
+            HttpResponse.badRequest("Invalid Field")
+        }
+    }
+
+    /**
+     * เมธอดที่ใช้ในการประมวลผลข้อมูลที่ถูกแก้ไขและทำการบันทึกลงในฐานข้อมูล
+     *
+     * @param userID ไอดีของผู้ใช้
+     * @param fieldName ชื่อของฟิลด์ที่ต้องการแก้ไข
+     * @param newValue ข้อมูลที่ต้องการนำมาแก้ไข
+     * @return HttpResponse สำหรับผลลัพธ์ของการแก้ไข
+     */
+    private suspend fun processFieldUpdate(
+        userID: Int,
+        fieldName: String,
+        newValue: String
+    ): MutableHttpResponse<out Any?> {
+        return try {
+            if (XssDetector.containsXss(newValue)) {
+                return HttpResponse.badRequest("Cross-site scripting detected")
+            }
+
+            val statement: Boolean = userService.updateSingleField(userID, fieldName, newValue)
+
+            return if (statement) {
+                HttpResponse.ok("Finished updating $fieldName field")
+            } else {
+                HttpResponse.badRequest("Failed to update $fieldName field: $newValue")
+            }
+        } catch (e: Exception) {
+            LOG.error("Error updating field [$fieldName] for user ID [$userID]", e)
+            HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
 
     companion object {
+        // Logger สำหรับการทำงานใน NormalController
         val LOG: Logger = LoggerFactory.getLogger(NormalController::class.java)
     }
 

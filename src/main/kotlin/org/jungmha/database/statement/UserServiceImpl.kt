@@ -18,7 +18,6 @@ import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
-import org.jungmha.database.statement.ValidateData.validateAndLogSize
 import org.jungmha.domain.response.NormalInfo
 import org.jungmha.domain.response.TxBooking
 import org.jungmha.infra.database.tables.Dogs.DOGS
@@ -308,7 +307,6 @@ class UserServiceImpl @Inject constructor(
             "imageProfile" -> USERPROFILES.IMAGE_PROFILE
             "email" -> USERPROFILES.EMAIL
             "phoneNumber" -> USERPROFILES.PHONE_NUMBER
-            "userType" -> USERPROFILES.USER_TYPE
             else -> throw IllegalArgumentException("Field name [$fieldName] not found!!!")
 
         }
