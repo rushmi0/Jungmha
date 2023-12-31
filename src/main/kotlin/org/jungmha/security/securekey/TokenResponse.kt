@@ -9,6 +9,6 @@ data class TokenResponse(
 
 @Serdeable.Serializable
 data class ApiResponseToken(
-    val fullControl: String,
-    val viewOnly: String
+    val edit: String,
+    val view: String
 )

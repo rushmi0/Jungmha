@@ -19,7 +19,7 @@ import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
 import org.jungmha.database.statement.ValidateData.validateAndLogSize
-import org.jungmha.domain.response.NormalInfo
+import org.jungmha.domain.response.AccountInfo
 import org.jungmha.domain.response.TxBooking
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
@@ -40,7 +40,7 @@ class UserServiceImpl @Inject constructor(
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun getUserInfo(accountName: String): NormalInfo? {
+    override suspend fun getUserInfo(accountName: String): AccountInfo? {
         return withContext(dispatcher) {
 
             val up = USERPROFILES.`as`("up")
@@ -95,14 +95,15 @@ class UserServiceImpl @Inject constructor(
                 up.FIRST_NAME,
                 up.LAST_NAME,
                 up.EMAIL,
-                up.PHONE_NUMBER
+                up.PHONE_NUMBER,
+                up.USER_TYPE
             )
                 .from(up)
                 .join(dk)
                 .on(up.USER_ID.eq(dk.USER_ID))
                 .where(up.USERNAME.eq(accountName))
                 .fetch { record ->
-                    NormalInfo(
+                    AccountInfo(
                         UserID = record[up.USER_ID],
                         profileImage = record[up.IMAGE_PROFILE],
                         userName = record[up.USERNAME],
@@ -110,6 +111,7 @@ class UserServiceImpl @Inject constructor(
                         lastName = record[up.LAST_NAME],
                         email = record[up.EMAIL],
                         phoneNumber = record[up.PHONE_NUMBER],
+                        accountType = record[up.USER_TYPE],
                         booking = subQuery
                     )
                 }
@@ -117,8 +119,6 @@ class UserServiceImpl @Inject constructor(
             return@withContext mainQuery.firstOrNull()
         }
     }
-
-
 
 
 

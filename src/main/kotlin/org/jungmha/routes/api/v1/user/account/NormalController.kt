@@ -14,7 +14,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.response.EncryptedData
-import org.jungmha.domain.response.NormalInfo
+import org.jungmha.domain.response.AccountInfo
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
@@ -34,32 +34,46 @@ class NormalController @Inject constructor(
 
 
     @Get(
-        uri = "auth/user/normal",
+        uri = "auth/user/normal/{nameDemo}",
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        @Header("Access-Token") access: String
+        @Header("Access-Token") access: String,
+        nameDemo: String
     ): MutableHttpResponse<Any>? {
-
         // ตรวจสอบความถูกต้องของ Token
         val userDetails: TokenObject = token.viewDetail(access)
         val permission: String = userDetails.permission
         val name = userDetails.userName
 
-        // ตรวจสอบสิทธิ์การใช้งาน
-        if (!token.verifyToken(access) || permission != "view") {
-            LOG.warn("Invalid token")
+        try {
+            // ตรวจสอบสิทธิ์การใช้งาน
+            if (!token.verifyToken(access) || permission != "view") {
+                LOG.warn("Invalid token for user: $name")
+                return HttpResponse.badRequest("Invalid token")
+            }
+
+            // เรียกดูข้อมูล ขอบัญชีผู้ใช้คนนั้นๆ
+            val userInfo = userService.getUserInfo(nameDemo) ?: run {
+                LOG.warn("User info not found for user: $name")
+                return HttpResponse.notFound("User info not found")
+            }
+
+            val shareKey = userService.findUser(name)?.sharedKey.toString()
+
+            // นำข้อมูลมา Encrypt
+            val encrypted = aes.encrypt(userInfo.toString(), shareKey)
+            val data = EncryptedData(encrypted)
+
+            LOG.info("Personal info retrieved successfully for user: $name")
+            return HttpResponse.ok(userInfo)
+        } catch (e: Exception) {
+            LOG.error("Error retrieving personal info for user: $name", e)
+            return HttpResponse.serverError("Failed to retrieve personal info")
         }
-
-        val serInfoo = userService.getUserInfo(name).toString()
-        val shareKey = userService.findUser(name)?.sharedKey.toString()
-
-        val encrypted = aes.encrypt(serInfoo, shareKey)
-        val data = EncryptedData(encrypted)
-
-        return HttpResponse.ok(data)
-
     }
+
+
 
 
     @Patch(
