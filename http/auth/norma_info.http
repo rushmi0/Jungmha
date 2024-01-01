@@ -28,3 +28,19 @@ Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MD
 {
   "content" : "Fat+eilAH5+9jRzGs94eKbk0jwZgY9Ujg/y/TTh2GIk=?iv=STwvgxYOtoQXbZ4ovYS0Ng=="
 }
+
+
+### Aura user
+# แก้ไขข้อมูล "email" : "lnwzaa007@gmail.com"
+# เป็น "email" : "rushmathorn@gmail.com"
+
+# แก้ไขข้อมูล "phoneNumber" : "0811223344"
+# เป็น "phoneNumber" : "9991113344"
+
+PATCH http://localhost:8080/api/v1/auth/user/normal
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDQwMTUxNjIyNDEsImlhdCI6MTcwNDAxNTI0ODY0MSwic2lnbmF0dXJlIjoiMzA0NDAyMjA2ZmJkMDI3YzZjMTlmNzkyYmVhYzQ5ZWU4NjYxMmIyY2I0MGIyNmRmN2IwZDU0MDZjNzlmNTBiOTc0ZTA3NDhjMDIyMDcxNTAzMWRiNGI2ZGQwNjUyZmIwM2Y2ZmQ4YTljNjkxYTE5MjEyYjliNDI5ZmE3MGQ4NGM1MjY3OWIyYjljMmUifQ==
+
+{
+  "content" : "yGUNfOHEO4oHNGoux26rMR117LypDWyYb8klB8tAFLEt0QVJygBIWjR1UdpbekxBCvqpeMAcP0LNSVo2LObGtg==?iv=2ilDb5bfj0faXVDeAgBbsA=="
+}

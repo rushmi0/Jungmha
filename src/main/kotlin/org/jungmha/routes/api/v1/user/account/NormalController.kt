@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.user.account
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Body
@@ -23,6 +24,7 @@ import org.jungmha.security.securekey.TokenObject
 import org.jungmha.security.xss.XssDetector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.util.*
 
 // * Normal Controller
 
@@ -163,14 +165,31 @@ class NormalController @Inject constructor(
 
             // ถอดรหัสข้อมูล
             val decryptedData = aes.decrypt(payload.content, shareKey)
-            val newEmail = decryptedData["email"]?.toString()
-            val newPhoneNumber = decryptedData["phoneNumber"]?.toString()
 
-            return when {
-                newEmail != null -> processFieldUpdate(userID, "email", newEmail)
-                newPhoneNumber != null -> processFieldUpdate(userID, "phoneNumber", newPhoneNumber)
-                else -> HttpResponse.badRequest("No valid field data found")
+            // นำข้อมูลที่ต้องการอัปเดตมาจัดลำดับลงในคิว
+            val updateQueue = ArrayDeque<String>()
+            if (decryptedData["email"] != null) {
+                updateQueue.add("email")
             }
+            if (decryptedData["phoneNumber"] != null) {
+                updateQueue.add("phoneNumber")
+            }
+            if (decryptedData["userName"] != null) {
+                updateQueue.add("userName")
+            }
+
+            // ใช้ for loop เพื่อดำเนินการอัปเดตในลำดับที่ถูกจัดลำดับ
+            for (field in updateQueue) {
+                val newValue = decryptedData[field]?.toString()
+                if (newValue != null) {
+                    val result = processFieldUpdate(userID, field, newValue)
+                    if (result.status != HttpStatus.OK) {
+                        return result
+                    }
+                }
+            }
+
+            return HttpResponse.ok("All fields updated successfully")
         } catch (e: IllegalArgumentException) {
             LOG.warn("Invalid Field", e)
             HttpResponse.badRequest("Invalid Field")
@@ -207,6 +226,7 @@ class NormalController @Inject constructor(
             HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
+
 
     companion object {
         // Logger สำหรับการทำงานใน NormalController
