@@ -171,6 +171,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 )
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
+                    .where(up.USER_TYPE.eq(DSL.`val`("DogWalkers")))
                     .fetch { record ->
 
                         PublicDogWalkerInfo(
@@ -225,6 +226,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 )
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
+                    .where(up.USER_TYPE.eq(DSL.`val`("DogWalkers")))
                     .fetch { record ->
 
                         val subQuery = query
@@ -281,7 +283,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
 
 
-    override suspend fun insert(payload: DogWalkerForm): Boolean {
+    override suspend fun insert(id: Int): Boolean {
         return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert for Dog Walker")
@@ -289,33 +291,23 @@ class DogsWalkersServiceImpl @Inject constructor(
                 val result = query.insertInto(
                     DOGWALKERS,
                     DOGWALKERS.USER_ID,
-                    DOGWALKERS.LOCATION_NAME,
-                    DOGWALKERS.ID_CARD_NUMBER,
-                    DOGWALKERS.PRICE_SMALL,
-                    DOGWALKERS.PRICE_MEDIUM,
-                    DOGWALKERS.PRICE_BIG
                 )
                     .values(
-                        DSL.`val`(payload.userID),
-                        DSL.`val`(payload.locationName),
-                        DSL.`val`(payload.idCardNumber),
-                        DSL.`val`(payload.priceSmall),
-                        DSL.`val`(payload.priceMedium),
-                        DSL.`val`(payload.priceBig)
+                        DSL.`val`(id)
                     )
                     .execute()
 
                 val success: Boolean = result > 0 // ตรวจสอบว่ามีการเพิ่มข้อมูลลงในฐานข้อมูลหรือไม่
 
                 if (success) {
-                    LOG.info("Insert successful for walker with User ID [${payload.userID}]")
+                    LOG.info("Insert successful for walker with User ID [$id]")
                 } else {
-                    LOG.warn("No rows inserted for walker with User ID [${payload.userID}]")
+                    LOG.warn("No rows inserted for walker with User ID [$id]")
                 }
 
                 return@withContext success
             } catch (e: Exception) {
-                LOG.error("Error inserting walker with User ID [${payload.userID}]", e)
+                LOG.error("Error inserting walker with User ID [$id]", e)
                 false
             }
         }
