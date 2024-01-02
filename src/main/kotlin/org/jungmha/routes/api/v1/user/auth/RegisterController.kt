@@ -28,10 +28,8 @@ import org.jungmha.security.xss.XssDetector
 import org.jungmha.utils.AccountDirectory
 import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
-import kotlinx.coroutines.coroutineScope
 import org.jungmha.constants.EnumField
 import org.jungmha.constants.NormalValidateField
-import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.security.securekey.TokenResponse
 
@@ -95,22 +93,11 @@ class RegisterController @Inject constructor(
     )
     suspend fun signUp(
         @Header("UserName") name: String,
-        @Header("Account-Type") type: String,
         @Body payload: EncryptedData
     ): MutableHttpResponse<out Any?>? {
         return try {
             LOG.info("Executing signUp")
-            val response: MutableHttpResponse<out Any?> = if (type == "Normal") {
-                coroutineScope {
-                    processNormalRegistration(name, payload)
-                }
-            } else if (type == "DogWalkers") {
-                coroutineScope {
-                    TODO("Not yet implemented")
-                }
-            } else {
-                HttpResponse.badRequest("Invalid Header value for Account-Type: [$type]")
-            }
+            val response: MutableHttpResponse<out Any?> = processRegistration(name, payload)
             return response
         } catch (e: Exception) {
             LOG.error("Error creating the account: ${e.message}", e)
@@ -119,7 +106,7 @@ class RegisterController @Inject constructor(
     }
 
 
-    private suspend fun processNormalRegistration(
+    private suspend fun processRegistration(
         name: String,
         payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
@@ -144,19 +131,24 @@ class RegisterController @Inject constructor(
         val statement: Boolean = userService.updateMultiField(name, userData)
         return if (statement) {
             val userId = userInfo.userID
-            val token = token.buildTokenPair(name, 999999999999999999)
-            AccountDirectory.createDirectory(userData.userType, userId)
+            val token = token.buildTokenPair(
+                name,
+                40
+            )
+
+            val type = userData.userType
+            if (type == "Normal") {
+                AccountDirectory.createDirectory(type, userId)
+            } else if (type == "DogWalkers") {
+                walkersService.insert(userId)
+                AccountDirectory.createDirectory(type, userId)
+            }
 
             HttpResponse.created(token)
         } else {
             LOG.error("Failed to create the account: Update operation failed")
             HttpResponse.serverError("Failed to create the account: Update operation failed")
         }
-    }
-
-
-    private suspend fun createAccountAndRespond() {
-
     }
 
 
@@ -176,13 +168,6 @@ class RegisterController @Inject constructor(
         return HttpResponse.ok()
     }
 
-
-    private suspend fun processDogWalkersRegistration(
-        name: String,
-        payload: EncryptedData
-    ): MutableHttpResponse<out Any?> {
-        TODO("Not yet implemented")
-    }
 
 
     companion object {

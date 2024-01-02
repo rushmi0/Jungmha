@@ -1,9 +1,21 @@
 ### User 1
 PUT http://localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
-Account-Type: Normal
 UserName: Aura
 
 {
   "content": "yt7ivc7x2/IeXb6jcP+WVccwmhuzlv3w5vb9kvbHZzo2UWzRdh79M4stx3FUaG4+231MgUOGSyscaL+dIvlju5J14cjRBfsUhUfodv5aQx7fVgpFN9upOjUgtkWntJLU+hRJQgGEEx/qsslXh9OuhTbFDlx2gNIE8MJh3xIyq0yUn5r47Lq/O/RHex2LaltJ?iv=pUQTcZ9GcqfAMQjWOuW96g=="
 }
+
+
+### User 2
+PUT http://localhost:8080/api/v1/auth/sign-up
+Content-Type: application/json
+UserName: Rushmi0
+
+{
+  "content": "PWFTdAu0KqHpJhN1AmU60iVmJg/zWhu5rL9sVHsFGBeJ84RYidfOiCLZIPuJLtfXJps0FeqqSIOPYyx8eW2IniqnLpSfyQ8zxa6ljlJLJ5Ek/2l1sO01ZDonltmCccwGTe1GwHvTrNO2EOP/CnmAJsppNpCD3AGD/sj2+u+HV39xEPJETCDyG8muadZLUx+k?iv=XNJhr8omGp5W0AMZA3vJRg=="
+}
+
+
+

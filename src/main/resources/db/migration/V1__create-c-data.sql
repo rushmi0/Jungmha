@@ -44,13 +44,10 @@ VALUES (1,
 
 
 -- เพิ่มข้อมูลในตาราง DogWalkers
-INSERT INTO DogWalkers (user_id, location_name, id_card_number, verification, price_small, price_medium, price_big)
-VALUES (1, 'Park1', 'ID123456', 'true', 20, 30, 40),
-       (2, 'Park2', 'ID654321', 'true', 25, 35, 45),
-       (3, 'Park3', 'ID987654', 'false', 18, 28, 38),
-       (4, 'Park4', 'ID111222', 'true', 22, 32, 42),
-       (5, 'Park5', 'ID333444', 'false', 15, 25, 35),
-       (6, 'Park6', 'ID555666', 'true', 30, 40, 50);
+INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
+VALUES (2, 'Park1', 'ID123456', 20, 30, 40),
+       (4, 'Park2', 'ID654321', 25, 35, 45),
+       (6, 'Park3', 'ID987654', 18, 28, 38);
 
 
 -- เพิ่มข้อมูลในตาราง Dogs

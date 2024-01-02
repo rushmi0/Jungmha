@@ -11,6 +11,7 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
+import org.jungmha.constants.DogWalkerUpdateField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.domain.response.DogWalkersInfo
@@ -150,16 +151,6 @@ class DogWalkersController @Inject constructor(
             LOG.warn("Invalid Field", e)
             return HttpResponse.badRequest("Invalid Field")
         }
-    }
-
-    enum class DogWalkerUpdateField(val key: String) {
-        EMAIL("email"),
-        PHONE_NUMBER("phoneNumber"),
-        ID_CARD_NUMBER("idCardNumber"),
-        LOCATION("location"),
-        SMALL_PRICE("small"),
-        MEDIUM_PRICE("medium"),
-        BIG_PRICE("big")
     }
 
     private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {

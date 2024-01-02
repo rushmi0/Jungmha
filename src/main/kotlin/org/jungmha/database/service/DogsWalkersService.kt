@@ -4,7 +4,6 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.domain.response.DogWalkersInfo
 import org.jungmha.domain.response.PrivateDogWalkerInfo
 import org.jungmha.domain.response.PublicDogWalkerInfo
@@ -20,7 +19,7 @@ interface DogsWalkersService {
 
     suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo>
 
-    suspend fun insert(payload: DogWalkerForm): Boolean
+    suspend fun insert(id: Int): Boolean
 
     suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean
 
