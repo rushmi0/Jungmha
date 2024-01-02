@@ -16,7 +16,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.request.NormalUpdateField
+import org.jungmha.constants.NormalUpdateField
 import org.jungmha.domain.response.EncryptedData
 import org.jungmha.domain.response.NormalInfo
 import org.jungmha.security.securekey.AES

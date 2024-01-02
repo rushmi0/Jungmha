@@ -13,7 +13,6 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.request.DogWalkerUpdateField
 import org.jungmha.domain.response.DogWalkersInfo
 import org.jungmha.domain.response.EncryptedData
 import org.jungmha.security.securekey.AES
@@ -59,11 +58,11 @@ class DogWalkersController @Inject constructor(
                     processSearching(name)
                 }
             } else {
-                NormalController.LOG.warn("Invalid token or insufficient permission for user: $name")
+                LOG.warn("Invalid token or insufficient permission for user: $name")
                 HttpResponse.badRequest("Invalid token or insufficient permission")
             }
         } catch (e: Exception) {
-            NormalController.LOG.error("Error processing getPersonalInfo", e)
+            LOG.error("Error processing getPersonalInfo", e)
             HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
@@ -131,8 +130,8 @@ class DogWalkersController @Inject constructor(
             val userID = userInfo.userID
             val shareKey = userInfo.sharedKey
 
-            val decryptedData = aes.decrypt(payload.content, shareKey)
-            val updateQueue = buildUpdateQueue(decryptedData)
+            val decryptedData: Map<String, Any> = aes.decrypt(payload.content, shareKey)
+            val updateQueue: Queue<String> = buildUpdateQueue(decryptedData)
 
             for (field in updateQueue) {
                 val newValue = decryptedData[field]?.toString() ?: continue
@@ -148,20 +147,28 @@ class DogWalkersController @Inject constructor(
 
             return HttpResponse.ok("All fields updated successfully")
         } catch (e: IllegalArgumentException) {
-            NormalController.LOG.warn("Invalid Field", e)
+            LOG.warn("Invalid Field", e)
             return HttpResponse.badRequest("Invalid Field")
         }
     }
 
+    enum class DogWalkerUpdateField(val key: String) {
+        EMAIL("email"),
+        PHONE_NUMBER("phoneNumber"),
+        ID_CARD_NUMBER("idCardNumber"),
+        LOCATION("location"),
+        SMALL_PRICE("small"),
+        MEDIUM_PRICE("medium"),
+        BIG_PRICE("big")
+    }
+
     private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
         val updateQueue = ArrayDeque<String>()
-
         for (field in DogWalkerUpdateField.entries) {
             if (decryptedData[field.key] != null) {
                 updateQueue.add(field.key)
             }
         }
-
         return updateQueue
     }
 
