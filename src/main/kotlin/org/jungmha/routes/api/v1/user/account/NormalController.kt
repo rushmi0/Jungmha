@@ -16,6 +16,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
+import org.jungmha.domain.request.NormalUpdateField
 import org.jungmha.domain.response.EncryptedData
 import org.jungmha.domain.response.NormalInfo
 import org.jungmha.security.securekey.AES
@@ -166,26 +167,19 @@ class NormalController @Inject constructor(
             // ถอดรหัสข้อมูล
             val decryptedData = aes.decrypt(payload.content, shareKey)
 
-            // นำข้อมูลที่ต้องการอัปเดตมาจัดลำดับลงในคิว
-            val updateQueue = ArrayDeque<String>()
-            if (decryptedData["email"] != null) {
-                updateQueue.add("email")
-            }
-            if (decryptedData["phoneNumber"] != null) {
-                updateQueue.add("phoneNumber")
-            }
-            if (decryptedData["userName"] != null) {
-                updateQueue.add("userName")
-            }
+            val updateQueue = buildUpdateQueue(decryptedData)
+
 
             // ใช้ for loop เพื่อดำเนินการอัปเดตในลำดับที่ถูกจัดลำดับ
             for (field in updateQueue) {
-                val newValue = decryptedData[field]?.toString()
-                if (newValue != null) {
-                    val result = processFieldUpdate(userID, field, newValue)
-                    if (result.status != HttpStatus.OK) {
-                        return result
-                    }
+                val newValue = decryptedData[field]?.toString() ?: continue
+                if (XssDetector.containsXss(newValue)) {
+                    return HttpResponse.badRequest("Cross-site scripting detected")
+                }
+
+                val result = processFieldUpdate(userID, field, newValue)
+                if (result.status != HttpStatus.OK) {
+                    return result
                 }
             }
 
@@ -195,6 +189,21 @@ class NormalController @Inject constructor(
             HttpResponse.badRequest("Invalid Field")
         }
     }
+
+
+    private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
+        // นำข้อมูลที่ต้องการอัปเดตมาจัดลำดับลงในคิว
+        val updateQueue = ArrayDeque<String>()
+
+        for (field in NormalUpdateField.entries) {
+            if (decryptedData[field.key] != null) {
+                updateQueue.add(field.key)
+            }
+        }
+
+        return updateQueue
+    }
+
 
     /**
      * เมธอดที่ใช้ในการประมวลผลข้อมูลที่ถูกแก้ไขและทำการบันทึกลงในฐานข้อมูล
@@ -229,7 +238,6 @@ class NormalController @Inject constructor(
 
 
     companion object {
-        // Logger สำหรับการทำงานใน NormalController
         val LOG: Logger = LoggerFactory.getLogger(NormalController::class.java)
     }
 

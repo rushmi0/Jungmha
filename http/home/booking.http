@@ -6,9 +6,23 @@ Content-Type: application/json
 Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDM5NjI3MTUwMTksImlhdCI6MTcwMzk2MjgwMTQxOSwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMGU5NjhmMDQ4N2U0NzRiYzQ0NTA0NzhlMDc2NGM5ZWU4MmY0MDdkMmMwNmIwZmQ0ZjgyODgzNTMzYmZjNmM2ODQwMjIwMjE5MWJhMzZlN2YxYjNiZWVkMjViZjIxMmY0NmE1MmJlOWUzMjEyYmExNGEzNTk0MDA5MTdkMTE0MjUyNmFlMiJ9
 
 {
-  "walkerID": 2,
-  "dogID" : 1,
-  "bookingDate" : "2023-12-15",
-  "timeStart" : "15:00",
-  "timeEnd" : "20:30"
+  "walkerID": 5,
+  "dogID" : 3,
+  "bookingDate" : "2023-12-16",
+  "timeStart" : "14:00",
+  "timeEnd" : "16:30"
+}
+
+###
+
+POST http://localhost:8080/api/v1/auth/user/booking
+Content-Type: application/json
+Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDM5NjI3MTUwMTksImlhdCI6MTcwMzk2MjgwMTQxOSwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMGU5NjhmMDQ4N2U0NzRiYzQ0NTA0NzhlMDc2NGM5ZWU4MmY0MDdkMmMwNmIwZmQ0ZjgyODgzNTMzYmZjNmM2ODQwMjIwMjE5MWJhMzZlN2YxYjNiZWVkMjViZjIxMmY0NmE1MmJlOWUzMjEyYmExNGEzNTk0MDA5MTdkMTE0MjUyNmFlMiJ9
+
+{
+  "walkerID": 3,
+  "dogID" : 3,
+  "bookingDate" : "2023-12-16",
+  "timeStart" : "14:00",
+  "timeEnd" : "16:30"
 }

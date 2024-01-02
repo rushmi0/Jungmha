@@ -24,8 +24,8 @@ data class Insights(
     val countUsed: Int,
     val countReview: Int,
     val totalReview: Int,
-    val location: String,
-    val idCard: String,
+    val locationName: String,
+    val idCardNumber: String,
     val verify: String,
     val price: PriceData
 )

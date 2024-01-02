@@ -127,8 +127,8 @@ class DogsWalkersServiceImpl @Inject constructor(
                             countUsed = record[dw.COUNT_USED],
                             countReview = record[dw.COUNT_REVIEW],
                             totalReview = record[dw.TOTAL_REVIEW],
-                            location = record[dw.LOCATION_NAME],
-                            idCard = record[dw.ID_CARD_NUMBER],
+                            locationName = record[dw.LOCATION_NAME],
+                            idCardNumber = record[dw.ID_CARD_NUMBER],
                             verify = record[dw.VERIFICATION],
 
                             price = PriceData(

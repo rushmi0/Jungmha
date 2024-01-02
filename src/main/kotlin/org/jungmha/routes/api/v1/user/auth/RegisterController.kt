@@ -24,9 +24,11 @@ import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.xss.XssDetector
 import org.jungmha.utils.AccountDirectory
-import org.slf4j.MDC
 import org.slf4j.LoggerFactory
 import jakarta.inject.Inject
+import kotlinx.coroutines.coroutineScope
+import org.jungmha.database.field.UserProfileField
+import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.security.securekey.TokenResponse
 
 
@@ -41,7 +43,8 @@ import org.jungmha.security.securekey.TokenResponse
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 class RegisterController @Inject constructor(
-    private val service: UserServiceImpl,
+    private val userService: UserServiceImpl,
+    private val walkersService: DogsWalkersServiceImpl,
     private val token: Token,
     private val aes: AES
 ) {
@@ -85,68 +88,82 @@ class RegisterController @Inject constructor(
     )
     suspend fun signUp(
         @Header("UserName") name: String,
+        @Header("Account-Type") type: String,
         @Body payload: EncryptedData
     ): MutableHttpResponse<out Any?>? {
         return try {
-            LOG.info("Thread ${Thread.currentThread().name} executing signUp")
-            MDC.put("thread -> ", Thread.currentThread().name)
-
-            // ดึงกุญแจใช้ในการเข้ารหัสจากฐานข้อมูล
-            val shareKey = service.findUser(name)?.sharedKey.toString()
-
-            // ถอดรหัสข้อมูล
-            val decrypted = aes.decrypt(payload.content, shareKey)
-
-            // สร้าง Object UserProfileForm จากข้อมูลที่ถอดรหัสได้
-            val data = UserProfileForm(
-                decrypted["firstName"].toString(),
-                decrypted["lastName"].toString(),
-                decrypted["email"].toString(),
-                decrypted["phoneNumber"].toString(),
-                decrypted["userType"].toString()
-            )
-
-            // ตรวจสอบความปลอดภัยของข้อมูลต่อ XSS
-            if (
-                XssDetector.containsXss(data.firstName) ||
-                XssDetector.containsXss(data.lastName) ||
-                XssDetector.containsXss(data.email) ||
-                XssDetector.containsXss(data.phoneNumber) ||
-                XssDetector.containsXss(data.userType)
-            ) {
-                HttpResponse.badRequest("Cross-site scripting detected")
-            } else {
-                // อัปเดตข้อมูลผู้ใช้
-                val statement: Boolean = service.updateMultiField(
-                    name,
-                    data
-                )
-
-                if (statement) {
-                    // ดึงข้อมูลผู้ใช้หลังจากการอัปเดต
-                    val user = service.findUser(name)
-                    val userId = user?.userID
-
-                    // สร้าง Token และสร้างไดเร็กทอรีสำหรับผู้ใช้ใหม่ (ถ้ามี)
-                    val token = token.buildTokenPair(name, 999999999999999999)
-                    if (userId != null) {
-                        AccountDirectory.createDirectory(data.userType, userId)
-                    }
-
-                    // ส่งคำตอบสำหรับการลงทะเบียนเรียบร้อย พร้อมกับส่ง `Access Token`
-                    HttpResponse.created(token)
-                } else {
-                    // การลงทะเบียนล้มเหลวเนื่องจากการอัปเดตข้อมูลไม่สำเร็จ
-                    LOG.error("Failed to create the account: Update operation failed")
-                    HttpResponse.serverError("Failed to create the account: Update operation failed")
+            LOG.info("Executing signUp")
+            val response: MutableHttpResponse<out Any?> = if (type == "Normal") {
+                coroutineScope {
+                    processNormalRegistration(name, payload)
                 }
+            } else if (type == "DogWalkers") {
+                TODO("Not yet implemented")
+            } else {
+                HttpResponse.badRequest("Invalid Header value for Account-Type: [$type]")
             }
+            return response
         } catch (e: Exception) {
             LOG.error("Error creating the account: ${e.message}", e)
             HttpResponse.serverError("Failed to create the account: ${e.message}")
-        } finally {
-            MDC.clear()
         }
+    }
+
+
+    private suspend fun processNormalRegistration(
+        name: String,
+        payload: EncryptedData
+    ): MutableHttpResponse<out Any?> {
+        val shareKey = userService.findUser(name)?.sharedKey.toString()
+        val decryptedData: Map<String, Any> = aes.decrypt(payload.content, shareKey)
+        val userData: UserProfileForm = mapDecryptedDataToUserProfileForm(decryptedData)
+
+        if (containsXss(userData)) {
+            return HttpResponse.badRequest("Cross-site scripting detected")
+        }
+
+        val statement: Boolean = userService.updateMultiField(name, userData)
+
+        return if (statement) {
+            val user: UserProfileField? = userService.findUser(name)
+            val userId = user?.userID
+            val token = token.buildTokenPair(name, 999999999999999999)
+
+            if (userId != null) {
+                AccountDirectory.createDirectory(userData.userType, userId)
+            }
+
+            HttpResponse.created(token)
+        } else {
+            LOG.error("Failed to create the account: Update operation failed")
+            HttpResponse.serverError("Failed to create the account: Update operation failed")
+        }
+    }
+
+
+    private suspend fun processDogWalkersRegistration(
+        name: String,
+        payload: EncryptedData
+    ): MutableHttpResponse<out Any?> {
+        TODO("Not yet implemented")
+    }
+
+    private fun mapDecryptedDataToUserProfileForm(decryptedData: Map<String, Any?>): UserProfileForm {
+        return UserProfileForm(
+            decryptedData["firstName"].toString(),
+            decryptedData["lastName"].toString(),
+            decryptedData["email"].toString(),
+            decryptedData["phoneNumber"].toString(),
+            decryptedData["userType"].toString()
+        )
+    }
+
+    private fun containsXss(userData: UserProfileForm): Boolean {
+        return XssDetector.containsXss(userData.firstName) ||
+                XssDetector.containsXss(userData.lastName) ||
+                XssDetector.containsXss(userData.email) ||
+                XssDetector.containsXss(userData.phoneNumber) ||
+                XssDetector.containsXss(userData.userType)
     }
 
 
