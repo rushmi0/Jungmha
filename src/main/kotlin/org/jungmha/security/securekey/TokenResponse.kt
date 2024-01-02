@@ -4,7 +4,8 @@ import io.micronaut.serde.annotation.Serdeable
 
 @Serdeable.Serializable
 data class TokenResponse(
-    val token: List<ApiResponseToken>
+    val server_public_key: String,
+    val token: ApiResponseToken
 )
 
 @Serdeable.Serializable

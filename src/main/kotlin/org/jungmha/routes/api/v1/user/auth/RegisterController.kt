@@ -133,7 +133,7 @@ class RegisterController @Inject constructor(
             val userId = userInfo.userID
             val token = token.buildTokenPair(
                 name,
-                40
+                999999999999999999
             )
 
             val type = userData.userType

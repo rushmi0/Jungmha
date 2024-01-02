@@ -67,45 +67,36 @@ VALUES ('src/main/resources/images/dogs/dog-big/Americanpitbull-large.jpg', 'Ame
 
 -- เพิ่มข้อมูลในตาราง DogWalkBookings
 INSERT INTO DogWalkBookings (walker_id, user_id, dog_id, status, time_start, time_end, service_status)
-VALUES (1, 2, 3, 'Confirm', '09:00:00', '10:30:00', 'Completed'),
-       (2, 1, 2, 'Pending', '14:00:00', '16:00:00', 'In Progress'),
-       (3, 4, 1, 'Confirm', '11:30:00', '13:00:00', 'Completed'),
-       (4, 3, 5, 'Pending', '08:00:00', '09:30:00', 'In Progress'),
-       (5, 6, 4, 'Confirm', '16:30:00', '18:00:00', 'Completed'),
-       (6, 5, 6, 'Pending', '10:00:00', '11:30:00', 'In Progress');
+VALUES (1, 1, 3, 'Confirm', '09:00:00', '10:30:00', 'Completed'),
+       (2, 3, 2, 'Pending', '14:00:00', '16:00:00', 'In Progress'),
+       (3, 5, 1, 'Confirm', '11:30:00', '13:00:00', 'Completed'),
 
 
 -- เพิ่มข้อมูลในตาราง DogWalkerReviews
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating, review_text)
-VALUES (1, 2, 5, 'Great service!'),
+VALUES (2, 3, 5, 'Great service!'),
        (2, 1, 4, 'Friendly and professional'),
-       (3, 4, 3, 'Could improve on punctuality'),
+       (2, 1, 3, 'Could improve on punctuality'),
        (4, 3, 5, 'Very satisfied with the walk'),
-       (5, 6, 4, 'Excellent dog walker'),
+       (4, 3, 4, 'Excellent dog walker'),
        (6, 5, 2, 'Not happy with the service'),
-       (1, 3, 4, 'Impressed with the dog handling'),
-       (2, 4, 5, 'Always on time and reliable'),
-       (3, 5, 3, 'Good service overall'),
-       (4, 6, 4, 'Great communication'),
-       (5, 1, 5, 'Highly recommended'),
-       (6, 2, 2, 'Not satisfied with the service'),
-       (1, 4, 4, 'Professional and caring'),
-       (2, 3, 3, 'Average service'),
-       (3, 6, 5, 'Exceptional dog walker'),
+       (4, 1, 4, 'Impressed with the dog handling'),
+       (2, 1, 5, 'Always on time and reliable'),
+       (6, 3, 3, 'Good service overall'),
+       (4, 3, 4, 'Great communication'),
+       (2, 5, 5, 'Highly recommended'),
+       (6, 5, 2, 'Not satisfied with the service'),
+       (2, 5, 4, 'Professional and caring'),
+       (6, 3, 3, 'Average service'),
+       (6, 5, 5, 'Exceptional dog walker'),
        (4, 5, 2, 'Needs improvement in communication'),
-       (5, 2, 4, 'Very pleased with the service'),
+       (4, 1, 4, 'Very pleased with the service'),
        (6, 1, 3, 'Could be more punctual');
 
 -- เพิ่มข้อมูลในตาราง DogWalkerReviews อีก 3 แถว
 INSERT INTO DogWalkerReviews (walker_id, user_id, rating)
-VALUES (1, 3, 4),
-       (2, 4, 5),
-       (3, 5, 3),
-       (4, 6, 4),
-       (5, 1, 5),
-       (6, 2, 2),
-       (1, 4, 4),
+VALUES (4, 1, 4),
+       (2, 3, 5),
        (2, 3, 3),
-       (3, 6, 5),
-       (4, 5, 2);
+       (6, 5, 4);
 

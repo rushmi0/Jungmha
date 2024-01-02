@@ -45,7 +45,7 @@ CREATE OR REPLACE FUNCTION update_verification()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF NEW.id_card_number IS NOT NULL AND NEW.verification = 'false' THEN
+    IF NEW.id_card_number IS NOT NULL AND NEW.id_card_number != 'N/A' THEN
         NEW.verification := 'true';
     END IF;
     RETURN NEW;

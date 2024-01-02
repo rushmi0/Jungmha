@@ -61,11 +61,10 @@ class Token @Inject constructor(
         val viewOnlyToken = buildToken("view", username, time)!!
 
         return TokenResponse(
-            listOf(
-                ApiResponseToken(
-                    fullControlToken,
-                    viewOnlyToken
-                )
+            server_public_key = publicKey,
+            ApiResponseToken(
+                fullControlToken,
+                viewOnlyToken
             )
         )
     }
