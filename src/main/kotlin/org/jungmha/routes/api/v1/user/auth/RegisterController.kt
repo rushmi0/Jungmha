@@ -34,7 +34,6 @@ import org.jungmha.constants.NormalValidateField
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.security.securekey.TokenResponse
-import java.util.*
 
 
 // * RegisterController
@@ -53,6 +52,9 @@ class RegisterController @Inject constructor(
     private val token: Token,
     private val aes: AES
 ) {
+
+
+    private val objectMapper = jacksonObjectMapper()
 
     /**
      * สำหรับการลงทะเบียนผู้ใช้
@@ -103,7 +105,9 @@ class RegisterController @Inject constructor(
                     processNormalRegistration(name, payload)
                 }
             } else if (type == "DogWalkers") {
-                TODO("Not yet implemented")
+                coroutineScope {
+                    TODO("Not yet implemented")
+                }
             } else {
                 HttpResponse.badRequest("Invalid Header value for Account-Type: [$type]")
             }
@@ -125,7 +129,7 @@ class RegisterController @Inject constructor(
         val decryptedData: Map<String, Any?> = aes.decrypt(payload.content, shareKey)
 
         // ตรวจสอบค่า null และ XSS
-        val validationResponse = validateDecryptedData(
+        val validationResponse: MutableHttpResponse<out Any?> = validateDecryptedData(
             NormalValidateField.entries.toTypedArray(),
             decryptedData
         )
@@ -134,25 +138,25 @@ class RegisterController @Inject constructor(
             return validationResponse
         }
 
-        // ใช้ ObjectMapper เพื่อแปลง decryptedData เป็น UserProfileForm
-        val objectMapper = jacksonObjectMapper()
-        val userData: UserProfileForm = objectMapper.convertValue(decryptedData, UserProfileForm::class.java)
+        // ใช้ ObjectMapper เพื่อแปลง decryptedData เป็น UserProfileForm (Kotlin Object)
+        val userData = objectMapper.convertValue(decryptedData, UserProfileForm::class.java)
 
         val statement: Boolean = userService.updateMultiField(name, userData)
         return if (statement) {
-            val user: UserProfileField? = userService.findUser(name)
-            val userId = user?.userID
+            val userId = userInfo.userID
             val token = token.buildTokenPair(name, 999999999999999999)
-
-            if (userId != null) {
-                AccountDirectory.createDirectory(userData.userType, userId)
-            }
+            AccountDirectory.createDirectory(userData.userType, userId)
 
             HttpResponse.created(token)
         } else {
             LOG.error("Failed to create the account: Update operation failed")
             HttpResponse.serverError("Failed to create the account: Update operation failed")
         }
+    }
+
+
+    private suspend fun createAccountAndRespond() {
+
     }
 
 
@@ -171,10 +175,6 @@ class RegisterController @Inject constructor(
         }
         return HttpResponse.ok()
     }
-
-
-
-
 
 
     private suspend fun processDogWalkersRegistration(
