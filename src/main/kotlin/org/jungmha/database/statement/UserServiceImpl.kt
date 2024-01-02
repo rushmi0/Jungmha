@@ -92,6 +92,10 @@ class UserServiceImpl @Inject constructor(
                     )
                 }
 
+            // ตรวจสอบค่าที่ได้จาก subQuery
+            val subQueryResult = subQuery
+            LOG.info("Subquery result: $subQueryResult")
+
             val mainQuery = query.select(
                 up.USER_ID,
                 up.USERNAME,
@@ -119,6 +123,9 @@ class UserServiceImpl @Inject constructor(
                         booking = subQuery
                     )
                 }
+            // ตรวจสอบค่าที่ได้จาก mainQuery
+            val mainQueryResult = mainQuery
+            LOG.info("Mainquery result: $mainQueryResult")
 
             return@withContext mainQuery.firstOrNull()
         }

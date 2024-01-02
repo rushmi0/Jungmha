@@ -10,11 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
-import org.jungmha.database.form.DogWalkerForm
 import org.jungmha.database.service.DogsWalkersService
 import org.jungmha.domain.response.*
-import org.jungmha.infra.database.tables.Dogs
-import org.jungmha.infra.database.tables.Dogwalkbookings
+import org.jungmha.infra.database.tables.Dogs.DOGS
+import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
@@ -41,81 +40,70 @@ class DogsWalkersServiceImpl @Inject constructor(
 
             val up = USERPROFILES.`as`("up")
             val dw = DOGWALKERS.`as`("dw")
-            val d = Dogs.DOGS.`as`("d")
-            val up2 = USERPROFILES.`as`("up2")
-            val dk = Dogwalkbookings.DOGWALKBOOKINGS.`as`("dk")
+            val d = DOGS.`as`("d")
+            val dwb = DOGWALKBOOKINGS.`as`("dwb")
 
-            val subQuery = query.select(
-                dk.BOOKING_ID,
-                up2.USERNAME.`as`("walker_name"),
-                d.BREED_NAME,
-                d.SIZE,
-                dk.BOOKING_DATE,
-                dk.TIME_START,
-                dk.TIME_END,
-                dk.DURATION,
-                dk.TOTAL,
-                dk.STATUS,
-                dk.TIMESTAMP,
-                dk.SERVICE_STATUS
-            )
-                .from(dk)
-                .join(up)
-                .on(up.USER_ID.eq(dk.USER_ID))
+
+            val subQuery = query
+                .select(
+                    dwb.BOOKING_ID, up.USERNAME.`as`("user_name"), d.BREED_NAME,
+                    d.SIZE, dwb.BOOKING_DATE, dwb.TIME_START,
+                    dwb.TIME_END, dwb.DURATION, dwb.TOTAL,
+                    dwb.STATUS, dwb.TIMESTAMP, dwb.SERVICE_STATUS
+                )
+                .from(dwb)
                 .join(dw)
-                .on(dw.WALKER_ID.eq(dk.WALKER_ID))
-                .join(up2)
-                .on(up2.USER_ID.eq(dw.USER_ID))
+                .on(dwb.WALKER_ID.eq(dw.WALKER_ID))
+                .join(up)
+                .on(dw.USER_ID.eq(up.USER_ID))
                 .join(d)
-                .on(d.DOG_ID.eq(dk.DOG_ID))
+                .on(dwb.DOG_ID.eq(d.DOG_ID))
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
                 .fetch { subRecord ->
                     TxBooking(
-                        subRecord[dk.BOOKING_ID],
-                        subRecord["walker_name"].toString(),
+                        subRecord[dwb.BOOKING_ID],
+                        subRecord["user_name"].toString(),
                         subRecord[d.BREED_NAME],
                         subRecord[d.SIZE],
-                        subRecord[dk.STATUS],
-                        subRecord[dk.BOOKING_DATE],
-                        subRecord[dk.TIME_START],
-                        subRecord[dk.TIME_END],
-                        subRecord[dk.DURATION],
-                        subRecord[dk.TOTAL],
-                        subRecord[dk.TIMESTAMP],
-                        subRecord[dk.SERVICE_STATUS]
+                        subRecord[dwb.STATUS],
+                        subRecord[dwb.BOOKING_DATE],
+                        subRecord[dwb.TIME_START],
+                        subRecord[dwb.TIME_END],
+                        subRecord[dwb.DURATION],
+                        subRecord[dwb.TOTAL],
+                        subRecord[dwb.TIMESTAMP],
+                        subRecord[dwb.SERVICE_STATUS]
                     )
                 }
 
+
+
+            // ตรวจสอบค่าที่ได้จาก subQuery
+            val subQueryResult = subQuery
+            UserServiceImpl.LOG.info("Subquery result: $subQueryResult")
+
             val mainQuery = query.select(
-                up.USER_ID,
-                up.USERNAME,
-                up.IMAGE_PROFILE,
-                up.FIRST_NAME,
-                up.LAST_NAME,
-                up.EMAIL,
-                up.PHONE_NUMBER,
-                up.USER_TYPE,
-                dw.COUNT_USED,
-                dw.COUNT_REVIEW,
-                dw.TOTAL_REVIEW,
-                dw.LOCATION_NAME,
-                dw.ID_CARD_NUMBER,
-                dw.VERIFICATION,
-                dw.PRICE_SMALL,
-                dw.PRICE_MEDIUM,
-                dw.PRICE_BIG
+                dw.WALKER_ID, up.IMAGE_PROFILE, up.USERNAME,
+                up.FIRST_NAME, up.LAST_NAME, up.EMAIL,
+                up.PHONE_NUMBER, up.USER_TYPE, dw.COUNT_USED,
+                dw.COUNT_REVIEW, dw.TOTAL_REVIEW, dw.LOCATION_NAME,
+                dw.VERIFICATION, dw.PRICE_SMALL, dw.PRICE_MEDIUM,
+                dw.PRICE_BIG, dw.ID_CARD_NUMBER // Include id_card_number in the select list
             )
                 .from(up)
-                .join(dk)
-                .on(up.USER_ID.eq(dk.USER_ID))
                 .join(dw)
                 .on(up.USER_ID.eq(dw.USER_ID))
-                .where(up.USERNAME.eq(DSL.`val`(accountName)))
+                .where(
+                    up.USERNAME.eq(DSL.`val`(accountName))
+                )
+                .and(up.USER_TYPE.eq("DogWalkers"))
                 .fetch { record ->
 
                     DogWalkersInfo(
-                        UserID = record[up.USER_ID],
-                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                        UserID = record[dw.WALKER_ID],
+                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
+                            record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
+                        }" else "N/A",
                         userName = record[up.USERNAME],
                         firstName = record[up.FIRST_NAME],
                         lastName = record[up.LAST_NAME],
@@ -136,17 +124,20 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 medium = record[dw.PRICE_MEDIUM],
                                 big = record[dw.PRICE_BIG]
                             )
-
                         ),
 
                         booking = subQuery
                     )
                 }
 
+
+            // ตรวจสอบค่าที่ได้จาก mainQuery
+            val mainQueryResult = mainQuery
+            UserServiceImpl.LOG.info("Mainquery result: $mainQueryResult")
+
             return@withContext mainQuery.firstOrNull()
         }
     }
-
 
 
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
@@ -178,7 +169,9 @@ class DogsWalkersServiceImpl @Inject constructor(
                             walkerID = record[dw.WALKER_ID],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
+                                    record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
+                                }" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
                                 price = PriceData(
@@ -280,7 +273,6 @@ class DogsWalkersServiceImpl @Inject constructor(
             }
         }
     }
-
 
 
     override suspend fun insert(id: Int): Boolean {

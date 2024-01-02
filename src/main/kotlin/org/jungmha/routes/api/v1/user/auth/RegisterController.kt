@@ -51,7 +51,6 @@ class RegisterController @Inject constructor(
     private val aes: AES
 ) {
 
-
     private val objectMapper = jacksonObjectMapper()
 
     /**
@@ -63,7 +62,7 @@ class RegisterController @Inject constructor(
      */
     @Operation(
         summary = "สำหรับการลงทะเบียนผู้ใช้",
-        description = "ทำการ Encrypt ชุดข้อมูลส่วนบุคคลด้วย AES ก่อนส่งไปที่ Server ด้วยรูปแบบข้อมูลนี้ \n \"content\" : \"string\"",
+        description = "ทำการ Encrypt ชุดข้อมูลส่วนบุคคลด้วย AES ก่อนส่งไปที่ Server",
         requestBody = RequestBody(
             required = true,
             content = [
@@ -105,7 +104,13 @@ class RegisterController @Inject constructor(
         }
     }
 
-
+    /**
+     * เมธอดที่ใช้ในการประมวลผลข้อมูลของการลงทะเบียน
+     *
+     * @param name ชื่อผู้ใช้
+     * @param payload ข้อมูลที่ถูกเข้ารหัสแล้วที่จะถูกใช้ในการลงทะเบียน
+     * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูก Encrypt
+     */
     private suspend fun processRegistration(
         name: String,
         payload: EncryptedData
@@ -151,7 +156,13 @@ class RegisterController @Inject constructor(
         }
     }
 
-
+    /**
+     * เมธอดที่ใช้ในการตรวจสอบความถูกต้องของข้อมูลที่ถูก Decrypt
+     *
+     * @param fields ฟิลด์ที่ต้องการตรวจสอบ
+     * @param decryptedData ข้อมูลที่ถูก Decrypt
+     * @return HttpResponse สำหรับผลลัพธ์ของการตรวจสอบ
+     */
     private fun validateDecryptedData(
         fields: Array<out EnumField>,
         decryptedData: Map<String, Any?>
@@ -168,9 +179,8 @@ class RegisterController @Inject constructor(
         return HttpResponse.ok()
     }
 
-
-
     companion object {
+        // Logger สำหรับการทำงานใน RegisterController
         private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
     }
 

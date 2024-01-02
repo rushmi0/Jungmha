@@ -103,8 +103,8 @@ class NormalController @Inject constructor(
      */
     private suspend fun NormalInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
-        val shareKey = userService.findUser(name)?.sharedKey.toString()
-        val encrypted = aes.encrypt(this.toString(), shareKey)
+        //val shareKey = userService.findUser(name)?.sharedKey.toString()
+        //val encrypted = aes.encrypt(this.toString(), shareKey)
         //return HttpResponse.ok(EncryptedData(encrypted))
         return HttpResponse.ok(this)
     }
