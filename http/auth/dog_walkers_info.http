@@ -2,10 +2,13 @@
 GET http://localhost:8080/api/v1/auth/user/dogwalkers/Rushmi0
 
 ###
-GET http://localhost:8080/api/v1/auth/user/dogwalkers/user2
+GET http://localhost:8080/api/v1/auth/user/dogwalkers/user6
 
 ###
 GET http://localhost:8080/api/v1/auth/user/dogwalkers/Eva
 
 ###
-GET http://localhost:8080/api/v1/auth/user/dogwalkers/user6
+GET http://localhost:8080/api/v1/auth/user/dogwalkers/Rushmi0
+
+###
+GET http://localhost:8080/api/v1/auth/user/dogwalkers/id/8

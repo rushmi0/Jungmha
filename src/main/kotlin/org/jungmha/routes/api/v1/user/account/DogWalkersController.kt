@@ -24,6 +24,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
+import org.jungmha.constants.Waring.BAD_REQUEST_USER_NOT_FOUND
+import org.jungmha.constants.Waring.BAD_REQUEST_UPDATE_FAILED
+import org.jungmha.constants.Waring.BAD_REQUEST_XSS_DETECTED
+import org.jungmha.constants.Waring.OK_ALL_FIELDS_UPDATED
+import org.jungmha.constants.Waring.OK_UPDATE_SUCCESSFUL
+
+
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -35,6 +42,14 @@ class DogWalkersController @Inject constructor(
     private val aes: AES
 ) {
 
+    @Get(
+        uri = "auth/user/dogwalkers/id/{id}",
+        produces = [MediaType.APPLICATION_JSON]
+    )
+    suspend fun getSingleDogWalkersInfo(id: Int): Any? {
+        return walkerService.getSingleDogWalkersInfo(id) ?: HttpResponse.badRequest("Not found")
+    }
+
 
     @Get(
         uri = "auth/user/dogwalkers/{name}",
@@ -42,19 +57,18 @@ class DogWalkersController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        //@Header("Access-Token") access: String
+        @Header("Access-Token") access: String,
         name: String
     ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
-//            val userDetails: TokenObject = token.viewDetail(access)
-//            val verify = token.verifyToken(access)
-//            val permission: String = userDetails.permission
-//            val name = userDetails.userName
+            val userDetails: TokenObject = token.viewDetail(access)
+            val verify = token.verifyToken(access)
+            val permission: String = userDetails.permission
+            val name = userDetails.userName
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
-            // verify && permission == "view"
-            return if (true) {
+            return if (verify && permission == "view") {
                 coroutineScope {
                     processSearching(name)
                 }
@@ -82,10 +96,10 @@ class DogWalkersController @Inject constructor(
 
     private suspend fun DogWalkersInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
-        //val shareKey = userService.findUser(name)?.sharedKey.toString()
-        //val encrypted = aes.encrypt(this.toString(), shareKey)
-        //return HttpResponse.ok(EncryptedData(encrypted))
-        return HttpResponse.ok(this)
+        val shareKey = userService.findUser(name)?.sharedKey.toString()
+        val encrypted = aes.encrypt(this.toString(), shareKey)
+        return HttpResponse.ok(EncryptedData(encrypted))
+        //return HttpResponse.ok(this)
     }
 
 
@@ -125,9 +139,12 @@ class DogWalkersController @Inject constructor(
     }
 
 
-    private suspend fun processDecrypting(name: String, payload: EncryptedData): MutableHttpResponse<out Any?> {
+    private suspend fun processDecrypting(
+        name: String,
+        payload: EncryptedData
+    ): MutableHttpResponse<out Any?> {
         return try {
-            val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest("User not found")
+            val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest(BAD_REQUEST_USER_NOT_FOUND)
             val userID = userInfo.userID
             val shareKey = userInfo.sharedKey
 
@@ -136,22 +153,27 @@ class DogWalkersController @Inject constructor(
 
             for (field in updateQueue) {
                 val newValue = decryptedData[field]?.toString() ?: continue
+
                 if (XssDetector.containsXss(newValue)) {
-                    return HttpResponse.badRequest("Cross-site scripting detected")
+                    return HttpResponse.badRequest(BAD_REQUEST_XSS_DETECTED)
                 }
 
                 val result = processFieldUpdate(userID, field, newValue)
-                if (result.status != HttpStatus.OK) {
+
+                // ตรวจสอบว่า result เป็น MutableHttpResponse และมีค่า status และไม่เท่ากับ null
+                if (result.status != null && result.status != HttpStatus.OK) {
                     return result
                 }
+
             }
 
-            return HttpResponse.ok("All fields updated successfully")
+            return HttpResponse.ok(OK_ALL_FIELDS_UPDATED)
         } catch (e: IllegalArgumentException) {
             LOG.warn("Invalid Field", e)
             return HttpResponse.badRequest("Invalid Field")
         }
     }
+
 
     private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
         val updateQueue = ArrayDeque<String>()
@@ -164,33 +186,63 @@ class DogWalkersController @Inject constructor(
     }
 
 
-
     private suspend fun processFieldUpdate(
         userID: Int,
         fieldName: String,
         newValue: String
     ): MutableHttpResponse<out Any?> {
         return try {
-            if (XssDetector.containsXss(newValue)) {
-                return HttpResponse.badRequest("Cross-site scripting detected")
-            }
-
-            val statement: Boolean = userService.updateSingleField(userID, fieldName, newValue)
-
-            return if (statement) {
-                HttpResponse.ok("Finished updating $fieldName field")
-            } else {
-                HttpResponse.badRequest("Failed to update $fieldName field: $newValue")
+            when (fieldName) {
+                "email", "phoneNumber" -> processFieldUpdateForEmailOrPhoneNumber(userID, fieldName, newValue)
+                else -> processFieldUpdateForOtherFields(userID, fieldName, newValue)
             }
         } catch (e: Exception) {
-            NormalController.LOG.error("Error updating field [$fieldName] for user ID [$userID]", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error("Error updating field [$fieldName] for user ID [$userID]", e)
+            return HttpResponse.serverError("Internal server error: ${e.message}")
+        }
+    }
+
+
+    private suspend fun processFieldUpdateForEmailOrPhoneNumber(
+        userID: Int,
+        fieldName: String,
+        newValue: String
+    ): MutableHttpResponse<out Any?> {
+        if (XssDetector.containsXss(newValue)) {
+            return HttpResponse.badRequest(BAD_REQUEST_XSS_DETECTED)
+        }
+
+        val statement: Boolean = userService.updateSingleField(userID, fieldName, newValue)
+
+        return if (statement) {
+            HttpResponse.ok(OK_UPDATE_SUCCESSFUL.format(fieldName))
+        } else {
+            HttpResponse.badRequest(BAD_REQUEST_UPDATE_FAILED.format(fieldName, newValue))
+        }
+    }
+
+    private suspend fun processFieldUpdateForOtherFields(
+        userID: Int,
+        fieldName: String,
+        newValue: String
+    ): MutableHttpResponse<out Any?> {
+        if (XssDetector.containsXss(newValue)) {
+            return HttpResponse.badRequest(BAD_REQUEST_XSS_DETECTED)
+        }
+
+        val id = walkerService.getSingleDogWalkersInfo(userID)?.userID!!
+        val statement: Boolean = walkerService.updateSingleField(id, fieldName, newValue)
+
+        return if (statement) {
+            HttpResponse.ok(OK_UPDATE_SUCCESSFUL.format(fieldName))
+        } else {
+            HttpResponse.badRequest(BAD_REQUEST_UPDATE_FAILED.format(fieldName, newValue))
         }
     }
 
 
     companion object {
-        val LOG: Logger = LoggerFactory.getLogger(DogWalkersController::class.java)
+        private val LOG: Logger = LoggerFactory.getLogger(DogWalkersController::class.java)
     }
 
 }

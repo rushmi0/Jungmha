@@ -9,7 +9,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
+import org.jooq.conf.ParamType
 import org.jooq.impl.DSL
+import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.service.DogsWalkersService
 import org.jungmha.domain.response.*
 import org.jungmha.infra.database.tables.Dogs.DOGS
@@ -34,32 +36,100 @@ class DogsWalkersServiceImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
     val BASE_URL = "http://localhost:8080/api/v1/user"
 
+    override suspend fun getSingleDogWalkersInfo(id: Int): DogWalkerField? {
+        return withContext(dispatcher) {
+            val currentThread = Thread.currentThread()
+            LOG.info("Executing <<getSingleDogWalkersInfo>> ${currentThread.stackTrace[1]}")
+            LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
+
+            /**
+             * SELECT dk.walker_id,
+             *        dk.user_id,
+             *        dk.location_name,
+             *        dk.id_card_number,
+             *        dk.verification,
+             *        dk.price_small,
+             *        dk.price_medium,
+             *        dk.price_big
+             * FROM dogwalkers dk
+             *          JOIN public.userprofiles u on u.user_id = dk.user_id
+             * WHERE dk.user_id = 4;
+             * */
+
+            val u = USERPROFILES.`as`("u")
+            val dk = DOGWALKERS.`as`("dk")
+
+            val record = query.select(
+                dk.WALKER_ID,
+                dk.USER_ID,
+                dk.LOCATION_NAME,
+                dk.ID_CARD_NUMBER,
+                dk.VERIFICATION,
+                dk.PRICE_SMALL,
+                dk.PRICE_MEDIUM,
+                dk.PRICE_BIG
+            )
+                .from(dk)
+                .join(u)
+                .on(u.USER_ID.eq(dk.USER_ID))
+                .where(dk.USER_ID.eq(id))
+                .fetchOne()
+
+
+            LOG.info("\n$record")
+            return@withContext record?.let {
+                DogWalkerField(
+                    walkerID = it[DOGWALKERS.WALKER_ID],
+                    userID = it[DOGWALKERS.USER_ID],
+                    locationName = it[DOGWALKERS.LOCATION_NAME],
+                    idCardNumber = it[DOGWALKERS.ID_CARD_NUMBER],
+                    verification = it[DOGWALKERS.VERIFICATION],
+                    priceSmall = it[DOGWALKERS.PRICE_SMALL],
+                    priceMedium = it[DOGWALKERS.PRICE_MEDIUM],
+                    priceBig = it[DOGWALKERS.PRICE_BIG]
+                )
+            }
+        }
+    }
+
 
     override suspend fun getDogWalkersInfo(accountName: String): DogWalkersInfo? {
         return withContext(dispatcher) {
+            try {
+                val currentThread = Thread.currentThread()
+                LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
+                LOG.info("Entering getDogWalkersInfo for Account Name: $accountName")
 
-            val up = USERPROFILES.`as`("up")
-            val dw = DOGWALKERS.`as`("dw")
-            val d = DOGS.`as`("d")
-            val dwb = DOGWALKBOOKINGS.`as`("dwb")
+                val up = USERPROFILES.`as`("up")
+                val dw = DOGWALKERS.`as`("dw")
+                val d = DOGS.`as`("d")
+                val dwb = DOGWALKBOOKINGS.`as`("dwb")
 
+                val subQuery = query
+                    .select(
+                        dwb.BOOKING_ID,
+                        up.USERNAME.`as`("user_name"),
+                        d.BREED_NAME,
+                        d.SIZE,
+                        dwb.BOOKING_DATE,
+                        dwb.TIME_START,
+                        dwb.TIME_END,
+                        dwb.DURATION,
+                        dwb.TOTAL,
+                        dwb.STATUS,
+                        dwb.TIMESTAMP,
+                        dwb.SERVICE_STATUS
+                    )
+                    .from(dwb)
+                    .join(dw)
+                    .on(dwb.WALKER_ID.eq(dw.WALKER_ID))
+                    .join(up)
+                    .on(dw.USER_ID.eq(up.USER_ID))
+                    .join(d)
+                    .on(dwb.DOG_ID.eq(d.DOG_ID))
+                    .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
-            val subQuery = query
-                .select(
-                    dwb.BOOKING_ID, up.USERNAME.`as`("user_name"), d.BREED_NAME,
-                    d.SIZE, dwb.BOOKING_DATE, dwb.TIME_START,
-                    dwb.TIME_END, dwb.DURATION, dwb.TOTAL,
-                    dwb.STATUS, dwb.TIMESTAMP, dwb.SERVICE_STATUS
-                )
-                .from(dwb)
-                .join(dw)
-                .on(dwb.WALKER_ID.eq(dw.WALKER_ID))
-                .join(up)
-                .on(dw.USER_ID.eq(up.USER_ID))
-                .join(d)
-                .on(dwb.DOG_ID.eq(d.DOG_ID))
-                .where(up.USERNAME.eq(DSL.`val`(accountName)))
-                .fetch { subRecord ->
+                val subQueryResult = subQuery.fetch { subRecord ->
                     TxBooking(
                         subRecord[dwb.BOOKING_ID],
                         subRecord["user_name"].toString(),
@@ -76,29 +146,34 @@ class DogsWalkersServiceImpl @Inject constructor(
                     )
                 }
 
-
-
-            // ตรวจสอบค่าที่ได้จาก subQuery
-            val subQueryResult = subQuery
-            UserServiceImpl.LOG.info("Subquery result: $subQueryResult")
-
-            val mainQuery = query.select(
-                dw.WALKER_ID, up.IMAGE_PROFILE, up.USERNAME,
-                up.FIRST_NAME, up.LAST_NAME, up.EMAIL,
-                up.PHONE_NUMBER, up.USER_TYPE, dw.COUNT_USED,
-                dw.COUNT_REVIEW, dw.TOTAL_REVIEW, dw.LOCATION_NAME,
-                dw.VERIFICATION, dw.PRICE_SMALL, dw.PRICE_MEDIUM,
-                dw.PRICE_BIG, dw.ID_CARD_NUMBER // Include id_card_number in the select list
-            )
-                .from(up)
-                .join(dw)
-                .on(up.USER_ID.eq(dw.USER_ID))
-                .where(
-                    up.USERNAME.eq(DSL.`val`(accountName))
+                val mainQuery = query.select(
+                    dw.WALKER_ID,
+                    up.IMAGE_PROFILE,
+                    up.USERNAME,
+                    up.FIRST_NAME,
+                    up.LAST_NAME,
+                    up.EMAIL,
+                    up.PHONE_NUMBER,
+                    up.USER_TYPE,
+                    dw.COUNT_USED,
+                    dw.COUNT_REVIEW,
+                    dw.TOTAL_REVIEW,
+                    dw.LOCATION_NAME,
+                    dw.VERIFICATION,
+                    dw.PRICE_SMALL,
+                    dw.PRICE_MEDIUM,
+                    dw.PRICE_BIG,
+                    dw.ID_CARD_NUMBER
                 )
-                .and(up.USER_TYPE.eq("DogWalkers"))
-                .fetch { record ->
+                    .from(up)
+                    .join(dw)
+                    .on(up.USER_ID.eq(dw.USER_ID))
+                    .where(
+                        up.USERNAME.eq(DSL.`val`(accountName))
+                    )
+                    .and(up.USER_TYPE.eq("DogWalkers"))
 
+                val mainQueryResult = mainQuery.fetch { record ->
                     DogWalkersInfo(
                         UserID = record[dw.WALKER_ID],
                         profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
@@ -126,18 +201,22 @@ class DogsWalkersServiceImpl @Inject constructor(
                             )
                         ),
 
-                        booking = subQuery
+                        booking = subQueryResult
                     )
                 }
 
+                LOG.info("\n${mainQuery.fetchOne()}")
+                LOG.info("\n${subQuery.fetch()}")
 
-            // ตรวจสอบค่าที่ได้จาก mainQuery
-            val mainQueryResult = mainQuery
-            UserServiceImpl.LOG.info("Mainquery result: $mainQueryResult")
+                return@withContext mainQueryResult.firstOrNull()
 
-            return@withContext mainQuery.firstOrNull()
+            } catch (e: Exception) {
+                LOG.error("Error in getDogWalkersInfo: ${e.message}", e)
+                return@withContext null
+            }
         }
     }
+
 
 
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
@@ -311,23 +390,24 @@ class DogsWalkersServiceImpl @Inject constructor(
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
+
                 val status = when (fieldName) {
                     "userID" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.USER_ID, DSL.`val`(Integer.valueOf(newValue)))
 
-                    "locationName" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.LOCATION_NAME, DSL.`val`(newValue))
-
                     "idCardNumber" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.ID_CARD_NUMBER, DSL.`val`(newValue))
 
-                    "priceSmall" -> query.update(DOGWALKERS)
+                    "location" -> query.update(DOGWALKERS)
+                        .set(DOGWALKERS.LOCATION_NAME, DSL.`val`(newValue))
+
+                    "small" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_SMALL, DSL.`val`(Integer.valueOf(newValue)))
 
-                    "priceMedium" -> query.update(DOGWALKERS)
+                    "medium" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_MEDIUM, DSL.`val`(Integer.valueOf(newValue)))
 
-                    "priceBig" -> query.update(DOGWALKERS)
+                    "big" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_BIG, DSL.`val`(Integer.valueOf(newValue)))
 
                     else -> {

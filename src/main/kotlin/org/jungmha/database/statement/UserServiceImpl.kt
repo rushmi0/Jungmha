@@ -45,6 +45,10 @@ class UserServiceImpl @Inject constructor(
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
 
+            val currentThread = Thread.currentThread()
+            LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
+            LOG.info("Entering getUserInfo for Account Name: $accountName")
+
             val up = USERPROFILES.`as`("up")
             val dw = DOGWALKERS.`as`("dw")
             val d = DOGS.`as`("d")

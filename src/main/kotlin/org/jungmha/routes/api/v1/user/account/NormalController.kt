@@ -158,7 +158,10 @@ class NormalController @Inject constructor(
      * @param payload ข้อมูลที่ถูก Encrypt ที่ต้องการนำมาแก้ไข
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูกแก้ไข
      */
-    private suspend fun processDecrypting(name: String, payload: EncryptedData): MutableHttpResponse<out Any?> {
+    private suspend fun processDecrypting(
+        name: String,
+        payload: EncryptedData)
+    : MutableHttpResponse<out Any?> {
         return try {
             val userInfo = userService.findUser(name)
             val userID = userInfo?.userID!!

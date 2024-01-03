@@ -1,3 +1,11 @@
+CREATE TABLE IF NOT EXISTS Signature
+(
+    sig_id    SERIAL PRIMARY KEY,
+    user_id   INTEGER REFERENCES UserProfiles (user_id),
+    signature VARCHAR(255) unique,
+    timestamp TIMESTAMPTZ DEFAULT now()
+);
+
 -- สร้างตาราง UserProfiles
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
@@ -12,15 +20,6 @@ CREATE TABLE IF NOT EXISTS UserProfiles
     phone_number  VARCHAR(10)  DEFAULT 'N/A',
     created_at    TIMESTAMPTZ  DEFAULT now(),
     user_type     VARCHAR(10)  DEFAULT 'N/A' CHECK (user_type IN ('Normal', 'DogWalkers', 'N/A'))
-);
-
-
-CREATE TABLE IF NOT EXISTS Signature
-(
-    sig_id    SERIAL PRIMARY KEY,
-    user_id   INTEGER REFERENCES UserProfiles (user_id),
-    signature VARCHAR(255) unique,
-    timestamp TIMESTAMPTZ DEFAULT now()
 );
 
 -- สร้างตาราง DogWalkers
