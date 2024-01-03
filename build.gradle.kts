@@ -9,7 +9,7 @@ plugins {
     id("io.micronaut.test-resources") version "4.2.0"
     id("io.micronaut.aot") version "4.2.0"
     id("nu.studer.jooq") version "8.2"
-    id("com.google.devtools.ksp") version "1.9.21-1.0.16"
+    //id("com.google.devtools.ksp") version "1.9.21-1.0.16"
 }
 
 version = "0.1"
@@ -31,9 +31,9 @@ dependencies {
 
     jooqGenerator("org.postgresql:postgresql:42.5.1")
 
-    ksp("io.micronaut:micronaut-http-validation")
-    ksp("io.micronaut.openapi:micronaut-openapi")
-    ksp("io.micronaut.serde:micronaut-serde-processor")
+//    ksp("io.micronaut:micronaut-http-validation")
+//    ksp("io.micronaut.openapi:micronaut-openapi")
+//    ksp("io.micronaut.serde:micronaut-serde-processor")
 
     annotationProcessor("io.micronaut.openapi:micronaut-openapi:2.1.1")
 
@@ -69,9 +69,6 @@ dependencies {
 
 }
 
-ksp {
-
-}
 
 
 java {

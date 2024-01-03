@@ -27,8 +27,18 @@ import java.util.*
 import org.jungmha.constants.Waring.BAD_REQUEST_USER_NOT_FOUND
 import org.jungmha.constants.Waring.BAD_REQUEST_UPDATE_FAILED
 import org.jungmha.constants.Waring.BAD_REQUEST_XSS_DETECTED
+import org.jungmha.constants.Waring.ERROR_PROCESSING
+import org.jungmha.constants.Waring.INTERNAL_SERVER_ERROR
+import org.jungmha.constants.Waring.INVALID_FIELD
+import org.jungmha.constants.Waring.INVALID_FIELD_
+import org.jungmha.constants.Waring.INVALID_TOKEN
+import org.jungmha.constants.Waring.INVALID_TOKEN_
 import org.jungmha.constants.Waring.OK_ALL_FIELDS_UPDATED
 import org.jungmha.constants.Waring.OK_UPDATE_SUCCESSFUL
+import org.jungmha.constants.Waring.THREAD_STACK_TRACE
+import org.jungmha.constants.Waring.USER_INFO_NOT_FOUND
+import org.jungmha.constants.Waring.USER_INFO_NOT_FOUND_
+import org.jungmha.constants.Waring.ERROR_UPDATING_FIELD
 
 
 @Controller("api/v1")
@@ -47,7 +57,7 @@ class DogWalkersController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getSingleDogWalkersInfo(id: Int): Any? {
-        return walkerService.getSingleDogWalkersInfo(id) ?: HttpResponse.badRequest("Not found")
+        return walkerService.getSingleDogWalkersInfo(id) ?: HttpResponse.badRequest(BAD_REQUEST_USER_NOT_FOUND)
     }
 
 
@@ -73,12 +83,13 @@ class DogWalkersController @Inject constructor(
                     processSearching(name)
                 }
             } else {
-                LOG.warn("Invalid token or insufficient permission for user: $name")
-                HttpResponse.badRequest("Invalid token or insufficient permission")
+                LOG.info(THREAD_STACK_TRACE)
+                LOG.warn(INVALID_TOKEN.format(name))
+                HttpResponse.badRequest(INVALID_TOKEN_)
             }
         } catch (e: Exception) {
-            LOG.error("Error processing getPersonalInfo", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_PROCESSING.format(e))
+            HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 
@@ -89,8 +100,8 @@ class DogWalkersController @Inject constructor(
         return if (userInfo != null) {
             userInfo.processEncrypting(name)
         } else {
-            LOG.warn("User info not found for user: $name")
-            HttpResponse.notFound("User info not found")
+            LOG.warn(USER_INFO_NOT_FOUND.format(name))
+            HttpResponse.notFound(USER_INFO_NOT_FOUND_)
         }
     }
 
@@ -129,12 +140,12 @@ class DogWalkersController @Inject constructor(
                     processDecrypting(name, payload)
                 }
             } else {
-                LOG.warn("Invalid token or insufficient permission for user: $name")
-                HttpResponse.badRequest("Invalid token or insufficient permission")
+                LOG.warn(INVALID_TOKEN.format(name))
+                HttpResponse.badRequest(INVALID_TOKEN_)
             }
         } catch (e: Exception) {
-            LOG.error("Error processing editPersonalInfo", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_PROCESSING.format(e))
+            HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 
@@ -169,8 +180,8 @@ class DogWalkersController @Inject constructor(
 
             return HttpResponse.ok(OK_ALL_FIELDS_UPDATED)
         } catch (e: IllegalArgumentException) {
-            LOG.warn("Invalid Field", e)
-            return HttpResponse.badRequest("Invalid Field")
+            LOG.warn(INVALID_FIELD.format(e))
+            return HttpResponse.badRequest(INVALID_FIELD_)
         }
     }
 
@@ -197,8 +208,8 @@ class DogWalkersController @Inject constructor(
                 else -> processFieldUpdateForOtherFields(userID, fieldName, newValue)
             }
         } catch (e: Exception) {
-            LOG.error("Error updating field [$fieldName] for user ID [$userID]", e)
-            return HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_UPDATING_FIELD.format(fieldName,userID,e))
+            return HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 

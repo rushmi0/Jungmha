@@ -17,6 +17,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.constants.NormalUpdateField
+import org.jungmha.constants.Waring.BAD_REQUEST_UPDATE_FAILED
+import org.jungmha.constants.Waring.BAD_REQUEST_XSS_DETECTED
 import org.jungmha.domain.response.EncryptedData
 import org.jungmha.domain.response.NormalInfo
 import org.jungmha.security.securekey.AES
@@ -26,6 +28,18 @@ import org.jungmha.security.xss.XssDetector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
+
+import org.jungmha.constants.Waring.ERROR_PROCESSING
+import org.jungmha.constants.Waring.INVALID_TOKEN
+import org.jungmha.constants.Waring.INVALID_TOKEN_
+import org.jungmha.constants.Waring.INTERNAL_SERVER_ERROR
+import org.jungmha.constants.Waring.USER_INFO_NOT_FOUND
+import org.jungmha.constants.Waring.USER_INFO_NOT_FOUND_
+import org.jungmha.constants.Waring.OK_ALL_FIELDS_UPDATED
+import org.jungmha.constants.Waring.INVALID_FIELD
+import org.jungmha.constants.Waring.INVALID_FIELD_
+import org.jungmha.constants.Waring.ERROR_UPDATING_FIELD
+import org.jungmha.constants.Waring.OK_UPDATE_SUCCESSFUL
 
 // * Normal Controller
 
@@ -56,6 +70,7 @@ class NormalController @Inject constructor(
         @Header("Access-Token") access: String
     ): MutableHttpResponse<out Any?>? {
         return try {
+
             // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
             val userDetails: TokenObject = token.viewDetail(access)
             val verify = token.verifyToken(access)
@@ -68,12 +83,12 @@ class NormalController @Inject constructor(
                     processSearching(name)
                 }
             } else {
-                LOG.warn("Invalid token or insufficient permission for user: $name")
-                HttpResponse.badRequest("Invalid token or insufficient permission")
+                LOG.warn(INVALID_TOKEN.format(name))
+                HttpResponse.badRequest(INVALID_TOKEN_)
             }
         } catch (e: Exception) {
-            LOG.error("Error processing getPersonalInfo", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_PROCESSING.format(e))
+            HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 
@@ -90,8 +105,8 @@ class NormalController @Inject constructor(
         return if (userInfo != null) {
             userInfo.processEncrypting(name)
         } else {
-            LOG.warn("User info not found for user: $name")
-            HttpResponse.notFound("User info not found")
+            LOG.warn(USER_INFO_NOT_FOUND.format(name))
+            HttpResponse.notFound(USER_INFO_NOT_FOUND_)
         }
     }
 
@@ -103,10 +118,9 @@ class NormalController @Inject constructor(
      */
     private suspend fun NormalInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
-        //val shareKey = userService.findUser(name)?.sharedKey.toString()
-        //val encrypted = aes.encrypt(this.toString(), shareKey)
-        //return HttpResponse.ok(EncryptedData(encrypted))
-        return HttpResponse.ok(this)
+        val shareKey = userService.findUser(name)?.sharedKey.toString()
+        val encrypted = aes.encrypt(this.toString(), shareKey)
+        return HttpResponse.ok(EncryptedData(encrypted))
     }
 
 
@@ -142,12 +156,12 @@ class NormalController @Inject constructor(
                     processDecrypting(name, payload)
                 }
             } else {
-                LOG.warn("Invalid token or insufficient permission for user: $name")
-                HttpResponse.badRequest("Invalid token or insufficient permission")
+                LOG.warn(INVALID_TOKEN.format(name))
+                HttpResponse.badRequest(INVALID_TOKEN_)
             }
         } catch (e: Exception) {
-            LOG.error("Error processing editPersonalInfo", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_PROCESSING.format(e))
+            HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 
@@ -177,7 +191,7 @@ class NormalController @Inject constructor(
             for (field in updateQueue) {
                 val newValue = decryptedData[field]?.toString() ?: continue
                 if (XssDetector.containsXss(newValue)) {
-                    return HttpResponse.badRequest("Cross-site scripting detected")
+                    return HttpResponse.badRequest(BAD_REQUEST_XSS_DETECTED)
                 }
 
                 val result = processFieldUpdate(userID, field, newValue)
@@ -186,10 +200,10 @@ class NormalController @Inject constructor(
                 }
             }
 
-            return HttpResponse.ok("All fields updated successfully")
+            return HttpResponse.ok(OK_ALL_FIELDS_UPDATED)
         } catch (e: IllegalArgumentException) {
-            LOG.warn("Invalid Field", e)
-            HttpResponse.badRequest("Invalid Field")
+            LOG.warn(INVALID_FIELD.format(e))
+            HttpResponse.badRequest(INVALID_FIELD_)
         }
     }
 
@@ -223,19 +237,19 @@ class NormalController @Inject constructor(
     ): MutableHttpResponse<out Any?> {
         return try {
             if (XssDetector.containsXss(newValue)) {
-                return HttpResponse.badRequest("Cross-site scripting detected")
+                return HttpResponse.badRequest(BAD_REQUEST_XSS_DETECTED)
             }
 
             val statement: Boolean = userService.updateSingleField(userID, fieldName, newValue)
 
             return if (statement) {
-                HttpResponse.ok("Finished updating $fieldName field")
+                HttpResponse.ok(OK_UPDATE_SUCCESSFUL.format(fieldName))
             } else {
-                HttpResponse.badRequest("Failed to update $fieldName field: $newValue")
+                HttpResponse.badRequest(BAD_REQUEST_UPDATE_FAILED.format(fieldName, newValue))
             }
         } catch (e: Exception) {
-            LOG.error("Error updating field [$fieldName] for user ID [$userID]", e)
-            HttpResponse.serverError("Internal server error: ${e.message}")
+            LOG.error(ERROR_UPDATING_FIELD.format(fieldName,userID,e))
+            HttpResponse.serverError(INTERNAL_SERVER_ERROR.format(e.message))
         }
     }
 

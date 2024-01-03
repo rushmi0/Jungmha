@@ -11,6 +11,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import org.jungmha.constants.Waring.AUTH_SUCCESSFUL
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.statement.SignatureServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
@@ -63,7 +64,7 @@ class LoginController @Inject constructor(
 
                     if (signService.checkSign(username, sign) && ECDSA.verify(uri, publickey, sign)) {
                         val authToken: TokenResponse = token.buildTokenPair(username, 50)
-                        LOG.info("User [$username] Authentication successful")
+                        LOG.info(AUTH_SUCCESSFUL.format(username))
                         HttpResponse.ok(authToken)
                     } else {
                         LOG.warn("Invalid Signature for user [$username]")
