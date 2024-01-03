@@ -1,11 +1,3 @@
-CREATE TABLE IF NOT EXISTS Signature
-(
-    sig_id    SERIAL PRIMARY KEY,
-    user_id   INTEGER REFERENCES UserProfiles (user_id),
-    signature VARCHAR(255) unique,
-    timestamp TIMESTAMPTZ DEFAULT now()
-);
-
 -- สร้างตาราง UserProfiles
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
@@ -36,6 +28,15 @@ CREATE TABLE IF NOT EXISTS DogWalkers
     price_small    INTEGER     NOT NULL DEFAULT 0,
     price_medium   INTEGER     NOT NULL DEFAULT 0,
     price_big      INTEGER     NOT NULL DEFAULT 0
+);
+
+
+CREATE TABLE IF NOT EXISTS Signature
+(
+    sig_id    SERIAL PRIMARY KEY,
+    user_id   INTEGER REFERENCES UserProfiles (user_id),
+    signature VARCHAR(255) unique,
+    timestamp TIMESTAMPTZ DEFAULT now()
 );
 
 -- ////////////////////////////////////////////////////////////////////////////////////////
@@ -212,7 +213,6 @@ CREATE TRIGGER tr_dogwalkbookings_update_count_used
     ON DogWalkBookings
     FOR EACH ROW
 EXECUTE FUNCTION update_count_used();
-
 
 
 -- สร้างตาราง DogWalkerReviews
