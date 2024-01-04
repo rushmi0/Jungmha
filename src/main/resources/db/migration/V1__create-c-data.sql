@@ -52,17 +52,17 @@ VALUES (2, 'Park1', 'ID123456', 20, 30, 40),
 
 -- เพิ่มข้อมูลในตาราง Dogs
 INSERT INTO Dogs (dog_image, breed_name, size)
-VALUES ('src/main/resources/images/dogs/dog-big/Americanpitbull-large.jpg', 'Americanpitbull', 'Big'),
-       ('src/main/resources/images/dogs/dog-big/Germanshepherd-large.jpg', 'Germanshepherd', 'Big'),
-       ('src/main/resources/images/dogs/dog-big/Siberianhusky-large.jpg', 'Siberianhusky', 'Big'),
+VALUES ('src/main/resources/images/dogs/dog-big/Americanpitbull-large.jpg', 'American Pitbull', 'Big'),
+       ('src/main/resources/images/dogs/dog-big/Germanshepherd-large.jpg', 'German Shepherd', 'Big'),
+       ('src/main/resources/images/dogs/dog-big/Siberianhusky-large.jpg', 'Siberian Husky', 'Big'),
 
-       ('src/main/resources/images/dogs/dog-medium/Goldenretriever-medium.jpg', 'Goldenretriever', 'Medium'),
-       ('src/main/resources/images/dogs/dog-medium/Jackrussell-medium.jpg', 'Jackrussell', 'Medium'),
+       ('src/main/resources/images/dogs/dog-medium/Goldenretriever-medium.jpg', 'Golden Retriever', 'Medium'),
+       ('src/main/resources/images/dogs/dog-medium/Jackrussell-medium.jpg', 'Jack Russell', 'Medium'),
        ('src/main/resources/images/dogs/dog-medium/Maltese-medium.jpg', 'Maltese', 'Medium'),
 
        ('src/main/resources/images/dogs/dog-small/Chihuahua-small.jpg', 'Chihuahua', 'Small'),
        ('src/main/resources/images/dogs/dog-small/Pomeranian-small.jpg', 'Pomeranian', 'Small'),
-       ('src/main/resources/images/dogs/dog-small/Shihtzu-small.jpg', 'Shihtzu', 'Small');
+       ('src/main/resources/images/dogs/dog-small/Shihtzu-small.jpg', 'Shih tzu', 'Small');
 
 
 -- เพิ่มข้อมูลในตาราง DogWalkBookings

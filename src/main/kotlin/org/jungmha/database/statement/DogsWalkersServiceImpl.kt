@@ -19,8 +19,10 @@ import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
+import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.SHA256
+import org.jungmha.utils.ShiftTo.toFileName
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -39,7 +41,7 @@ class DogsWalkersServiceImpl @Inject constructor(
     override suspend fun getSingleDogWalkersInfo(id: Int): DogWalkerField? {
         return withContext(dispatcher) {
             val currentThread = Thread.currentThread()
-            LOG.info("Executing <<getSingleDogWalkersInfo>> ${currentThread.stackTrace[1]}")
+            LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
             LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
 
             /**
