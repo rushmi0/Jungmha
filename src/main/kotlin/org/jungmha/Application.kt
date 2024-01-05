@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme
     security = [
         SecurityRequirement(
             name = "Access-Token",
-            scopes = ["view-only", "full-control"]
+            scopes = ["view", "edit"]
         )
     ]
 )

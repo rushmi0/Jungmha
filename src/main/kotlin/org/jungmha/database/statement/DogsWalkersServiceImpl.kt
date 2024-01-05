@@ -301,59 +301,59 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .from(dw)
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
                     .where(up.USER_TYPE.eq(DSL.`val`("DogWalkers")))
-                    .fetch { record ->
 
-                        val subQuery = query
-                            .select(
-                                dwr.USER_ID,
-                                dwr.RATING,
-                                dwr.REVIEW_TEXT
+                val result = mainQuery.fetch { record ->
+
+                    val subQuery = query
+                        .select(
+                            dwr.USER_ID,
+                            dwr.RATING,
+                            dwr.REVIEW_TEXT
+                        )
+                        .from(dwr)
+                        .where(dwr.WALKER_ID.eq(record[dw.WALKER_ID]))
+
+                    PrivateDogWalkerInfo(
+                        walkerID = record[dw.WALKER_ID],
+                        countReview = record[dw.COUNT_REVIEW],
+                        totalReview = record[dw.TOTAL_REVIEW],
+                        detail = WalkerDetail(
+                            name = record[up.USERNAME],
+                            profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                            verify = record[dw.VERIFICATION],
+                            location = record[dw.LOCATION_NAME],
+                            price = PriceData(
+                                small = record[dw.PRICE_SMALL],
+                                medium = record[dw.PRICE_MEDIUM],
+                                big = record[dw.PRICE_BIG]
                             )
-                            .from(dwr)
-                            .where(dwr.WALKER_ID.eq(record[dw.WALKER_ID]))
-
-                        PrivateDogWalkerInfo(
-                            walkerID = record[dw.WALKER_ID],
-                            countReview = record[dw.COUNT_REVIEW],
-                            totalReview = record[dw.TOTAL_REVIEW],
-
-                            detail = WalkerDetail(
+                        ),
+                        contact = WalkerContact(
+                            email = record[up.EMAIL],
+                            phoneNumber = record[up.PHONE_NUMBER]
+                        ),
+                        review = subQuery.fetch { subRecord ->
+                            WalkerReview(
+                                userID = subRecord[dwr.USER_ID],
                                 name = record[up.USERNAME],
                                 profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
-                                verify = record[dw.VERIFICATION],
-                                location = record[dw.LOCATION_NAME],
-                                price = PriceData(
-                                    small = record[dw.PRICE_SMALL],
-                                    medium = record[dw.PRICE_MEDIUM],
-                                    big = record[dw.PRICE_BIG]
-                                )
-                            ),
+                                rating = subRecord[dwr.RATING] ?: 0,
+                                reviewText = subRecord[dwr.REVIEW_TEXT] ?: ""
+                            )
+                        }.toList()
+                    )
+                }
 
-                            contact = WalkerContact(
-                                email = record[up.EMAIL],
-                                phoneNumber = record[up.PHONE_NUMBER]
-                            ),
-
-                            review = subQuery.fetch { subRecord ->
-                                WalkerReview(
-                                    userID = subRecord[dwr.USER_ID],
-                                    name = record[up.USERNAME],
-                                    profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
-                                    rating = subRecord[dwr.RATING] ?: 0,
-                                    reviewText = subRecord[dwr.REVIEW_TEXT] ?: ""
-                                )
-                            }
-                        )
-                    }
-
-                return@withContext mainQuery
+                return@withContext result
 
             } catch (e: Exception) {
                 LOG.error("Error retrieving public dog walkers from the database", e)
-                emptyList()
+                // handle the exception
+                return@withContext emptyList()
             }
         }
     }
+
 
 
     override suspend fun insert(id: Int): Boolean {

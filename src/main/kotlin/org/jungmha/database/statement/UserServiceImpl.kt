@@ -44,7 +44,6 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
-
             val currentThread = Thread.currentThread()
             LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
             LOG.info("Entering getUserInfo for Account Name: $accountName")
@@ -55,6 +54,40 @@ class UserServiceImpl @Inject constructor(
             val up2 = USERPROFILES.`as`("up2")
             val dk = DOGWALKBOOKINGS.`as`("dk")
 
+            // Main query
+            val mainQuery = query.select(
+                up.USER_ID,
+                up.USERNAME,
+                up.IMAGE_PROFILE,
+                up.FIRST_NAME,
+                up.LAST_NAME,
+                up.EMAIL,
+                up.PHONE_NUMBER,
+                up.USER_TYPE
+            )
+                .from(up)
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
+                .fetch { record ->
+                    NormalInfo(
+                        UserID = record[up.USER_ID],
+                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                        userName = record[up.USERNAME],
+                        firstName = record[up.FIRST_NAME],
+                        lastName = record[up.LAST_NAME],
+                        email = record[up.EMAIL],
+                        phoneNumber = record[up.PHONE_NUMBER],
+                        accountType = record[up.USER_TYPE],
+                        booking = emptyList()
+                    )
+                }
+
+            // Check if the main query result is null
+            if (mainQuery.firstOrNull() == null) {
+                LOG.info("User not found for Account Name: $accountName")
+                return@withContext null
+            }
+
+            // Subquery
             val subQuery = query.select(
                 dk.BOOKING_ID,
                 up2.USERNAME.`as`("walker_name"),
@@ -96,44 +129,21 @@ class UserServiceImpl @Inject constructor(
                     )
                 }
 
-            // ตรวจสอบค่าที่ได้จาก subQuery
-            val subQueryResult = subQuery
-            LOG.info("Subquery result: $subQueryResult")
+            // Check if the subquery result is null
+            if (subQuery.isEmpty()) {
+                LOG.info("No bookings found for user: $accountName")
+                return@withContext mainQuery.firstOrNull()
+            }
 
-            val mainQuery = query.select(
-                up.USER_ID,
-                up.USERNAME,
-                up.IMAGE_PROFILE,
-                up.FIRST_NAME,
-                up.LAST_NAME,
-                up.EMAIL,
-                up.PHONE_NUMBER,
-                up.USER_TYPE
-            )
-                .from(up)
-                .join(dk)
-                .on(up.USER_ID.eq(dk.USER_ID))
-                .where(up.USERNAME.eq(DSL.`val`(accountName)))
-                .fetch { record ->
-                    NormalInfo(
-                        UserID = record[up.USER_ID],
-                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
-                        userName = record[up.USERNAME],
-                        firstName = record[up.FIRST_NAME],
-                        lastName = record[up.LAST_NAME],
-                        email = record[up.EMAIL],
-                        phoneNumber = record[up.PHONE_NUMBER],
-                        accountType = record[up.USER_TYPE],
-                        booking = subQuery
-                    )
-                }
-            // ตรวจสอบค่าที่ได้จาก mainQuery
-            val mainQueryResult = mainQuery
-            LOG.info("Mainquery result: $mainQueryResult")
-
-            return@withContext mainQuery.firstOrNull()
+            // Combine main and subquery results
+            mainQuery.firstOrNull()?.copy(booking = subQuery.toList())
         }
     }
+
+
+
+
+
 
 
 

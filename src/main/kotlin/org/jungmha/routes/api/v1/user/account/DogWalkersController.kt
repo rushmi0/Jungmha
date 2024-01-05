@@ -65,23 +65,25 @@ class DogWalkersController @Inject constructor(
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูล Dog Walkers หรือแจ้งเตือนหากไม่สามารถดึงข้อมูลได้
      */
     @Get(
-        uri = "auth/user/dogwalkers",
+        uri = "auth/user/dogwalkers/{userName}",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        @Header("Access-Token") access: String
+        //@Header("Access-Token") access: String
+        userName: String
     ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
-            val userDetails: TokenObject = token.viewDetail(access)
-            val verify = token.verifyToken(access)
-            val permission: String = userDetails.permission
-            val userName = userDetails.userName
+//            val userDetails: TokenObject = token.viewDetail(access)
+//            val verify = token.verifyToken(access)
+//            val permission: String = userDetails.permission
+//            val userName = userDetails.userName
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
             return when {
-                verify && permission == "view" -> {
+                true//verify && permission == "view"
+                -> {
                     coroutineScope {
                         processSearching(userName)
                     }
@@ -125,7 +127,8 @@ class DogWalkersController @Inject constructor(
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
         val encrypted = aes.encrypt(this.toString(), shareKey)
-        return HttpResponse.ok(EncryptedData(encrypted))
+        //return HttpResponse.ok(EncryptedData(encrypted))
+        return HttpResponse.ok(this)
     }
 
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
