@@ -19,7 +19,7 @@ import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
 import org.jungmha.domain.response.NormalInfo
-import org.jungmha.domain.response.TxBooking
+import org.jungmha.domain.response.BookingList
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
@@ -54,39 +54,6 @@ class UserServiceImpl @Inject constructor(
             val up2 = USERPROFILES.`as`("up2")
             val dk = DOGWALKBOOKINGS.`as`("dk")
 
-            // Main query
-            val mainQuery = query.select(
-                up.USER_ID,
-                up.USERNAME,
-                up.IMAGE_PROFILE,
-                up.FIRST_NAME,
-                up.LAST_NAME,
-                up.EMAIL,
-                up.PHONE_NUMBER,
-                up.USER_TYPE
-            )
-                .from(up)
-                .where(up.USERNAME.eq(DSL.`val`(accountName)))
-                .fetch { record ->
-                    NormalInfo(
-                        UserID = record[up.USER_ID],
-                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
-                        userName = record[up.USERNAME],
-                        firstName = record[up.FIRST_NAME],
-                        lastName = record[up.LAST_NAME],
-                        email = record[up.EMAIL],
-                        phoneNumber = record[up.PHONE_NUMBER],
-                        accountType = record[up.USER_TYPE],
-                        booking = emptyList()
-                    )
-                }
-
-            // Check if the main query result is null
-            if (mainQuery.firstOrNull() == null) {
-                LOG.info("User not found for Account Name: $accountName")
-                return@withContext null
-            }
-
             // Subquery
             val subQuery = query.select(
                 dk.BOOKING_ID,
@@ -112,37 +79,70 @@ class UserServiceImpl @Inject constructor(
                 .join(d)
                 .on(d.DOG_ID.eq(dk.DOG_ID))
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
-                .fetch { subRecord ->
-                    TxBooking(
-                        subRecord[dk.BOOKING_ID],
-                        subRecord["walker_name"].toString(),
-                        subRecord[d.BREED_NAME],
-                        subRecord[d.SIZE],
-                        subRecord[dk.STATUS],
-                        subRecord[dk.BOOKING_DATE],
-                        subRecord[dk.TIME_START],
-                        subRecord[dk.TIME_END],
-                        subRecord[dk.DURATION],
-                        subRecord[dk.TOTAL],
-                        subRecord[dk.TIMESTAMP],
-                        subRecord[dk.SERVICE_STATUS]
-                    )
-                }
 
-            // Check if the subquery result is null
-            if (subQuery.isEmpty()) {
-                LOG.info("No bookings found for user: $accountName")
-                return@withContext mainQuery.firstOrNull()
+            // Main query
+            val mainQuery = query.select(
+                up.USER_ID,
+                up.USERNAME,
+                up.IMAGE_PROFILE,
+                up.FIRST_NAME,
+                up.LAST_NAME,
+                up.EMAIL,
+                up.PHONE_NUMBER,
+                up.USER_TYPE
+            )
+                .from(up)
+                .where(up.USERNAME.eq(DSL.`val`(accountName)))
+
+            LOG.info(mainQuery.fetchOne().toString())
+            LOG.info(subQuery.fetch().toString())
+
+            val result = mainQuery.fetchOne { record ->
+
+                val bookings = subQuery.fetch { subRecord ->
+                    BookingList(
+                        bookingID = subRecord[dk.BOOKING_ID],
+                        userName = subRecord["walker_name"].toString(),
+                        breedName = subRecord[d.BREED_NAME],
+                        size = subRecord[d.SIZE],
+                        status = subRecord[dk.STATUS],
+                        bookingDate = subRecord[dk.BOOKING_DATE],
+                        timeStart = subRecord[dk.TIME_START],
+                        timeEnd = subRecord[dk.TIME_END],
+                        duration = subRecord[dk.DURATION],
+                        total = subRecord[dk.TOTAL],
+                        timeStamp = subRecord[dk.TIMESTAMP],
+                        serviceStatus = subRecord[dk.SERVICE_STATUS]
+                    )
+                }.toList().takeIf { it.isNotEmpty() }
+
+                NormalInfo(
+                    UserID = record[up.USER_ID],
+                    profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                    userName = record[up.USERNAME],
+                    firstName = record[up.FIRST_NAME],
+                    lastName = record[up.LAST_NAME],
+                    email = record[up.EMAIL],
+                    phoneNumber = record[up.PHONE_NUMBER],
+                    accountType = record[up.USER_TYPE],
+                    booking = bookings
+                )
             }
 
-            // Combine main and subquery results
-            mainQuery.firstOrNull()?.copy(booking = subQuery.toList())
+
+            if (result == null) {
+                LOG.warn("User not found for Account Name: $accountName")
+                return@withContext null
+            }
+
+
+            if (result.booking == null) {
+                result.copy(booking = emptyList())
+            } else {
+                result
+            }
         }
     }
-
-
-
-
 
 
 

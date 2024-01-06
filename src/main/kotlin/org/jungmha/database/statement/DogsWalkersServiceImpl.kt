@@ -9,7 +9,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
-import org.jooq.conf.ParamType
 import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.service.DogsWalkersService
@@ -19,10 +18,8 @@ import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
-import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.SHA256
-import org.jungmha.utils.ShiftTo.toFileName
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -132,7 +129,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
                 val subQueryResult = subQuery.fetch { subRecord ->
-                    TxBooking(
+                    BookingList(
                         subRecord[dwb.BOOKING_ID],
                         subRecord["user_name"].toString(),
                         subRecord[d.BREED_NAME],

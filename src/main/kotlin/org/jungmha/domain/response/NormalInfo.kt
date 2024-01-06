@@ -17,12 +17,12 @@ data class NormalInfo(
     val email: String,
     val phoneNumber: String,
     val accountType: String,
-    val booking: List<TxBooking>
+    val booking: List<BookingList>?
 )
 
 @Introspected
 @Serdeable.Serializable
-data class TxBooking(
+data class BookingList(
     val bookingID: Int,
     val userName: String,
     val breedName: String,

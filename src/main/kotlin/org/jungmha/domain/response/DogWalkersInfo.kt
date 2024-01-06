@@ -15,7 +15,7 @@ data class DogWalkersInfo(
     val phoneNumber: String,
     val accountType: String,
     val insights: Insights,
-    val booking: List<TxBooking>
+    val booking: List<BookingList>
 )
 
 @Introspected
