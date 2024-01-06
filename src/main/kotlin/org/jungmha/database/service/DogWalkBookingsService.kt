@@ -5,7 +5,7 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.DogWalkBookingsField
-import org.jungmha.domain.request.DogWalkBookings
+import org.jungmha.database.record.DogWalkBookings
 
 @Bean
 @RequestScope

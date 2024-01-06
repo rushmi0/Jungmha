@@ -17,8 +17,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.constants.NormalUpdateField
-import org.jungmha.domain.response.EncryptedData
-import org.jungmha.domain.response.NormalInfo
+import org.jungmha.database.record.EncryptedData
+import org.jungmha.database.record.NormalInfo
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
@@ -160,7 +160,8 @@ class NormalController @Inject constructor(
      */
     private suspend fun processDecrypting(
         name: String,
-        payload: EncryptedData)
+        payload: EncryptedData
+    )
     : MutableHttpResponse<out Any?> {
         return try {
             val userInfo = userService.findUser(name)

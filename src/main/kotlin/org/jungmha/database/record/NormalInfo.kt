@@ -1,4 +1,4 @@
-package org.jungmha.domain.response
+package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
@@ -9,7 +9,7 @@ import java.time.OffsetDateTime
 @Introspected
 @Serdeable.Serializable
 data class NormalInfo(
-    val UserID: Int,
+    val userID: Int,
     val profileImage: String,
     val userName: String,
     val firstName: String,

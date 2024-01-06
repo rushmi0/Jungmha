@@ -1,7 +1,6 @@
 package org.jungmha.routes.api.v1.home.filter
 
 import io.micronaut.context.annotation.Bean
-import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -12,14 +11,11 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
-import io.swagger.v3.oas.annotations.media.ExampleObject
 import io.swagger.v3.oas.annotations.media.Schema
-import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
-import org.jungmha.domain.response.PrivateDogWalkerInfo
-import org.jungmha.domain.response.PublicDogWalkerInfo
+import org.jungmha.database.record.PrivateDogWalkerInfo
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.LoggerFactory

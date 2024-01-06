@@ -18,8 +18,8 @@ import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.service.UserService
-import org.jungmha.domain.response.NormalInfo
-import org.jungmha.domain.response.BookingList
+import org.jungmha.database.record.NormalInfo
+import org.jungmha.database.record.BookingList
 import org.jungmha.infra.database.tables.Dogs.DOGS
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
@@ -117,7 +117,7 @@ class UserServiceImpl @Inject constructor(
                 }.toList().takeIf { it.isNotEmpty() }
 
                 NormalInfo(
-                    UserID = record[up.USER_ID],
+                    userID = record[up.USER_ID],
                     profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
                     userName = record[up.USERNAME],
                     firstName = record[up.FIRST_NAME],

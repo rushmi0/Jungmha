@@ -7,7 +7,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
-import org.jungmha.domain.response.NormalInfo
+import org.jungmha.database.record.NormalInfo
 
 @Bean
 @RequestScope

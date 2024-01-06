@@ -11,7 +11,7 @@ import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.jungmha.database.field.DogWalkBookingsField
-import org.jungmha.domain.request.DogWalkBookings
+import org.jungmha.database.record.DogWalkBookings
 import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.database.service.DogWalkBookingsService
 import org.slf4j.Logger

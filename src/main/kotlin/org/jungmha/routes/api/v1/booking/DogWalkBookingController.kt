@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogWalkBookingsServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.request.DogWalkBookings
+import org.jungmha.database.record.DogWalkBookings
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.LoggerFactory

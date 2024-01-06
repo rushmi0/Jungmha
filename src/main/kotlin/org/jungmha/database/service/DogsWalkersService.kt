@@ -5,9 +5,9 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import org.jungmha.database.field.DogWalkerField
-import org.jungmha.domain.response.DogWalkersInfo
-import org.jungmha.domain.response.PrivateDogWalkerInfo
-import org.jungmha.domain.response.PublicDogWalkerInfo
+import org.jungmha.database.record.DogWalkersInfo
+import org.jungmha.database.record.PrivateDogWalkerInfo
+import org.jungmha.database.record.PublicDogWalkerInfo
 
 @Bean
 @RequestScope

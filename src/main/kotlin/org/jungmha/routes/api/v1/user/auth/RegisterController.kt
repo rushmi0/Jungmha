@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.response.EncryptedData
+import org.jungmha.database.record.EncryptedData
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.xss.XssDetector

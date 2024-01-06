@@ -11,7 +11,7 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
-import org.jungmha.domain.response.PublicDogWalkerInfo
+import org.jungmha.database.record.PublicDogWalkerInfo
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.stream.Collectors

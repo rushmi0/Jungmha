@@ -14,7 +14,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.request.Identity
+import org.jungmha.database.record.Identity
 import org.jungmha.security.securekey.ECDHkey
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey

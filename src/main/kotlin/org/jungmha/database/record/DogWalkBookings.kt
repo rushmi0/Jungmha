@@ -1,4 +1,4 @@
-package org.jungmha.domain.request
+package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable

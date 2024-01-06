@@ -1,11 +1,11 @@
-package org.jungmha.domain.request
+package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 
 @Introspected
 @Serdeable.Deserializable
-data class Identity(
-    val userName: String,
-    val authenKey: String
+@Serdeable.Serializable
+data class EncryptedData(
+    val content: String
 )

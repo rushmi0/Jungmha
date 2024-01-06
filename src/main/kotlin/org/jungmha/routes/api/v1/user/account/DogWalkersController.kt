@@ -15,8 +15,8 @@ import org.jungmha.constants.DogWalkerUpdateField
 import org.jungmha.constants.Warning
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
-import org.jungmha.domain.response.DogWalkersInfo
-import org.jungmha.domain.response.EncryptedData
+import org.jungmha.database.record.DogWalkersInfo
+import org.jungmha.database.record.EncryptedData
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
