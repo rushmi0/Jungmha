@@ -31,15 +31,17 @@ class SignatureServiceImpl @Inject constructor(
                 val st = SIGNATURE
                 val u = USERPROFILES
 
-                val records = query
-                    .select(
-                        st.SIGNATURE_
-                    )
+                val records = query.select(
+                    st.SIGNATURE_
+                )
                     .from(st)
                     .join(u)
                     .on(u.USER_ID.eq(st.USER_ID))
                     .where(u.USERNAME.eq(userName).and(st.SIGNATURE_.eq(DSL.`val`(signature))))
                     .fetch()
+
+
+                LOG.info("\n$records")
 
                 // ตรวจสอบว่าไม่มี signature ใดที่ signature ตรงกับที่รับเข้ามา
                 return@withContext records.none()
@@ -52,7 +54,35 @@ class SignatureServiceImpl @Inject constructor(
 
 
     override suspend fun insert(payload: SignatureForm): Boolean {
-        TODO("Not yet implemented")
+        return withContext(dispatcher) {
+            try {
+                val record = query.insertInto(
+                    SIGNATURE,
+                    SIGNATURE.USER_ID,
+                    SIGNATURE.SIGNATURE_
+                )
+                    .values(
+                        DSL.`val`(payload.userID),
+                        DSL.`val`(payload.signature)
+                    )
+
+                val result = record.execute()
+
+                val success = result > 0
+
+                if (success) {
+                    LOG.info("Insert Signature successful for User ID: ${payload.userID}")
+                    LOG.info("\n$record")
+                } else {
+                    LOG.warn("No rows inserted for User ID: ${payload.userID}")
+                }
+
+                success
+            } catch (e: Exception) {
+                LOG.error("Error inserting Signature: $e")
+                false
+            }
+        }
     }
 
 

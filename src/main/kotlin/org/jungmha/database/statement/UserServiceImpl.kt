@@ -54,7 +54,7 @@ class UserServiceImpl @Inject constructor(
             val up2 = USERPROFILES.`as`("up2")
             val dk = DOGWALKBOOKINGS.`as`("dk")
 
-            // Subquery
+
             val subQuery = query.select(
                 dk.BOOKING_ID,
                 up2.USERNAME.`as`("walker_name"),
@@ -80,7 +80,7 @@ class UserServiceImpl @Inject constructor(
                 .on(d.DOG_ID.eq(dk.DOG_ID))
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
-            // Main query
+
             val mainQuery = query.select(
                 up.USER_ID,
                 up.USERNAME,
@@ -93,9 +93,6 @@ class UserServiceImpl @Inject constructor(
             )
                 .from(up)
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
-
-            LOG.info("\n${mainQuery.fetchOne()}")
-            LOG.info("\n${subQuery.fetch()}")
 
             val result = mainQuery.fetchOne { record ->
 
@@ -118,7 +115,9 @@ class UserServiceImpl @Inject constructor(
 
                 NormalInfo(
                     userID = record[up.USER_ID],
-                    profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)}" else "N/A",
+                    profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
+                        record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
+                    }" else "N/A",
                     userName = record[up.USERNAME],
                     firstName = record[up.FIRST_NAME],
                     lastName = record[up.LAST_NAME],
@@ -129,12 +128,13 @@ class UserServiceImpl @Inject constructor(
                 )
             }
 
+            LOG.info("\n${mainQuery.fetchOne()}")
+            LOG.info("\n${subQuery.fetch()}")
 
             if (result == null) {
                 LOG.warn("User not found for Account Name: $accountName")
                 return@withContext null
             }
-
 
             if (result.booking == null) {
                 result.copy(booking = emptyList())
@@ -145,9 +145,6 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-
-
-
     override suspend fun findUser(accountName: String): UserProfileField? {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
@@ -155,26 +152,30 @@ class UserServiceImpl @Inject constructor(
             try {
                 LOG.info("Thread $currentThreadName executing findUser")
 
-                val record: Record? = query.select()
+                val result: Record? = query.select()
                     .from(USERPROFILES)
                     .where(USERPROFILES.USERNAME.eq(DSL.`val`(accountName).coerce(String::class.java)))
                     .fetchOne()
 
-                return@withContext if (record != null) {
+                return@withContext if (result != null) {
                     LOG.info("User found with account name [$accountName] on thread [$currentThreadName]")
-                    UserProfileField(
-                        record[USERPROFILES.USER_ID],
-                        record[USERPROFILES.AUTHEN_KEY],
-                        record[USERPROFILES.SHARE_KEY],
-                        record[USERPROFILES.IMAGE_PROFILE],
-                        record[USERPROFILES.USERNAME],
-                        record[USERPROFILES.FIRST_NAME],
-                        record[USERPROFILES.LAST_NAME],
-                        record[USERPROFILES.EMAIL],
-                        record[USERPROFILES.PHONE_NUMBER],
-                        record[USERPROFILES.CREATED_AT],
-                        record[USERPROFILES.USER_TYPE]
+
+                    val userProfileField = UserProfileField(
+                        result[USERPROFILES.USER_ID],
+                        result[USERPROFILES.AUTHEN_KEY],
+                        result[USERPROFILES.SHARE_KEY],
+                        result[USERPROFILES.IMAGE_PROFILE],
+                        result[USERPROFILES.USERNAME],
+                        result[USERPROFILES.FIRST_NAME],
+                        result[USERPROFILES.LAST_NAME],
+                        result[USERPROFILES.EMAIL],
+                        result[USERPROFILES.PHONE_NUMBER],
+                        result[USERPROFILES.CREATED_AT],
+                        result[USERPROFILES.USER_TYPE]
                     )
+
+                    LOG.info("\n$userProfileField")
+                    userProfileField
                 } else {
                     LOG.info("User not found with account name [$accountName] on thread [$currentThreadName]")
                     null
@@ -182,18 +183,19 @@ class UserServiceImpl @Inject constructor(
             } catch (e: DataAccessException) {
                 LOG.error(
                     "Error accessing data while finding user with account name [$accountName] on thread [$currentThreadName]",
-                    e
+                    e.message
                 )
                 null
             } catch (e: Exception) {
                 LOG.error(
                     "An unexpected error occurred while finding user with account name [$accountName] on thread [$currentThreadName]",
-                    e
+                    e.message
                 )
                 null
             }
         }
     }
+
 
 
     override suspend fun userAll(): List<UserProfileField> {
@@ -222,7 +224,7 @@ class UserServiceImpl @Inject constructor(
                     )
                 }
             } catch (e: Exception) {
-                LOG.error("Error retrieving user profiles from the database", e)
+                LOG.error("Error retrieving user profiles from the database ${e.message}")
                 emptyList()
             }
         }
@@ -234,7 +236,7 @@ class UserServiceImpl @Inject constructor(
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing insert")
 
-                val result = query.insertInto(
+                val record = query.insertInto(
                     USERPROFILES,
                     USERPROFILES.USERNAME,
                     USERPROFILES.AUTHEN_KEY,
@@ -245,19 +247,21 @@ class UserServiceImpl @Inject constructor(
                         DSL.value(payload.authenKey).coerce(String::class.java),
                         DSL.value(payload.shareKey).coerce(String::class.java)
                     )
-                    .execute()
 
-                val success = result > 0 // ตรวจสอบว่ามีการเพิ่มแถวในฐานข้อมูลหรือไม่
+
+                val result = record.execute()
+                val success = result > 0
 
                 if (success) {
                     LOG.info("Insert successful for User : ${payload.userName}")
+                    LOG.info("\n$record")
                 } else {
                     LOG.warn("No rows inserted for User : ${payload.userName}")
                 }
 
                 return@withContext success
             } catch (e: Exception) {
-                LOG.error("Error inserting User Profile", e)
+                LOG.error("Error inserting User Profile ${e.message}")
                 false
             }
         }
@@ -271,23 +275,25 @@ class UserServiceImpl @Inject constructor(
                 LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
 
                 val updateRows = query.update(USERPROFILES)
-                    .set(USERPROFILES.FIRST_NAME, DSL.value(payload.firstName).coerce(String::class.java))
-                    .set(USERPROFILES.LAST_NAME, DSL.value(payload.lastName).coerce(String::class.java))
-                    .set(USERPROFILES.EMAIL, DSL.value(payload.email).coerce(String::class.java))
-                    .set(USERPROFILES.PHONE_NUMBER, DSL.value(payload.phoneNumber).coerce(String::class.java))
-                    .set(USERPROFILES.USER_TYPE, DSL.value(payload.userType).coerce(String::class.java))
-                    .where(USERPROFILES.USERNAME.eq(DSL.value(userName).coerce(String::class.java)))
-                    .execute()
+                    .set(USERPROFILES.FIRST_NAME, payload.firstName)
+                    .set(USERPROFILES.LAST_NAME, payload.lastName)
+                    .set(USERPROFILES.EMAIL, payload.email)
+                    .set(USERPROFILES.PHONE_NUMBER, payload.phoneNumber)
+                    .set(USERPROFILES.USER_TYPE, payload.userType)
+                    .where(USERPROFILES.USERNAME.eq(userName))
 
-                if (updateRows > 0) {
+                val result = updateRows.execute()
+
+                if (result > 0) {
                     LOG.info("Update successful for user [$userName] on thread [$currentThreadName]")
+                    LOG.info("\n$updateRows")
                 } else {
                     LOG.warn("Update did not affect any rows for user [$userName] on thread [$currentThreadName]")
                 }
 
-                return@withContext updateRows > 0
+                return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update for user [$userName] on thread [$currentThreadName]", e)
+                LOG.error("An error occurred during update for user [$userName] on thread [$currentThreadName]", e.message)
                 return@withContext false
             }
         }
@@ -308,17 +314,19 @@ class UserServiceImpl @Inject constructor(
                 val updateRows = query.update(USERPROFILES)
                     .set(field, DSL.value(newValue).coerce(String::class.java))
                     .where(USERPROFILES.USER_ID.eq(id))
-                    .execute()
 
-                if (updateRows > 0) {
+                val result = updateRows.execute()
+
+                if (result > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for user ID [$id]")
+                    LOG.info("\n$updateRows")
                 } else {
                     LOG.warn("Update did not affect any rows for field [$fieldName] with new value [$newValue] for user ID [$id]")
                 }
 
-                return@withContext updateRows > 0
+                return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error updating field [$fieldName] for user ID [$id]", e)
+                LOG.error("Error updating field [$fieldName] for user ID [$id]", e.message)
                 return@withContext false
             }
         }
@@ -354,7 +362,7 @@ class UserServiceImpl @Inject constructor(
 
                 return@withContext deletedRows > 0
             } catch (e: Exception) {
-                LOG.error("Error deleting user with ID [$id]", e)
+                LOG.error("Error deleting user with ID [$id] ${e.message}")
                 return@withContext false
             }
         }
