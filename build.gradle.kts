@@ -49,9 +49,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-module-kotlin
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.16.0")
-
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
@@ -64,19 +61,8 @@ dependencies {
     // https://mvnrepository.com/artifact/com.starkbank.ellipticcurve/starkbank-ecdsa
     implementation("com.starkbank.ellipticcurve:starkbank-ecdsa:1.0.2")
 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.16.0")
-
 }
 
-ksp {
-
-}
-
-
-java {
-    sourceCompatibility = JavaVersion.toVersion("17")
-}
 
 tasks {
 
