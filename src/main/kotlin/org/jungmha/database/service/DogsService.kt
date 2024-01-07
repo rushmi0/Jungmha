@@ -12,7 +12,7 @@ import org.jungmha.database.form.DogForm
 @ExecuteOn(TaskExecutors.IO)
 interface DogsService {
 
-    suspend fun findDog(dogName: String): DogField?
+    suspend fun findDog(dogID: Int): DogField?
 
     suspend fun dogsAll(): List<DogField>
 

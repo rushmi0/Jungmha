@@ -94,8 +94,8 @@ class UserServiceImpl @Inject constructor(
                 .from(up)
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
-            LOG.info(mainQuery.fetchOne().toString())
-            LOG.info(subQuery.fetch().toString())
+            LOG.info("\n${mainQuery.fetchOne()}")
+            LOG.info("\n${subQuery.fetch()}")
 
             val result = mainQuery.fetchOne { record ->
 

@@ -53,6 +53,7 @@ class OpenUserProfileController @Inject constructor(
             if (user != null && user.imageProfile != "N/A" && user.imageProfile.isNotBlank()) {
                 // อ่านข้อมูลไฟล์รูปภาพเป็น bytes
                 val fileBytes = Files.readAllBytes(Path.of(user.imageProfile))
+
                 // ทางระบบทางสื่อมัลติมีเดียคำนวณ Content-Type ของไฟล์
                 val contentType = URLConnection.guessContentTypeFromName(user.imageProfile)
 
