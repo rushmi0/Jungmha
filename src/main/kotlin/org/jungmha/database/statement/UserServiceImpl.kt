@@ -157,10 +157,12 @@ class UserServiceImpl @Inject constructor(
                     .where(USERPROFILES.USERNAME.eq(DSL.`val`(accountName).coerce(String::class.java)))
                     .fetchOne()
 
+                LOG.info("\n$result")
+
                 return@withContext if (result != null) {
                     LOG.info("User found with account name [$accountName] on thread [$currentThreadName]")
 
-                    val userProfileField = UserProfileField(
+                    UserProfileField(
                         result[USERPROFILES.USER_ID],
                         result[USERPROFILES.AUTHEN_KEY],
                         result[USERPROFILES.SHARE_KEY],
@@ -173,9 +175,6 @@ class UserServiceImpl @Inject constructor(
                         result[USERPROFILES.CREATED_AT],
                         result[USERPROFILES.USER_TYPE]
                     )
-
-                    LOG.info("\n$userProfileField")
-                    userProfileField
                 } else {
                     LOG.info("User not found with account name [$accountName] on thread [$currentThreadName]")
                     null

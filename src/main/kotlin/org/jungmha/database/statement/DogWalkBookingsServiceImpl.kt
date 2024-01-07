@@ -38,6 +38,8 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 val data = query.select()
                     .from(DOGWALKBOOKINGS)
 
+                LOG.info("\n${data.fetch()}")
+
                 val result = data.map { record ->
                     DogWalkBookingsField(
                         record[DOGWALKBOOKINGS.BOOKING_ID],

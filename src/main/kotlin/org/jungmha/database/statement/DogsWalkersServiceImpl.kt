@@ -310,6 +310,9 @@ class DogsWalkersServiceImpl @Inject constructor(
                         .from(dwr)
                         .where(dwr.WALKER_ID.eq(record[dw.WALKER_ID]))
 
+                    LOG.info("\n${mainQuery.fetch()}")
+                    LOG.info("\n${subQuery.fetch()}")
+
                     PrivateDogWalkerInfo(
                         walkerID = record[dw.WALKER_ID],
                         countReview = record[dw.COUNT_REVIEW],
@@ -339,6 +342,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             )
                         }.toList()
                     )
+
                 }
 
                 return@withContext result
@@ -390,7 +394,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
 
-                val status = when (fieldName) {
+                val updateRows = when (fieldName) {
                     "userID" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.USER_ID, DSL.`val`(Integer.valueOf(newValue)))
 
@@ -415,15 +419,17 @@ class DogsWalkersServiceImpl @Inject constructor(
                     }
                 }
 
-                val affectedRows = status.where(DOGWALKERS.WALKER_ID.eq(id)).execute()
+                val affectedRows = updateRows.where(DOGWALKERS.WALKER_ID.eq(id))
+                val result = affectedRows.execute()
 
-                if (affectedRows > 0) {
+                if (result > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for walker ID [$id]")
+                    LOG.info("\n$affectedRows")
                 } else {
                     LOG.error("Update did not affect any rows for field [$fieldName] with new value [$newValue] for walker ID [$id]")
                 }
 
-                return@withContext affectedRows > 0
+                return@withContext result > 0
             } catch (e: Exception) {
                 LOG.error("Error updating field [$fieldName] for walker ID [$id]", e)
                 return@withContext false

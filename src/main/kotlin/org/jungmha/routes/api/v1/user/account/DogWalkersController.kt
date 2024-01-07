@@ -12,7 +12,6 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.constants.DogWalkerUpdateField
-import org.jungmha.constants.Warning
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkersInfo
@@ -89,13 +88,13 @@ class DogWalkersController @Inject constructor(
                     }
                 }
                 else -> {
-                    LOG.warn(Warning.INVALID_TOKEN.message.format(userName))
-                    HttpResponse.badRequest(Warning.INVALID_TOKEN_)
+                    LOG.warn("Invalid token or insufficient permission for user: $userName")
+                    HttpResponse.badRequest("Invalid token or insufficient permission")
                 }
             }
         } catch (e: Exception) {
-            LOG.error(Warning.ERROR_PROCESSING.message.format(e))
-            HttpResponse.serverError(Warning.INTERNAL_SERVER_ERROR.message.format(e.message))
+            LOG.error("Error processing: ${e.message}")
+            HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
 
@@ -112,8 +111,8 @@ class DogWalkersController @Inject constructor(
         return if (userInfo != null) {
             userInfo.processEncrypting(name)
         } else {
-            LOG.warn(Warning.USER_INFO_NOT_FOUND.message.format(name))
-            HttpResponse.notFound(Warning.USER_INFO_NOT_FOUND_)
+            LOG.warn("User info not found for user: $name")
+            HttpResponse.notFound("User info not found")
         }
     }
 
@@ -165,13 +164,13 @@ class DogWalkersController @Inject constructor(
                     }
                 }
                 else -> {
-                    LOG.warn(Warning.INVALID_TOKEN.message.format(name))
-                    HttpResponse.badRequest(Warning.INVALID_TOKEN_)
+                    LOG.warn("Invalid token or insufficient permission for user: $name")
+                    HttpResponse.badRequest("Invalid token or insufficient permission")
                 }
             }
         } catch (e: Exception) {
-            LOG.error(Warning.ERROR_PROCESSING.message.format(e))
-            HttpResponse.serverError(Warning.INTERNAL_SERVER_ERROR.message.format(e.message))
+            LOG.error("Error processing: ${e.message}")
+            HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
 
@@ -187,7 +186,7 @@ class DogWalkersController @Inject constructor(
         payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
         return try {
-            val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest(Warning.BAD_REQUEST_USER_NOT_FOUND)
+            val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest("User not found")
             val userID = userInfo.userID
             val shareKey = userInfo.sharedKey
 
@@ -198,7 +197,7 @@ class DogWalkersController @Inject constructor(
                 val newValue = decryptedData[field]?.toString() ?: continue
 
                 if (XssDetector.containsXss(newValue)) {
-                    return HttpResponse.badRequest(Warning.BAD_REQUEST_XSS_DETECTED)
+                    return HttpResponse.badRequest("Cross-site scripting detected")
                 }
 
                 val result = processFieldUpdate(userID, field, newValue)
@@ -209,10 +208,10 @@ class DogWalkersController @Inject constructor(
                 }
             }
 
-            return HttpResponse.ok(Warning.OK_ALL_FIELDS_UPDATED)
+            return HttpResponse.ok("Fields updated successfully")
         } catch (e: IllegalArgumentException) {
-            LOG.warn(Warning.INVALID_FIELD.message.format(e))
-            return HttpResponse.badRequest(Warning.INVALID_FIELD_)
+            LOG.warn("Invalid Field ${e.message}")
+            return HttpResponse.badRequest("Invalid Field")
         }
     }
 
@@ -251,8 +250,8 @@ class DogWalkersController @Inject constructor(
                 else -> processFieldUpdateForOtherFields(userID, fieldName, newValue)
             }
         } catch (e: Exception) {
-            LOG.error(Warning.ERROR_UPDATING_FIELD.message.format(fieldName, userID, e.message))
-            return HttpResponse.serverError(Warning.INTERNAL_SERVER_ERROR.message.format(e.message))
+            LOG.error("Error updating field [$fieldName] for user ID [$userID] ${e.message}")
+            HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
 
@@ -270,15 +269,15 @@ class DogWalkersController @Inject constructor(
         newValue: String
     ): MutableHttpResponse<out Any?> {
         if (XssDetector.containsXss(newValue)) {
-            return HttpResponse.badRequest(Warning.BAD_REQUEST_XSS_DETECTED)
+            return HttpResponse.badRequest("Cross-site scripting detected")
         }
 
         val statement: Boolean = userService.updateSingleField(userID, fieldName, newValue)
 
         return if (statement) {
-            HttpResponse.ok(Warning.OK_UPDATE_SUCCESSFUL.message.format(fieldName))
+            HttpResponse.ok("Finished updating $fieldName field")
         } else {
-            HttpResponse.badRequest(Warning.BAD_REQUEST_UPDATE_FAILED.message.format(fieldName, newValue))
+            HttpResponse.badRequest("Failed to update $fieldName field: $newValue")
         }
     }
 
@@ -296,16 +295,16 @@ class DogWalkersController @Inject constructor(
         newValue: String
     ): MutableHttpResponse<out Any?> {
         if (XssDetector.containsXss(newValue)) {
-            return HttpResponse.badRequest(Warning.BAD_REQUEST_XSS_DETECTED)
+            return HttpResponse.badRequest("Cross-site scripting detected")
         }
 
         val id = walkerService.getSingleDogWalkersInfo(userID)?.userID!!
         val statement: Boolean = walkerService.updateSingleField(id, fieldName, newValue)
 
         return if (statement) {
-            HttpResponse.ok(Warning.OK_UPDATE_SUCCESSFUL.message.format(fieldName))
+            HttpResponse.ok("Finished updating $fieldName field")
         } else {
-            HttpResponse.badRequest(Warning.BAD_REQUEST_UPDATE_FAILED.message.format(fieldName, newValue))
+            HttpResponse.badRequest("Failed to update $fieldName field: $newValue")
         }
     }
 

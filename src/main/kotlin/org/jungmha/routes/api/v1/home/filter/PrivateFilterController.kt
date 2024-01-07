@@ -65,7 +65,6 @@ class PrivateFilterController @Inject constructor(
             )
         ]
     )
-
     @Get(
         uri = "/auth/home/filter{?verify,location,name,pSmall,pMedium,pBig,max}",
         produces = [MediaType.APPLICATION_JSON]
@@ -108,7 +107,7 @@ class PrivateFilterController @Inject constructor(
                 .collect(Collectors.toList())
 
         } catch (e: Exception) {
-            LOG.error("Error during getPrivateDogWalker operation: ${e.message}", e)
+            LOG.error("Error during getPrivateDogWalker operation: ${e.message}")
             LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
             return emptyList()
         }

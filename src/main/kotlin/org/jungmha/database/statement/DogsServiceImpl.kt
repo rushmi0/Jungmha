@@ -36,7 +36,6 @@ class DogsServiceImpl @Inject constructor(
     override suspend fun findDog(dogID: Int): DogField? {
         return try {
             val currentThreadName = Thread.currentThread().name
-
             LOG.info("Thread $currentThreadName executing findDog")
 
             val record: Record? = withContext(dispatcher) {
