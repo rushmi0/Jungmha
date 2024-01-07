@@ -15,8 +15,8 @@ plugins {
 version = "0.1"
 group = "org.jungmha"
 
-
 val kotlinVersion = project.properties["kotlinVersion"]
+
 repositories {
     mavenCentral()
 }
@@ -58,9 +58,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
 
-    // https://mvnrepository.com/artifact/com.starkbank.ellipticcurve/starkbank-ecdsa
-    implementation("com.starkbank.ellipticcurve:starkbank-ecdsa:1.0.2")
-
 }
 
 
@@ -87,6 +84,7 @@ kotlin {
             version = 2.0
         }
     }
+
 }
 
 application {
