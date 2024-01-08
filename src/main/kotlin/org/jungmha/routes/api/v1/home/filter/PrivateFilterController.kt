@@ -1,7 +1,9 @@
 package org.jungmha.routes.api.v1.home.filter
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
+import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Header
@@ -16,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PrivateDogWalkerInfo
+import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.slf4j.LoggerFactory
@@ -79,38 +82,41 @@ class PrivateFilterController @Inject constructor(
         @QueryValue("pBig") pBig: Optional<Long>,
         @QueryValue("max") max: Optional<Int> = Optional.of(Integer.MAX_VALUE)
     ): List<PrivateDogWalkerInfo> {
+        LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+        LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+        LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+        // ตรวจสอบความถูกต้องของ Token
+        val userDetails: TokenObject = token.viewDetail(access)
+        val verifyToken = token.verifyToken(access)
+        val permission: String = userDetails.permission
 
-        try {
-            // ตรวจสอบความถูกต้องของ Token
-            val userDetails: TokenObject = token.viewDetail(access)
-            val permission: String = userDetails.permission
+        return when {
 
-            // ตรวจสอบสิทธิ์การใช้งาน
-            if (!token.verifyToken(access) || permission != "view") {
-                LOG.warn("Invalid token for getting Private Dog Walker")
+            verifyToken && permission == "view" -> {
+                // ดึงข้อมูล Dog Walker ทั้งหมดจากฐานข้อมูล
+                val rawData: List<PrivateDogWalkerInfo> = service.privateDogWalkersAll()
+
+                // กรองข้อมูลตามเงื่อนไข
+                rawData.stream().filter { data ->
+                    val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
+                    val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
+                    val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
+                    val pSmallMatch = (!pSmall.isPresent || data.detail.price.small <= pSmall.get())
+                    val pMediumMatch = (!pMedium.isPresent || data.detail.price.medium <= pMedium.get())
+                    val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
+
+                    verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
+                }.limit(max.orElse(Integer.MAX_VALUE).toLong())
+                    .collect(Collectors.toList())
             }
 
-            // ดึงข้อมูล Dog Walker ทั้งหมดจากฐานข้อมูล
-            val rawData: List<PrivateDogWalkerInfo> = service.privateDogWalkersAll()
+            else -> {
+                LOG.warn("Invalid token or insufficient permission for user: ${userDetails.userName}")
+                emptyList()
+            }
 
-            // กรองข้อมูลตามเงื่อนไข
-            return rawData.stream().filter { data ->
-                val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
-                val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
-                val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
-                val pSmallMatch = (!pSmall.isPresent || data.detail.price.small <= pSmall.get())
-                val pMediumMatch = (!pMedium.isPresent || data.detail.price.medium <= pMedium.get())
-                val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
-
-                verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
-            }.limit(max.orElse(Integer.MAX_VALUE).toLong())
-                .collect(Collectors.toList())
-
-        } catch (e: Exception) {
-            LOG.error("Error during getPrivateDogWalker operation: ${e.message}")
-            LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
-            return emptyList()
         }
+
     }
 
     companion object {

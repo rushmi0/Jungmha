@@ -12,6 +12,7 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PublicDogWalkerInfo
+import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.stream.Collectors
@@ -54,11 +55,13 @@ class PublicFilterController @Inject constructor(
         @QueryValue("pBig") pBig: Optional<Long>,
         @QueryValue("max") max: Optional<Int> = Optional.of(Integer.MAX_VALUE)
     ): List<PublicDogWalkerInfo> {
-
-        try {
+        LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+        LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+        LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+        return try {
             val rawData = service.publicDogWalkersAll()
 
-            return rawData.stream().filter { data ->
+             rawData.stream().filter { data ->
                 val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
                 val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
                 val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
@@ -73,7 +76,7 @@ class PublicFilterController @Inject constructor(
         } catch (e: Exception) {
             LOG.error("Error during getPublicDogWalker operation: ${e.message}", e)
             LOG.error("Error file path: ${e.stackTrace.joinToString("\n")}")
-            return emptyList()
+            emptyList()
         }
     }
 

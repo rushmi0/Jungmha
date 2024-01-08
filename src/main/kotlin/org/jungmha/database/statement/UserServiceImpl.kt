@@ -25,6 +25,7 @@ import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.jungmha.infra.database.tables.records.UserprofilesRecord
+import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.SHA256
 import org.slf4j.Logger
@@ -44,9 +45,10 @@ class UserServiceImpl @Inject constructor(
 
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
-            val currentThread = Thread.currentThread()
-            LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
-            LOG.info("Entering getUserInfo for Account Name: $accountName")
+
+            LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+            LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+            LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
 
             val up = USERPROFILES.`as`("up")
             val dw = DOGWALKERS.`as`("dw")
@@ -150,7 +152,10 @@ class UserServiceImpl @Inject constructor(
             val currentThreadName = Thread.currentThread().name
 
             try {
-                LOG.info("Thread $currentThreadName executing findUser")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+
 
                 val result: Record? = query.select()
                     .from(USERPROFILES)
@@ -204,8 +209,9 @@ class UserServiceImpl @Inject constructor(
                     .from(USERPROFILES)
                     .fetch()
 
-                LOG.info("Thread ${Thread.currentThread().name} executing userAll")
-                LOG.info("Retrieved ${result.size} user profiles from the database")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
 
                 return@withContext result.map { record ->
                     UserProfileField(
@@ -233,7 +239,10 @@ class UserServiceImpl @Inject constructor(
     override suspend fun insert(payload: IdentityForm): Boolean {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing insert")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+
 
                 val record = query.insertInto(
                     USERPROFILES,
@@ -253,10 +262,10 @@ class UserServiceImpl @Inject constructor(
 
                 if (success) {
                     LOG.info("Insert successful for User : ${payload.userName}")
-                    LOG.info("\n$record")
                 } else {
                     LOG.warn("No rows inserted for User : ${payload.userName}")
                 }
+                LOG.info("\n$record")
 
                 return@withContext success
             } catch (e: Exception) {
@@ -271,7 +280,9 @@ class UserServiceImpl @Inject constructor(
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
             try {
-                LOG.info("Update operation started for user [$userName] on thread [$currentThreadName]")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
 
                 val updateRows = query.update(USERPROFILES)
                     .set(USERPROFILES.FIRST_NAME, payload.firstName)
@@ -285,10 +296,10 @@ class UserServiceImpl @Inject constructor(
 
                 if (result > 0) {
                     LOG.info("Update successful for user [$userName] on thread [$currentThreadName]")
-                    LOG.info("\n$updateRows")
                 } else {
                     LOG.warn("Update did not affect any rows for user [$userName] on thread [$currentThreadName]")
                 }
+                LOG.info("\n$updateRows")
 
                 return@withContext result > 0
             } catch (e: Exception) {
@@ -302,7 +313,10 @@ class UserServiceImpl @Inject constructor(
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing update")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+
 
                 val field = getField(fieldName)
                 if (field == null) {
@@ -318,10 +332,10 @@ class UserServiceImpl @Inject constructor(
 
                 if (result > 0) {
                     LOG.info("Update successful for field [$fieldName] with new value [$newValue] for user ID [$id]")
-                    LOG.info("\n$updateRows")
                 } else {
                     LOG.warn("Update did not affect any rows for field [$fieldName] with new value [$newValue] for user ID [$id]")
                 }
+                LOG.info("\n$updateRows")
 
                 return@withContext result > 0
             } catch (e: Exception) {
@@ -347,7 +361,10 @@ class UserServiceImpl @Inject constructor(
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing delete")
+                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
+                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
+                LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
+
 
                 val deletedRows = query.deleteFrom(USERPROFILES)
                     .where(USERPROFILES.USER_ID.eq(DSL.`val`(id)))

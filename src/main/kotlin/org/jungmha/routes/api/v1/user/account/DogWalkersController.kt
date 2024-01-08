@@ -69,24 +69,25 @@ class DogWalkersController @Inject constructor(
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        //@Header("Access-Token") access: String
+        @Header("Access-Token") access: String,
         userName: String
     ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
-//            val userDetails: TokenObject = token.viewDetail(access)
-//            val verify = token.verifyToken(access)
-//            val permission: String = userDetails.permission
-//            val userName = userDetails.userName
+            val userDetails: TokenObject = token.viewDetail(access)
+            val verify = token.verifyToken(access)
+            val permission: String = userDetails.permission
+            val userName = userDetails.userName
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
             return when {
-                true//verify && permission == "view"
+                verify && permission == "view"
                 -> {
                     coroutineScope {
                         processSearching(userName)
                     }
                 }
+
                 else -> {
                     LOG.warn("Invalid token or insufficient permission for user: $userName")
                     HttpResponse.badRequest("Invalid token or insufficient permission")
@@ -163,6 +164,7 @@ class DogWalkersController @Inject constructor(
                         processDecrypting(name, payload)
                     }
                 }
+
                 else -> {
                     LOG.warn("Invalid token or insufficient permission for user: $name")
                     HttpResponse.badRequest("Invalid token or insufficient permission")
