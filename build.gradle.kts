@@ -39,8 +39,6 @@ dependencies {
 
     testImplementation("io.micronaut:micronaut-http-client")
 
-    aotPlugins("io.micronaut.security:micronaut-security-aot:1.0.0")
-
     implementation("io.swagger.core.v3:swagger-annotations")
     implementation("io.micronaut:micronaut-websocket")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
@@ -108,20 +106,13 @@ micronaut {
     aot {
         // Please review carefully the optimizations enabled below
         // Check https://micronaut-projects.github.io/micronaut-aot/latest/guide/ for more details
-        //optimizeServiceLoading.set(false)
-        //convertYamlToJava.set(false)
+        optimizeServiceLoading.set(false)
+        convertYamlToJava.set(false)
         precomputeOperations.set(true)
         cacheEnvironment.set(true)
         optimizeClassLoading.set(true)
         deduceEnvironment.set(true)
         optimizeNetty.set(true)
-
-        optimizeServiceLoading.set(true)
-        convertYamlToJava.set(true)
-        netty {
-            enabled.set(true)
-        }
-        configFile.set(file("gradle/micronaut-aot.properties"))
     }
 }
 

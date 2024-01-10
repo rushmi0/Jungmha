@@ -44,6 +44,19 @@ class DogController @Inject constructor(
         }
     }
 
+    @Get(
+        uri = "/dogs",
+        produces = [MediaType.APPLICATION_JSON]
+    )
+    suspend fun getDogs(): List<DogField> {
+        return try {
+            service.dogsAll()
+        } catch (e: Exception) {
+            LOG.error("Error retrieving dogs", e)
+            emptyList()
+        }
+    }
+
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogController::class.java)
     }
