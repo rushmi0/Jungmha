@@ -32,7 +32,7 @@ dependencies {
     jooqGenerator("org.postgresql:postgresql:42.5.1")
 
     ksp("io.micronaut:micronaut-http-validation")
-    ksp("io.micronaut.openapi:micronaut-openapi")
+    ksp("io.micronaut.openapi:micronaut-openapi:6.4.0")
     ksp("io.micronaut.serde:micronaut-serde-processor")
 
     annotationProcessor("io.micronaut.openapi:micronaut-openapi:2.1.1")
@@ -60,6 +60,11 @@ dependencies {
 
 }
 
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("17")
+    targetCompatibility = JavaVersion.toVersion("17")
+}
 
 tasks {
 
