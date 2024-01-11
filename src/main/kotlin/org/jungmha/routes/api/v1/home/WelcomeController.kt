@@ -1,4 +1,4 @@
-package org.jungmha.routes.api.v1
+package org.jungmha.routes.api.v1.home
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.MediaType

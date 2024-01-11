@@ -1,17 +1,17 @@
 -- เพิ่มข้อมูลในตาราง UserProfiles
 INSERT INTO UserProfiles (authen_key, share_key, image_profile, username, first_name, last_name, email, phone_number,
                           created_at, user_type)
-VALUES ('authen_key_1', 'share_key_1', 'N/A', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890', NOW(),
+VALUES ('authen_key_1', 'share_key_1', 'src/main/resources/images/preview/3.jpg', 'user1', 'John', 'Doe', 'john.doe@email.com', '1234567890', NOW(),
         'Normal'),
-       ('authen_key_2', 'share_key_2', 'N/A', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210', NOW(),
+       ('authen_key_2', 'share_key_2', 'src/main/resources/images/preview/18.jpg', 'user2', 'Jane', 'Smith', 'jane.smith@email.com', '9876543210', NOW(),
         'DogWalkers'),
-       ('authen_key_3', 'share_key_3', 'N/A', 'user3', 'Bob', 'Johnson', 'bob.johnson@email.com', '5556667777', NOW(),
+       ('authen_key_3', 'share_key_3', 'src/main/resources/images/preview/15.jpg', 'user3', 'Bob', 'Johnson', 'bob.johnson@email.com', '5556667777', NOW(),
         'Normal'),
-       ('authen_key_4', 'share_key_4', 'N/A', 'user4', 'Alice', 'Williams', 'alice.williams@email.com', '1112223333',
+       ('authen_key_4', 'share_key_4', 'src/main/resources/images/preview/12.jpg', 'user4', 'Alice', 'Williams', 'alice.williams@email.com', '1112223333',
         NOW(), 'DogWalkers'),
-       ('authen_key_5', 'share_key_5', 'N/A', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '9998887777',
+       ('authen_key_5', 'share_key_5', 'src/main/resources/images/preview/19.jpg', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '9998887777',
         NOW(), 'Normal'),
-       ('authen_key_6', 'share_key_6', 'N/A', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(),
+       ('authen_key_6', 'share_key_6', 'src/main/resources/images/preview/6.jpg', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(),
         'DogWalkers');
 
 

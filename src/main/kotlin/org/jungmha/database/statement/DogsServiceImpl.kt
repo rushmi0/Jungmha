@@ -31,7 +31,8 @@ class DogsServiceImpl @Inject constructor(
 ) : DogsService {
 
     private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: Dispatchers.IO
-    val BASE_URL = "http://localhost:8080/api/v1/dog"
+    //val BASE_URL = "http://localhost:8080/api/v1/dog"
+    val BASE_URL = "http://10.0.2.2:8080/api/v1/dog"
 
     override suspend fun findDog(dogID: Int): DogField? {
         return try {

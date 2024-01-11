@@ -17,7 +17,7 @@ Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoidmlldy1vbmx5IiwiZXhwIj
 
 ###
 
-GET http://localhost:8080/api/v1/home/filter?veryfi=true
+GET http://localhost:8080/api/v1/home/filter
 Content-Type: application/json
 
 ###
