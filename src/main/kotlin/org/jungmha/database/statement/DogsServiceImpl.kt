@@ -101,7 +101,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve dogs operation on thread [$currentThreadName]", e)
+                LOG.error("Error during retrieve dogs operation on thread [$currentThreadName]", e.message)
                 return@withContext emptyList()
             }
         }
@@ -136,7 +136,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during insert dog operation on thread [$currentThreadName]", e)
+                LOG.error("Error during insert dog operation on thread [$currentThreadName]", e.message)
                 return@withContext false
             }
         }
@@ -168,7 +168,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext affectedRows > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update", e)
+                LOG.error("An error occurred during update", e.message)
                 return@withContext false
             }
         }
@@ -194,7 +194,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during delete dog operation on thread [$currentThreadName]", e)
+                LOG.error("Error during delete dog operation on thread [$currentThreadName]", e.message)
                 return@withContext false
             }
         }

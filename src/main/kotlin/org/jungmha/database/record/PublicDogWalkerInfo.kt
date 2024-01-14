@@ -7,5 +7,6 @@ import io.micronaut.serde.annotation.Serdeable
 @Serdeable.Serializable
 data class PublicDogWalkerInfo(
     val walkerID: Int,
+    val totalReview: Int,
     val detail: WalkerDetail,
 )

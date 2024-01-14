@@ -12,7 +12,6 @@ import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PublicDogWalkerInfo
-import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.slf4j.LoggerFactory
 import java.util.*
 import java.util.stream.Collectors

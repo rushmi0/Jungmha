@@ -232,6 +232,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     up.USERNAME,
                     up.IMAGE_PROFILE,
                     dw.VERIFICATION,
+                    dw.TOTAL_REVIEW,
                     dw.LOCATION_NAME,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
@@ -246,6 +247,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                         PublicDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
+                            totalReview = record[dw.TOTAL_REVIEW],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
                                 profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
