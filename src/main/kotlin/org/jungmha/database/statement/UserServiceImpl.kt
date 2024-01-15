@@ -14,6 +14,7 @@ import org.jooq.Result
 import org.jooq.TableField
 import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL
+import org.jungmha.constants.BaseEndpoint.BASE_URL_USER
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.form.UserProfileForm
@@ -41,8 +42,6 @@ class UserServiceImpl @Inject constructor(
 ) : UserService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
-    //val BASE_URL = "http://localhost:8080/api/v1/user"
-    val BASE_URL_USER = "http://10.0.2.2:8080/api/v1/user"
 
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
@@ -202,7 +201,6 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun userAll(): List<UserProfileField> {
         return withContext(dispatcher) {
             try {
@@ -304,7 +302,10 @@ class UserServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update for user [$userName] on thread [$currentThreadName]", e.message)
+                LOG.error(
+                    "An error occurred during update for user [$userName] on thread [$currentThreadName]",
+                    e.message
+                )
                 return@withContext false
             }
         }

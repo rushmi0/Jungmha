@@ -217,7 +217,6 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(dispatcher) {
             try {
@@ -321,7 +320,9 @@ class DogsWalkersServiceImpl @Inject constructor(
                         totalReview = record[dw.TOTAL_REVIEW],
                         detail = WalkerDetail(
                             name = record[up.USERNAME],
-                            profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image" else "N/A",
+                            profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
+                                record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
+                            }" else "N/A",
                             verify = record[dw.VERIFICATION],
                             location = record[dw.LOCATION_NAME],
                             price = PriceData(
@@ -338,7 +339,9 @@ class DogsWalkersServiceImpl @Inject constructor(
                             WalkerReview(
                                 userID = subRecord[dwr.USER_ID],
                                 name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
+                                    record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
+                                }" else "N/A",
                                 rating = subRecord[dwr.RATING] ?: 0,
                                 reviewText = subRecord[dwr.REVIEW_TEXT] ?: ""
                             )
@@ -356,7 +359,6 @@ class DogsWalkersServiceImpl @Inject constructor(
             }
         }
     }
-
 
 
     override suspend fun insert(id: Int): Boolean {
