@@ -37,7 +37,7 @@ class OpenDogProfileController @Inject constructor(
      * @param name ชื่อของสุนัข
      * @return HttpResponse พร้อมกับข้อมูลภาพ
      */
-    @Get(uri = "/dog/{id}/image/{fingerprint}/{file}")
+    @Get(uri = "/dogs/{id}/image/{fingerprint}/{file}")
     @Throws(IOException::class)
     suspend fun openImageDogsURL(
         id: Int,

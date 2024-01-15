@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
+import org.jungmha.constants.BaseEndpoint.BASE_URL_USER
 import org.jungmha.database.field.DogWalkerField
 import org.jungmha.database.record.*
 import org.jungmha.database.service.DogsWalkersService
@@ -33,8 +34,6 @@ class DogsWalkersServiceImpl @Inject constructor(
 ) : DogsWalkersService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
-    //val BASE_URL = "http://localhost:8080/api/v1/user"
-    val BASE_URL = "http://10.0.2.2:8080/api/v1/user"
 
     override suspend fun getSingleDogWalkersInfo(id: Int): DogWalkerField? {
         return withContext(dispatcher) {
@@ -176,7 +175,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 val mainQueryResult = mainQuery.fetch { record ->
                     DogWalkersInfo(
                         UserID = record[dw.WALKER_ID],
-                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
+                        profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
                             record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
                         }" else "N/A",
                         userName = record[up.USERNAME],
@@ -232,6 +231,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     up.USERNAME,
                     up.IMAGE_PROFILE,
                     dw.VERIFICATION,
+                    dw.TOTAL_REVIEW,
                     dw.LOCATION_NAME,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
@@ -246,9 +246,10 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                         PublicDogWalkerInfo(
                             walkerID = record[dw.WALKER_ID],
+                            totalReview = record[dw.TOTAL_REVIEW],
                             detail = WalkerDetail(
                                 name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image/${
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
                                     record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
                                 }" else "N/A",
                                 verify = record[dw.VERIFICATION],
@@ -320,7 +321,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                         totalReview = record[dw.TOTAL_REVIEW],
                         detail = WalkerDetail(
                             name = record[up.USERNAME],
-                            profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                            profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image" else "N/A",
                             verify = record[dw.VERIFICATION],
                             location = record[dw.LOCATION_NAME],
                             price = PriceData(
@@ -337,7 +338,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             WalkerReview(
                                 userID = subRecord[dwr.USER_ID],
                                 name = record[up.USERNAME],
-                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL/${record[up.USERNAME]}/image" else "N/A",
+                                profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image" else "N/A",
                                 rating = subRecord[dwr.RATING] ?: 0,
                                 reviewText = subRecord[dwr.REVIEW_TEXT] ?: ""
                             )

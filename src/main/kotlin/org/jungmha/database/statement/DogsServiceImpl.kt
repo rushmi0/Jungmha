@@ -12,6 +12,7 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.jooq.exception.DataAccessException
 import org.jooq.impl.DSL
+import org.jungmha.constants.BaseEndpoint.BASE_URL_DOG
 import org.jungmha.database.field.DogField
 import org.jungmha.database.form.DogForm
 import org.jungmha.infra.database.tables.Dogs.DOGS
@@ -31,8 +32,6 @@ class DogsServiceImpl @Inject constructor(
 ) : DogsService {
 
     private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: Dispatchers.IO
-    //val BASE_URL = "http://localhost:8080/api/v1/dog"
-    val BASE_URL = "http://10.0.2.2:8080/api/v1/dog"
 
     override suspend fun findDog(dogID: Int): DogField? {
         return try {
@@ -87,7 +86,7 @@ class DogsServiceImpl @Inject constructor(
                 val result = data.fetch { record ->
                     DogField(
                         dogId = record[DOGS.DOG_ID],
-                        dogImage = if (record[DOGS.DOG_IMAGE].toString() != "N/A") "$BASE_URL/${record[DOGS.DOG_ID]}/image/${record[DOGS.DOG_IMAGE].SHA256().ByteArrayToHex().substring(0, 8)}/${record[DOGS.DOG_IMAGE].toFileName()}" else "N/A",
+                        dogImage = if (record[DOGS.DOG_IMAGE].toString() != "N/A") "$BASE_URL_DOG/${record[DOGS.DOG_ID]}/image/${record[DOGS.DOG_IMAGE].SHA256().ByteArrayToHex().substring(0, 8)}/${record[DOGS.DOG_IMAGE].toFileName()}" else "N/A",
                         breedName = record[DOGS.BREED_NAME],
                         size = record[DOGS.SIZE]
                     )
@@ -101,7 +100,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve dogs operation on thread [$currentThreadName]", e)
+                LOG.error("Error during retrieve dogs operation on thread [$currentThreadName]", e.message)
                 return@withContext emptyList()
             }
         }
@@ -136,7 +135,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during insert dog operation on thread [$currentThreadName]", e)
+                LOG.error("Error during insert dog operation on thread [$currentThreadName]", e.message)
                 return@withContext false
             }
         }
@@ -168,7 +167,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext affectedRows > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update", e)
+                LOG.error("An error occurred during update", e.message)
                 return@withContext false
             }
         }
@@ -194,7 +193,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during delete dog operation on thread [$currentThreadName]", e)
+                LOG.error("Error during delete dog operation on thread [$currentThreadName]", e.message)
                 return@withContext false
             }
         }

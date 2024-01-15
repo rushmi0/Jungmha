@@ -11,9 +11,19 @@ VALUES ('authen_key_1', 'share_key_1', 'src/main/resources/images/preview/3.jpg'
         NOW(), 'DogWalkers'),
        ('authen_key_5', 'share_key_5', 'src/main/resources/images/preview/19.jpg', 'user5', 'Charlie', 'Brown', 'charlie.brown@email.com', '9998887777',
         NOW(), 'Normal'),
-       ('authen_key_6', 'share_key_6', 'src/main/resources/images/preview/6.jpg', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(),
-        'DogWalkers');
+       ('authen_key_6', 'share_key_6', 'src/main/resources/images/preview/14.jpg', 'user6', 'Eva', 'Davis', 'eva.davis@email.com', '4443332222', NOW(),
+        'DogWalkers'),
 
+       ('authen_key_7', 'share_key_7', 'src/main/resources/images/preview/11.jpg', 'user7', 'David', 'Smith', 'david.smith@email.com', '7778889999', NOW(),
+        'DogWalkers'),
+       ('authen_key_8', 'share_key_8', 'src/main/resources/images/preview/1.jpg', 'user8', 'Emma', 'Jones', 'emma.jones@email.com', '5554443333', NOW(),
+        'DogWalkers'),
+       ('authen_key_9', 'share_key_9', 'src/main/resources/images/preview/19.jpg', 'user9', 'Frank', 'Taylor', 'frank.taylor@email.com', '1119998888', NOW(),
+        'DogWalkers'),
+       ('authen_key_10', 'share_key_10', 'src/main/resources/images/preview/16.jpg', 'user10', 'Grace', 'Johnson', 'grace.johnson@email.com', '3332221111',
+        NOW(), 'DogWalkers'),
+       ('authen_key_11', 'share_key_11', 'src/main/resources/images/preview/4.jpg', 'user11', 'Henry', 'Miller', 'henry.miller@email.com', '6667778888',
+        NOW(), 'DogWalkers');
 
 -- เพิ่มข้อมูลลงในตาราง Signature
 INSERT INTO Signature (user_id, signature, timestamp)
@@ -47,7 +57,12 @@ VALUES (1,
 INSERT INTO DogWalkers (user_id, location_name, id_card_number, price_small, price_medium, price_big)
 VALUES (2, 'Park1', 'ID123456', 20, 30, 40),
        (4, 'Park2', 'ID654321', 25, 35, 45),
-       (6, 'Park3', 'ID987654', 18, 28, 38);
+       (6, 'Park3', 'ID987654', 18, 28, 38),
+       (7, 'Park4', 'ID112233', 22, 32, 42),
+       (8, 'Park5', 'ID445566', 30, 40, 50),
+       (9, 'Park6', 'ID778899', 15, 25, 35),
+       (10, 'Park7', 'ID990011', 28, 38, 48),
+       (11, 'Park8', 'ID223344', 25, 35, 45);
 
 
 -- เพิ่มข้อมูลในตาราง Dogs
