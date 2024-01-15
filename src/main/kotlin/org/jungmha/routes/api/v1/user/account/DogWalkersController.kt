@@ -9,6 +9,11 @@ import io.micronaut.http.annotation.*
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.constants.DogWalkerUpdateField
@@ -16,6 +21,7 @@ import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkersInfo
 import org.jungmha.database.record.EncryptedData
+import org.jungmha.database.record.UpdateContact
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
@@ -127,8 +133,8 @@ class DogWalkersController @Inject constructor(
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
         val encrypted = aes.encrypt(this.toString(), shareKey)
-        //return HttpResponse.ok(EncryptedData(encrypted))
-        return HttpResponse.ok(this)
+        return HttpResponse.ok(EncryptedData(encrypted))
+        //return HttpResponse.ok(this)
     }
 
     // �� ──────────────────────────────────────────────────────────────────────────────────────── �� \\
@@ -141,6 +147,30 @@ class DogWalkersController @Inject constructor(
      * @param payload ข้อมูลที่ถูก Encrypt ที่จะถูกใช้ในการแก้ไขข้อมูล
      * @return HttpResponse สำหรับผลลัพธ์ของการแก้ไขข้อมูลหรือแจ้งเตือนหากไม่สามารถดำเนินการได้
      */
+    @RequestBody(
+        content = [
+            Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = UpdateContact::class)
+            )
+        ]
+    )
+    @Operation(
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Fields updated successfully"
+            ),
+            ApiResponse(
+                responseCode = "400",
+                description = "Invalid token or insufficient permission"
+            ),
+            ApiResponse(
+                responseCode = "5xx",
+                description = "Internal server error"
+            )
+        ]
+    )
     @Patch(
         uri = "auth/user/dogwalkers",
         consumes = [MediaType.APPLICATION_JSON],
@@ -256,6 +286,7 @@ class DogWalkersController @Inject constructor(
             HttpResponse.serverError("Internal server error: ${e.message}")
         }
     }
+
 
     /**
      * เมธอดที่ใช้ในการแก้ไขฟิลด์ email หรือ phoneNumber

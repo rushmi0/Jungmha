@@ -13,6 +13,10 @@ import io.micronaut.http.annotation.Patch
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
@@ -48,6 +52,18 @@ class NormalController @Inject constructor(
      * @param access ข้อมูล Token ที่ใช้ในการตรวจสอบสิทธิ์
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลส่วนตัว
      */
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = NormalInfo::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Get(
         "auth/user/normal",
         produces = [MediaType.APPLICATION_JSON]
@@ -162,7 +178,7 @@ class NormalController @Inject constructor(
         name: String,
         payload: EncryptedData
     )
-    : MutableHttpResponse<out Any?> {
+            : MutableHttpResponse<out Any?> {
         return try {
             val userInfo = userService.findUser(name)
             val userID = userInfo?.userID!!

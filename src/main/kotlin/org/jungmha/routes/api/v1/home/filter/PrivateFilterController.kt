@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PrivateDogWalkerInfo
+import org.jungmha.database.record.PublicDogWalkerInfo
 import org.jungmha.routes.api.v1.user.account.DogWalkersController
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
@@ -63,6 +64,7 @@ class PrivateFilterController @Inject constructor(
                     Content(
                         mediaType = "application/json",
                         schema = Schema(implementation = PrivateDogWalkerInfo::class)
+                        //schema = Schema(implementation = PublicDogWalkerInfo::class)
                     )
                 ]
             )

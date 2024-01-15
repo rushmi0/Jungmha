@@ -10,6 +10,9 @@ import io.micronaut.http.annotation.Header
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import jakarta.inject.Inject
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.SignatureForm
@@ -47,6 +50,18 @@ class LoginController @Inject constructor(
      * @param username ชื่อผู้ใช้
      * @return MutableHttpResponse ที่เป็นผลลัพธ์ของการเข้าสู่ระบบ
      */
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        //schema = Schema(implementation = NormalInfo::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Get(
         uri = "/auth/sign-in/{username}",
         produces = [MediaType.APPLICATION_JSON]

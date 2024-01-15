@@ -11,6 +11,9 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogWalkBookingsServiceImpl
@@ -43,6 +46,18 @@ class DogWalkBookingController @Inject constructor(
      * @param payload ข้อมูลการจองบริการ
      * @return HttpResponse สำหรับผลลัพธ์ของการจอง
      */
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        //schema = Schema(implementation = DogWalkBookings::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Post(
         uri = "/auth/user/booking",
         consumes = [MediaType.APPLICATION_JSON]
