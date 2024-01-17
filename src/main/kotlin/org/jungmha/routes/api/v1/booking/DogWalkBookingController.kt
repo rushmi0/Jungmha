@@ -99,27 +99,13 @@ class DogWalkBookingController @Inject constructor(
             }
 
         } catch (e: IllegalArgumentException) {
-            LOG.error("Failed to Booking: ${e.message} \n> ${e.stackTrace}")
+            LOG.error("Failed to Booking: ${e.message}\n> ${e.stackTrace}")
             HttpResponse.badRequest(e.message)
         } catch (e: Exception) {
             LOG.error("Failed to Booking \n${e.message}")
             HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
-
-
-
-
-    private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
-        val updateQueue = ArrayDeque<String>()
-        for (record in DogWalkBookingsValidate.entries) {
-            if (decryptedData[record.fieldName] != null) {
-                updateQueue.add(record.fieldName)
-            }
-        }
-        return updateQueue
-    }
-
 
 
     /**
@@ -147,7 +133,6 @@ class DogWalkBookingController @Inject constructor(
 
             val bookings = DogWalkBookings(
                 walkerID = decryptedData["walkerID"] as Int,
-                //userID = decryptedData["userID"] as Int,
                 dogID = decryptedData["dogID"] as Int,
                 bookingDate = LocalDate.parse(decryptedData["bookingDate"] as String, formatterDate),
                 timeStart = LocalTime.parse(decryptedData["timeStart"] as String, formatterTime),
@@ -179,7 +164,6 @@ class DogWalkBookingController @Inject constructor(
             return HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
-
 
 
     companion object {

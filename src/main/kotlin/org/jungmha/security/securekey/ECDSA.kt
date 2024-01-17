@@ -161,16 +161,3 @@ object ECDSA {
 
 
 }
-
-fun main() {
-
-    val key = BigInteger("12345")
-
-    val mass = "sfdafnsevn"
-
-    val signature = ECDSA.sign(
-        key,
-        mass
-    )
-    //println(signature)
-}

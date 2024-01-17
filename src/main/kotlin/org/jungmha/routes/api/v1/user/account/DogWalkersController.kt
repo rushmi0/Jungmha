@@ -216,7 +216,7 @@ class DogWalkersController @Inject constructor(
         name: String,
         payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
-        return try {
+         try {
             val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest("User not found")
             val userID = userInfo.userID
             val shareKey = userInfo.sharedKey
