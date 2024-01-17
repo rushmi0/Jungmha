@@ -1,6 +1,6 @@
 package org.jungmha.constants
 
-enum class DogWalkerUpdateField(override val key: String) : EnumField  {
+enum class DogWalkerUpdateField(override val fieldName: String) : EnumField {
     EMAIL("email"),
     PHONE_NUMBER("phoneNumber"),
     ID_CARD_NUMBER("idCardNumber"),

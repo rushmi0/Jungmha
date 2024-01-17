@@ -80,7 +80,6 @@ class PublicFilterController @Inject constructor(
     }
 
     companion object {
-        // Logger สำหรับการดึงข้อมูล Public Dog Walker
         private val LOG = LoggerFactory.getLogger(PublicFilterController::class.java)
     }
 

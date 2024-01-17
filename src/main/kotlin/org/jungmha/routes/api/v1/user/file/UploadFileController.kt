@@ -62,7 +62,7 @@ class UploadFileController @Inject constructor(
         @Header("Access-Token") access: String,
         @Part file: CompletedFileUpload
     ): MutableHttpResponse<String> {
-        return try {
+         try {
             // ตรวจสอบความถูกต้องของโทเค็นและการอนุญาตของผู้ใช้
             val userDetails = token.viewDetail(access)
             val verify = token.verifyToken(access)
@@ -70,17 +70,17 @@ class UploadFileController @Inject constructor(
             val permission = userDetails.permission
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
-            val response = if (verify && permission == "edit") {
+            return if (verify && permission == "edit") {
                 processFileUpload(user, file)
             } else {
                 LOG.warn("Invalid token for file upload")
                 HttpResponse.badRequest("Invalid token")
             }
 
-            response
+
         } catch (e: Exception) {
             LOG.error("Failed to upload file", e)
-            HttpResponse.serverError("Failed to upload file: ${e.message}")
+             return HttpResponse.serverError("Failed to upload file: ${e.message}")
         }
 
     }

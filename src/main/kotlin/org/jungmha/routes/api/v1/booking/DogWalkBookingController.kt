@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.booking
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
 import io.micronaut.http.annotation.Body
@@ -13,22 +14,35 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.inject.Inject
+import kotlinx.coroutines.coroutineScope
+import org.jungmha.constants.DogWalkBookingsValidate
+import org.jungmha.constants.NormalValidateField
 import org.jungmha.database.statement.DogWalkBookingsServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkBookings
+import org.jungmha.database.record.EncryptedData
+import org.jungmha.routes.api.v1.user.auth.RegisterController.Companion.validateDecryptedData
+import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
+import org.jungmha.security.xss.XssDetector
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import java.util.ArrayDeque
 
 // * Dog Walk Booking Controller
 
 /**
  * คลาสนี้เป็น Controller สำหรับการจองบริการพาเดินสุนัขเดินเล่น
  */
-@SecurityRequirement(name = "Access-Token")
+//@SecurityRequirement(name = "Access-Token")
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -36,7 +50,8 @@ import org.slf4j.LoggerFactory
 class DogWalkBookingController @Inject constructor(
     private val bookingService: DogWalkBookingsServiceImpl,
     private val userService: UserServiceImpl,
-    private val token: Token
+    private val token: Token,
+    private val aes: AES
 ) {
 
     /**
@@ -52,7 +67,7 @@ class DogWalkBookingController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        //schema = Schema(implementation = DogWalkBookings::class)
+                        schema = Schema(implementation = DogWalkBookings::class)
                     )
                 ]
             )
@@ -64,29 +79,48 @@ class DogWalkBookingController @Inject constructor(
     )
     suspend fun booking(
         @Header("Access-Token") access: String,
-        @Body payload: DogWalkBookings
-    ): MutableHttpResponse<String> {
+        @Body payload: EncryptedData
+    ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token
             val userDetails: TokenObject = token.viewDetail(access)
-            val user: String = userDetails.userName
+            val verify = token.verifyToken(access)
+            val name: String = userDetails.userName
             val permission: String = userDetails.permission
 
-            // ตรวจสอบสิทธิ์การใช้งาน
-            if (!token.verifyToken(access) || permission != "edit") {
-                LOG.warn("Invalid token for Booking")
-                return HttpResponse.badRequest("Invalid token")
+            // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
+            return if (verify && permission == "edit") {
+                coroutineScope {
+                    processBooking(name, payload)
+                }
+            } else {
+                LOG.warn("Invalid token or insufficient permission for user: $name")
+                HttpResponse.badRequest("Invalid token or insufficient permission")
             }
 
-            processBooking(payload, user)
         } catch (e: IllegalArgumentException) {
-            LOG.error("Failed to Booking: ${e.message}")
-            return HttpResponse.badRequest(e.message)
+            LOG.error("Failed to Booking: ${e.message} \n> ${e.stackTrace}")
+            HttpResponse.badRequest(e.message)
         } catch (e: Exception) {
-            LOG.error("Failed to Booking", e)
-            return HttpResponse.serverError("Failed to Booking: ${e.message}")
+            LOG.error("Failed to Booking \n${e.message}")
+            HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
+
+
+
+
+    private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
+        val updateQueue = ArrayDeque<String>()
+        for (record in DogWalkBookingsValidate.entries) {
+            if (decryptedData[record.fieldName] != null) {
+                updateQueue.add(record.fieldName)
+            }
+        }
+        return updateQueue
+    }
+
+
 
     /**
      * เมธอดที่ใช้ในการประมวลผลข้อมูลการจอง
@@ -95,14 +129,43 @@ class DogWalkBookingController @Inject constructor(
      * @param user ชื่อผู้ใช้ที่ทำการจอง
      * @return HttpResponse สำหรับผลลัพธ์ของการจอง
      */
-    private suspend fun processBooking(payload: DogWalkBookings, user: String): MutableHttpResponse<String> {
+    private suspend fun processBooking(
+        name: String,
+        payload: EncryptedData,
+    ): MutableHttpResponse<out Any?>? {
         try {
-            // ค้นหา UserID จากชื่อผู้ใช้
-            val userId: Int = userService.findUser(user)?.userID
-                ?: throw IllegalArgumentException("User not found")
+            val userInfo = userService.findUser(name)
+                ?: return HttpResponse.badRequest("User not found")
+
+            val userId: Int = userInfo.userID
+            val shareKey = userInfo.sharedKey
+
+            val decryptedData: Map<String, Any?> = aes.decrypt(payload.content, shareKey)
+
+            val formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val formatterTime = DateTimeFormatter.ofPattern("HH:mm")
+
+            val bookings = DogWalkBookings(
+                walkerID = decryptedData["walkerID"] as Int,
+                //userID = decryptedData["userID"] as Int,
+                dogID = decryptedData["dogID"] as Int,
+                bookingDate = LocalDate.parse(decryptedData["bookingDate"] as String, formatterDate),
+                timeStart = LocalTime.parse(decryptedData["timeStart"] as String, formatterTime),
+                timeEnd = LocalTime.parse(decryptedData["timeEnd"] as String, formatterTime),
+            )
+
+            // ตรวจสอบค่า null และ XSS
+            val validationResponse: MutableHttpResponse<out Any?> = validateDecryptedData(
+                DogWalkBookingsValidate.entries.toTypedArray(),
+                decryptedData
+            )
+
+            if (validationResponse.status != HttpStatus.OK) {
+                return validationResponse
+            }
 
             // ทำการบันทึกการจอง
-            return if (bookingService.insert(userId, payload)) {
+            return if (bookingService.insert(userId, bookings)) {
                 HttpResponse.ok("Booking successfully")
             } else {
                 HttpResponse.serverError("Failed to Booking field")
@@ -116,6 +179,8 @@ class DogWalkBookingController @Inject constructor(
             return HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
+
+
 
     companion object {
         private val LOG = LoggerFactory.getLogger(DogWalkBookingController::class.java)

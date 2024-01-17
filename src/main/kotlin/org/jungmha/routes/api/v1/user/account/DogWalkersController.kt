@@ -70,13 +70,12 @@ class DogWalkersController @Inject constructor(
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูล Dog Walkers หรือแจ้งเตือนหากไม่สามารถดึงข้อมูลได้
      */
     @Get(
-        uri = "auth/user/dogwalkers/{userName}",
+        uri = "auth/user/dogwalkers",
         consumes = [MediaType.APPLICATION_JSON],
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun getPersonalInfo(
-        @Header("Access-Token") access: String,
-        userName: String
+        @Header("Access-Token") access: String
     ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token และการอนุญาตของผู้ใช้
@@ -87,8 +86,7 @@ class DogWalkersController @Inject constructor(
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
             return when {
-                verify && permission == "view"
-                -> {
+                verify && permission == "view" -> {
                     coroutineScope {
                         processSearching(userName)
                     }
@@ -98,6 +96,7 @@ class DogWalkersController @Inject constructor(
                     LOG.warn("Invalid token or insufficient permission for user: $userName")
                     HttpResponse.badRequest("Invalid token or insufficient permission")
                 }
+
             }
         } catch (e: Exception) {
             LOG.error("Error processing: ${e.message}")
@@ -256,8 +255,8 @@ class DogWalkersController @Inject constructor(
     private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
         val updateQueue = ArrayDeque<String>()
         for (field in DogWalkerUpdateField.entries) {
-            if (decryptedData[field.key] != null) {
-                updateQueue.add(field.key)
+            if (decryptedData[field.fieldName] != null) {
+                updateQueue.add(field.fieldName)
             }
         }
         return updateQueue

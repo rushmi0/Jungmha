@@ -115,7 +115,8 @@ class RegisterController @Inject constructor(
         name: String,
         payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
-        val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest("User not found")
+        val userInfo = userService.findUser(name)
+            ?: return HttpResponse.badRequest("User not found")
         val shareKey = userInfo.sharedKey
 
         val decryptedData: Map<String, Any?> = aes.decrypt(payload.content, shareKey)
@@ -138,7 +139,7 @@ class RegisterController @Inject constructor(
             val userId = userInfo.userID
             val token = token.buildTokenPair(
                 name,
-                999999999999999999
+                30
             )
 
             val type = userData.userType
@@ -156,31 +157,34 @@ class RegisterController @Inject constructor(
         }
     }
 
-    /**
-     * เมธอดที่ใช้ในการตรวจสอบความถูกต้องของข้อมูลที่ถูก Decrypt
-     *
-     * @param fields ฟิลด์ที่ต้องการตรวจสอบ
-     * @param decryptedData ข้อมูลที่ถูก Decrypt
-     * @return HttpResponse สำหรับผลลัพธ์ของการตรวจสอบ
-     */
-    private fun validateDecryptedData(
-        fields: Array<out EnumField>,
-        decryptedData: Map<String, Any?>
-    ): MutableHttpResponse<out Any?> {
-        for (field in fields) {
-            val value = decryptedData[field.key]
-            if (value == null || value.toString().isBlank()) {
-                return HttpResponse.badRequest("$field cannot be null or empty")
-            }
-            if (XssDetector.containsXss(value.toString())) {
-                return HttpResponse.badRequest("Cross-site scripting detected in $field")
-            }
-        }
-        return HttpResponse.ok()
-    }
 
     companion object {
-        // Logger สำหรับการทำงานใน RegisterController
+
+        /**
+         * เมธอดที่ใช้ในการตรวจสอบความถูกต้องของข้อมูลที่ถูก Decrypt
+         *
+         * @param fields ฟิลด์ที่ต้องการตรวจสอบ
+         * @param decryptedData ข้อมูลที่ถูก Decrypt
+         * @return HttpResponse สำหรับผลลัพธ์ของการตรวจสอบ
+         */
+        fun validateDecryptedData(
+            fields: Array<out EnumField>,
+            decryptedData: Map<String, Any?>
+        ): MutableHttpResponse<out Any?> {
+            for (field in fields) {
+                val value = decryptedData[field.fieldName]
+                if (value == null || value.toString().isBlank()) {
+                    LOG.warn("field '${field.fieldName}' is null or empty")
+                    return HttpResponse.badRequest("$field cannot be null or empty")
+                }
+                if (XssDetector.containsXss(value.toString())) {
+                    LOG.warn("XSS detected in $field")
+                    return HttpResponse.badRequest("Cross-site scripting detected in $field")
+                }
+            }
+            return HttpResponse.ok()
+        }
+
         private val LOG = LoggerFactory.getLogger(RegisterController::class.java)
     }
 

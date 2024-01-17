@@ -177,8 +177,7 @@ class NormalController @Inject constructor(
     private suspend fun processDecrypting(
         name: String,
         payload: EncryptedData
-    )
-            : MutableHttpResponse<out Any?> {
+    ): MutableHttpResponse<out Any?> {
         return try {
             val userInfo = userService.findUser(name)
             val userID = userInfo?.userID!!
@@ -216,8 +215,8 @@ class NormalController @Inject constructor(
         val updateQueue = ArrayDeque<String>()
 
         for (field in NormalUpdateField.entries) {
-            if (decryptedData[field.key] != null) {
-                updateQueue.add(field.key)
+            if (decryptedData[field.fieldName] != null) {
+                updateQueue.add(field.fieldName)
             }
         }
 
