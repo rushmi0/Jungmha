@@ -92,18 +92,19 @@
 <section>
     <h2>Server Details</h2>
     <p><strong>Server Name:</strong> Jungma</p>
-    <p id="ipAddress"><strong>IP Address:</strong> Retrieving...</p>
     <p><strong>Status:</strong> <span style="color: #27ae60;">Online</span></p>
     <p><strong>Creator:</strong> Watcharapol Phongwilai</p>
     <p><strong>Position:</strong> Backend Developer</p>
 
-    <!-- เพิ่ม Element ลิงค์ไปยัง GitHub repository -->
-    <p><strong>GitHub Repository:</strong> <a href="https://github.com/rushmi0/Jungmha" target="_blank">Jungmha on GitHub</a></p>
-</section>
+    <!-- เพิ่ม Element ลิงค์ไปยัง API http://localhost:8080/swagger-ui -->
+    <p><strong>Swagger API:</strong> <a href="http://localhost:8080/swagger-ui" target="_blank">
+        document
+    </a></p>
 
-
-
-<section>
+    <!-- เพิ่ม Element ลิงค์ไปยัง API http://localhost:8080/swagger-ui -->
+    <p><strong>Redoc API:</strong> <a href="http://localhost:8080/redoc" target="_blank">
+        document
+    </a></p>
 
 </section>
 
@@ -112,24 +113,6 @@
     <p style="margin: 0;">&copy; 2023 Jungma Server</p>
 </footer>
 
-<!-- JavaScript to Get IP Address -->
-<script>
-    // Using window.location
-    document.getElementById("ipAddress").innerHTML += " " + window.location.hostname;
-
-    // Using RTCPeerConnection
-    var pc = new RTCPeerConnection();
-    pc.createDataChannel("");
-    pc.createOffer().then(pc.setLocalDescription.bind(pc));
-
-    pc.onicecandidate = function (event) {
-        if (event.candidate) {
-            var ipAddress = event.candidate.candidate.split(" ")[4];
-            document.getElementById("ipAddress").innerHTML = "<strong>IP Address:</strong> " + ipAddress;
-            pc.onicecandidate = null;
-        }
-    };
-</script>
 
 </body>
 
