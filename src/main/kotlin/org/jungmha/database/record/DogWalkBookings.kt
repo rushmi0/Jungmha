@@ -9,6 +9,7 @@ import java.time.LocalTime
 @Serdeable.Deserializable
 data class DogWalkBookings(
     val walkerID: Int,
+    val userID: Int,
     val dogID: Int,
     val bookingDate: LocalDate,
     val timeStart: LocalTime,

@@ -99,13 +99,14 @@ class DogWalkBookingController @Inject constructor(
             }
 
         } catch (e: IllegalArgumentException) {
-            LOG.error("Failed to Booking: ${e.message}\n> ${e.stackTrace}")
+            LOG.error("Failed to Booking: ${e.message} \n> ${e.stackTrace}")
             HttpResponse.badRequest(e.message)
         } catch (e: Exception) {
             LOG.error("Failed to Booking \n${e.message}")
             HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
+
 
 
     /**
@@ -133,6 +134,7 @@ class DogWalkBookingController @Inject constructor(
 
             val bookings = DogWalkBookings(
                 walkerID = decryptedData["walkerID"] as Int,
+                userID = userId,
                 dogID = decryptedData["dogID"] as Int,
                 bookingDate = LocalDate.parse(decryptedData["bookingDate"] as String, formatterDate),
                 timeStart = LocalTime.parse(decryptedData["timeStart"] as String, formatterTime),
@@ -164,6 +166,7 @@ class DogWalkBookingController @Inject constructor(
             return HttpResponse.serverError("Failed to Booking: ${e.message}")
         }
     }
+
 
 
     companion object {

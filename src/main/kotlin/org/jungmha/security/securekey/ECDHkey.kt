@@ -43,20 +43,3 @@ class ECDHkey {
     }
 
 }
-
-fun main() {
-
-    val privateKey = BigInteger("b1bd351d555e1781134d0b406e58145277a67696d3ad2511c98e4627dafcf5b2", 16)
-    val publicKey = privateKey.toPublicKey().compressed()
-
-    println(publicKey)
-
-    val ecdh = ECDHkey()
-
-    val sharedKey = ecdh.sharedSecret(
-        privateKey,
-        "02f06f2580404d439896f002a6b77cbbc518ace934345c69b831a234a6dfbe54c8"
-    )
-    println(sharedKey)
-
-}

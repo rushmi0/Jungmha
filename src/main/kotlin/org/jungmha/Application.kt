@@ -1,5 +1,6 @@
 package org.jungmha
 
+
 import io.micronaut.runtime.Micronaut.run
 import io.swagger.v3.oas.annotations.*
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
@@ -7,7 +8,6 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.info.*
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.security.SecurityScheme
-
 
 @SecurityScheme(
     type = SecuritySchemeType.APIKEY,

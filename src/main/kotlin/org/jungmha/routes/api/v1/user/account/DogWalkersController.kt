@@ -1,5 +1,6 @@
 package org.jungmha.routes.api.v1.user.account
 
+
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
@@ -9,13 +10,14 @@ import io.micronaut.http.annotation.*
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
-import jakarta.inject.Inject
-import kotlinx.coroutines.coroutineScope
+import io.swagger.v3.oas.annotations.tags.Tag
+
 import org.jungmha.constants.DogWalkerUpdateField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
@@ -26,6 +28,10 @@ import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.jungmha.security.xss.XssDetector
+
+import jakarta.inject.Inject
+import kotlinx.coroutines.coroutineScope
+
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
@@ -35,6 +41,10 @@ import java.util.*
 /**
  * คลาสนี้เป็น Controller สำหรับดำเนินการที่เกี่ยวข้องกับ Dog Walkers
  */
+@Tag(
+    name = "Dog Walkers",
+    description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -47,28 +57,23 @@ class DogWalkersController @Inject constructor(
 ) {
 
     /**
-     * สำหรับการดึงข้อมูล Dog Walkers จาก ID
-     *
-     * @param id ไอดีของ Dog Walkers
-     * @return ข้อมูล Dog Walkers หากพบ หรือ HttpResponse แจ้งเตือนหากไม่พบ
-     */
-    @Get(
-        uri = "auth/user/dogwalkers/id/{id}",
-        produces = [MediaType.APPLICATION_JSON]
-    )
-    suspend fun getSingleDogWalkersInfo(id: Int): Any? {
-        LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
-        LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
-        LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
-        return walkerService.getSingleDogWalkersInfo(id) ?: HttpResponse.badRequest("Not found")
-    }
-
-    /**
      * สำหรับการดึงข้อมูล Dog Walkers ที่เกี่ยวข้องกับผู้ใช้
      *
      * @param access Access-Token สำหรับตรวจสอบความถูกต้องและสิทธิ์การใช้งาน
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูล Dog Walkers หรือแจ้งเตือนหากไม่สามารถดึงข้อมูลได้
      */
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = DogWalkersInfo::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Get(
         uri = "auth/user/dogwalkers",
         consumes = [MediaType.APPLICATION_JSON],
@@ -86,6 +91,7 @@ class DogWalkersController @Inject constructor(
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
             return when {
+
                 verify && permission == "view" -> {
                     coroutineScope {
                         processSearching(userName)
@@ -188,6 +194,7 @@ class DogWalkersController @Inject constructor(
 
             // ตรวจสอบความถูกต้องของ Token และสิทธิ์การใช้งาน
             return when {
+
                 verify && permission == "edit" -> {
                     coroutineScope {
                         processDecrypting(name, payload)
@@ -216,24 +223,40 @@ class DogWalkersController @Inject constructor(
         name: String,
         payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
-         try {
-            val userInfo = userService.findUser(name) ?: return HttpResponse.badRequest("User not found")
+        try {
+            // ค้นหาข้อมูลผู้ใช้
+            val userInfo = userService.findUser(name)
+                ?: return HttpResponse.badRequest("User not found")
+
+            // ดึงข้อมูลผู้ใช้
             val userID = userInfo.userID
             val shareKey = userInfo.sharedKey
 
+            // Decrypt ข้อมูล
             val decryptedData: Map<String, Any> = aes.decrypt(payload.content, shareKey)
+
+            /**
+             * โดยในที่นี้เราใช้ queue ในการจัดเก็บฟิลด์ที่ต้องการแก้ไขของ Dog Walkers
+             * ตัวอย่างเช่น ถ้ามีการแก้ไข email, phone number, และ location
+             * ตัว queue จะถูกสร้างเพื่อเก็บลำดับที่ต้องแก้ไขเช่น ["email", "phoneNumber", "location" ... ]
+             */
+
+            // สร้างคิวของฟิลด์ที่ต้องการแก้ไข
             val updateQueue: Queue<String> = buildUpdateQueue(decryptedData)
 
+            // วนลูปตามคิวและดำเนินการแก้ไขฟิลด์
             for (field in updateQueue) {
                 val newValue = decryptedData[field]?.toString() ?: continue
 
+                // ตรวจสอบความปลอดภัยของข้อมูลที่จะนำมาแก้ไข
                 if (XssDetector.containsXss(newValue)) {
                     return HttpResponse.badRequest("Cross-site scripting detected")
                 }
 
+                // ดำเนินการแก้ไขฟิลด์
                 val result = processFieldUpdate(userID, field, newValue)
 
-                // ตรวจสอบว่า result เป็น MutableHttpResponse และมีค่า status และไม่เท่ากับ null
+                // ตรวจสอบผลลัพธ์และคืนค่าหากไม่สำเร็จ
                 if (result.status != null && result.status != HttpStatus.OK) {
                     return result
                 }
@@ -253,6 +276,13 @@ class DogWalkersController @Inject constructor(
      * @return คิวของฟิลด์ที่ต้องการแก้ไข
      */
     private fun buildUpdateQueue(decryptedData: Map<String, Any?>): Queue<String> {
+
+        /**
+         * โดยในที่นี้เราใช้ enum DogWalkerUpdateField เพื่อกำหนดฟิลด์ที่สามารถแก้ไขได้
+         * และตรวจสอบว่าฟิลด์ดังกล่าวมีค่าในข้อมูลที่ถูก Decrypt หรือไม่
+         * ถ้ามีค่า ก็จะถูกเพิ่มลงในคิวเพื่อให้สามารถดำเนินการแก้ไขตามลำดับได้
+         */
+
         val updateQueue = ArrayDeque<String>()
         for (field in DogWalkerUpdateField.entries) {
             if (decryptedData[field.fieldName] != null) {
@@ -261,6 +291,7 @@ class DogWalkersController @Inject constructor(
         }
         return updateQueue
     }
+
 
     /**
      * เมธอดที่ใช้ในการแก้ไขฟิลด์แต่ละตัว

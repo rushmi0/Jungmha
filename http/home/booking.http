@@ -16,11 +16,7 @@ Content-Type: application/json
 Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDM5NjI3MTUwMTksImlhdCI6MTcwMzk2MjgwMTQxOSwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMGU5NjhmMDQ4N2U0NzRiYzQ0NTA0NzhlMDc2NGM5ZWU4MmY0MDdkMmMwNmIwZmQ0ZjgyODgzNTMzYmZjNmM2ODQwMjIwMjE5MWJhMzZlN2YxYjNiZWVkMjViZjIxMmY0NmE1MmJlOWUzMjEyYmExNGEzNTk0MDA5MTdkMTE0MjUyNmFlMiJ9
 
 {
-  "walkerID": 13,
-  "dogID" : 3,
-  "bookingDate" : "2023-12-16",
-  "timeStart" : "13:00",
-  "timeEnd" : "16:30"
+  "content": "F7kDU+H7iKl3z3LjLEMGDhnMUgOirCm/r38WO0r8RTBDi1apGLM/j5TY9m+uhVcHqdFi52+jj4OaIMIeyowIXOoHwty5VZ3lMnroZANMW7ZBBKCwz8V/Q2Q+ny6XkLEc?iv=2p+dG9AxCBCf8yQ1ayE09g=="
 }
 
 ###
@@ -30,9 +26,5 @@ Content-Type: application/json
 Access-Token: eyJ1c2VyTmFtZSI6IkF1cmEiLCJwZXJtaXNzaW9uIjoiZWRpdCIsImV4cCI6ODY0MDAwMDAwMDE3MDM5NjI3MTUwMTksImlhdCI6MTcwMzk2MjgwMTQxOSwic2lnbmF0dXJlIjoiMzA0NTAyMjEwMGU5NjhmMDQ4N2U0NzRiYzQ0NTA0NzhlMDc2NGM5ZWU4MmY0MDdkMmMwNmIwZmQ0ZjgyODgzNTMzYmZjNmM2ODQwMjIwMjE5MWJhMzZlN2YxYjNiZWVkMjViZjIxMmY0NmE1MmJlOWUzMjEyYmExNGEzNTk0MDA5MTdkMTE0MjUyNmFlMiJ9
 
 {
-  "walkerID": 12,
-  "dogID" : 6,
-  "bookingDate" : "2023-05-16",
-  "timeStart" : "14:00",
-  "timeEnd" : "15:30"
+  "content": "IOt+rgXuW4MFMztpoSImPIGu3YVy0bePSu9rhTitv6IFoatxP7WEguari6FTtFkJ4QpGtUjZmKVTteiLn1KHTKZ6gIy/mnNII1eZKqjCCYLPeYQzz8pd9E0M4DCSJC+c?iv=oXswLLZYaGsZA791fC1WWg=="
 }

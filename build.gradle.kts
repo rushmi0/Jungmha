@@ -53,7 +53,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
     // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
-    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+    //implementation("io.reactivex.rxjava2:rxjava:2.2.21")
+
+    // https://mvnrepository.com/artifact/io.micronaut.rxjava2/micronaut-rxjava2
+    implementation("io.micronaut.rxjava2:micronaut-rxjava2:2.2.1")
+
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
