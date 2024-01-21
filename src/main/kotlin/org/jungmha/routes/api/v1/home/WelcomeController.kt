@@ -4,8 +4,13 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
+import io.swagger.v3.oas.annotations.tags.Tag
 import java.nio.charset.Charset
 
+@Tag(
+    name = "CamRent",
+    description = "เว็บตัวอย่าง CamRent"
+)
 @Bean
 @Controller("/")
 class WelcomeController {

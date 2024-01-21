@@ -165,14 +165,6 @@ class DogWalkersController @Inject constructor(
             ApiResponse(
                 responseCode = "200",
                 description = "Fields updated successfully"
-            ),
-            ApiResponse(
-                responseCode = "400",
-                description = "Invalid token or insufficient permission"
-            ),
-            ApiResponse(
-                responseCode = "5xx",
-                description = "Internal server error"
             )
         ]
     )
