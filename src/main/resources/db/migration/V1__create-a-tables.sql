@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS DogWalkers
     total_review   INTEGER     NOT NULL DEFAULT 0,
     location_name  VARCHAR(50) NOT NULL DEFAULT 'N/A',
     id_card_number VARCHAR(60) NOT NULL DEFAULT 'N/A',
-    verification   VARCHAR(10)          DEFAULT 'false' CHECK (verification IN ('true', 'false')),
+    verification   BOOLEAN              DEFAULT false CHECK (verification IN (true, false)),
     price_small    INTEGER     NOT NULL DEFAULT 0,
     price_medium   INTEGER     NOT NULL DEFAULT 0,
     price_big      INTEGER     NOT NULL DEFAULT 0
@@ -46,7 +46,7 @@ CREATE OR REPLACE FUNCTION update_verification()
 $$
 BEGIN
     IF NEW.id_card_number IS NOT NULL AND NEW.id_card_number != 'N/A' THEN
-        NEW.verification := 'true';
+        NEW.verification := true;
     END IF;
     RETURN NEW;
 END;

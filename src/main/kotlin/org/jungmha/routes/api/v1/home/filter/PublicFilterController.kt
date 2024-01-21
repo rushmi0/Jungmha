@@ -61,7 +61,7 @@ class PublicFilterController @Inject constructor(
             val rawData = service.publicDogWalkersAll()
 
              rawData.stream().filter { data ->
-                val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get(), ignoreCase = true)
+                val verifyMatch = !verify.isPresent || data.detail.verify.equals(verify.get())
                 val nameMatch = !name.isPresent || data.detail.name.equals(name.get(), ignoreCase = true)
                 val locationMatch = !location.isPresent || data.detail.location.equals(location.get(), ignoreCase = true)
                 val pSmallMatch = (!pSmall.isPresent || data.detail.price.small <= pSmall.get())

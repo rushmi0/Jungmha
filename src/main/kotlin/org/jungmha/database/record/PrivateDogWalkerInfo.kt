@@ -20,7 +20,7 @@ data class PrivateDogWalkerInfo(
 data class WalkerDetail(
     val name: String,
     val profileImage: String,
-    val verify: String,
+    val verify: Boolean,
     val location: String,
     val price: PriceData
 )
