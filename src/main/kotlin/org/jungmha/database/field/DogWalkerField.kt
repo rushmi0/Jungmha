@@ -8,7 +8,7 @@ data class DogWalkerField(
     val userID: Int,
     val locationName: String,
     val idCardNumber: String,
-    val verification: String,
+    val verification: Boolean,
     val priceSmall: Int,
     val priceMedium: Int,
     val priceBig: Int
