@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS UserProfiles
 (
     user_id       SERIAL PRIMARY KEY,
-    authen_key    VARCHAR(255) DEFAULT 'N/A',
-    share_key     VARCHAR(255) DEFAULT 'N/A',
+    authen_key    VARCHAR(64)  DEFAULT 'N/A',
+    share_key     VARCHAR(64)  DEFAULT 'N/A',
     image_profile VARCHAR(255) DEFAULT 'N/A',
     username      VARCHAR(20)  DEFAULT 'N/A',
     first_name    VARCHAR(20)  DEFAULT 'N/A',
@@ -287,4 +287,13 @@ CREATE TRIGGER tr_dogwalkerreviews_update_count_review
     ON DogWalkerReviews
     FOR EACH ROW
 EXECUTE FUNCTION update_count_review();
+
+
+CREATE TABLE IF NOT EXISTS DirectMessage
+(
+    dm_id      INTEGER PRIMARY KEY,
+    pubkey     VARCHAR(64) NOT NULL,
+    created_at INT         NOT NULL,
+    content    TEXT        NOT NULL
+);
 
