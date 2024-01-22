@@ -39,6 +39,10 @@ import org.jungmha.security.securekey.TokenResponse
 /**
  * คลาสนี้เป็น Controller สำหรับดำเนินการลงทะเบียนผู้ใช้
  */
+@Tag(
+    name = "User auth",
+    //description = "API ที่เกี่ยวข้องกับ "
+)
 @SecurityRequirement(name = "Access-Token")
 @Controller("api/v1")
 @Bean
