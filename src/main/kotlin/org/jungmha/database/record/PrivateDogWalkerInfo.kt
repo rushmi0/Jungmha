@@ -9,6 +9,7 @@ import io.micronaut.serde.annotation.Serdeable
 data class PrivateDogWalkerInfo(
     val walkerID: Int,
     val detail: WalkerDetail,
+    val counUsed: Int,
     val countReview: Int,
     val totalReview: Int,
     val contact: WalkerContact,

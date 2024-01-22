@@ -108,6 +108,7 @@ class PrivateFilterController @Inject constructor(
                     val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
 
                     verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
+
                 }.limit(max.orElse(Integer.MAX_VALUE).toLong())
                     .collect(Collectors.toList())
             }

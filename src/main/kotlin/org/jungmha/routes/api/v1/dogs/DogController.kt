@@ -1,5 +1,11 @@
 package org.jungmha.routes.api.v1.dogs
 
+
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import io.micronaut.context.annotation.Bean
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
@@ -15,6 +21,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
+@Tag(
+    name = "Dog",
+    description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -23,6 +33,18 @@ class DogController @Inject constructor(
     private val service: DogsServiceImpl
 ) {
 
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = DogField::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Get(
         uri = "/dogs/filter{?name,small,medium,big,max}",
         produces = [MediaType.APPLICATION_JSON]
@@ -44,6 +66,18 @@ class DogController @Inject constructor(
         }
     }
 
+    @Operation(
+        responses = [
+            ApiResponse(
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = DogField::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Get(
         uri = "/dogs",
         produces = [MediaType.APPLICATION_JSON]

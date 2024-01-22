@@ -284,6 +284,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     dw.WALKER_ID,
                     up.USERNAME,
                     dw.VERIFICATION,
+                    dw.COUNT_USED,
                     dw.COUNT_REVIEW,
                     dw.TOTAL_REVIEW,
                     dw.LOCATION_NAME,
@@ -316,8 +317,10 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                     PrivateDogWalkerInfo(
                         walkerID = record[dw.WALKER_ID],
+                        counUsed = record[dw.COUNT_USED],
                         countReview = record[dw.COUNT_REVIEW],
                         totalReview = record[dw.TOTAL_REVIEW],
+
                         detail = WalkerDetail(
                             name = record[up.USERNAME],
                             profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
@@ -331,10 +334,12 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 big = record[dw.PRICE_BIG]
                             )
                         ),
+
                         contact = WalkerContact(
                             email = record[up.EMAIL],
                             phoneNumber = record[up.PHONE_NUMBER]
                         ),
+
                         review = subQuery.fetch { subRecord ->
                             WalkerReview(
                                 userID = subRecord[dwr.USER_ID],

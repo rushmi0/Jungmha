@@ -72,6 +72,7 @@ class RegisterController @Inject constructor(
                 )
             ]
         ),
+
         responses = [
             ApiResponse(
                 responseCode = "200",

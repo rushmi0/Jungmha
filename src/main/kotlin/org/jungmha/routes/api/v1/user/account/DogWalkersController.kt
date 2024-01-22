@@ -42,7 +42,7 @@ import java.util.*
  * คลาสนี้เป็น Controller สำหรับดำเนินการที่เกี่ยวข้องกับ Dog Walkers
  */
 @Tag(
-    name = "Dog Walkers",
+    name = "User account Dog Walkers",
     description = "API ที่เกี่ยวข้องกับ Dog Walkers"
 )
 @Controller("api/v1")
