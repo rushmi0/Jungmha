@@ -139,8 +139,8 @@ jooq {
                 //logging = Logging.DEBUG
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    //url = "jdbc:postgresql://localhost:5432/postgres"
-                    url = "jdbc:postgresql://jungmha-postgres:5432/postgres"
+                    url = "jdbc:postgresql://localhost:5432/postgres"
+                    //url = "jdbc:postgresql://jungmha-postgres:5432/postgres"
                     user = "postgres"
                     password = "sql@min"
                     properties.add(Property().apply {
