@@ -317,7 +317,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                     PrivateDogWalkerInfo(
                         walkerID = record[dw.WALKER_ID],
-                        counUsed = record[dw.COUNT_USED],
+                        countUsed = record[dw.COUNT_USED],
                         countReview = record[dw.COUNT_REVIEW],
                         totalReview = record[dw.TOTAL_REVIEW],
 
@@ -406,6 +406,9 @@ class DogsWalkersServiceImpl @Inject constructor(
                 val updateRows = when (fieldName) {
                     "userID" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.USER_ID, DSL.`val`(Integer.valueOf(newValue)))
+
+                    "countUsed" -> query.update(DOGWALKERS)
+                        .set(DOGWALKERS.COUNT_USED, DSL.`val`(Integer.valueOf(newValue)))
 
                     "idCardNumber" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.ID_CARD_NUMBER, DSL.`val`(newValue))

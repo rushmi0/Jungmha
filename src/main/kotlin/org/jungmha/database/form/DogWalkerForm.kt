@@ -8,6 +8,7 @@ import io.micronaut.serde.annotation.Serdeable
 data class DogWalkerForm(
     val userID: Int,
     val locationName: String,
+    val countUsed: Int,
     val idCardNumber: String,
     val priceSmall: Int,
     val priceMedium: Int,

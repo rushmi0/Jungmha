@@ -2,6 +2,7 @@ package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
+import jakarta.persistence.Embedded
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
@@ -17,6 +18,7 @@ data class NormalInfo(
     val email: String,
     val phoneNumber: String,
     val accountType: String,
+    @Embedded
     val booking: List<BookingList>?
 )
 

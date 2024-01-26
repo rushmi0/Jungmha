@@ -8,7 +8,7 @@ import org.jungmha.database.field.DogWalkBookingsField
 import org.jungmha.database.record.DogWalkBookings
 
 /**
- * **Interface DogWalkBookingsService**
+ * DogWalkBookingsService
  *
  * Interface นี้ให้บริการเกี่ยวกับการจัดการข้อมูลการจองเดินเดินสุนัข (Dog Walk Bookings) ในระบบ
  * โดยมีเมธอดต่าง ๆ ที่จะทำหน้าที่ค้นหา แสดงข้อมูลทั้งหมด และดำเนินการเพิ่ม แก้ไข และลบข้อมูลการจอง

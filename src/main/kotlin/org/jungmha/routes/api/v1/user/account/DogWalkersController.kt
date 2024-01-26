@@ -23,7 +23,7 @@ import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkersInfo
 import org.jungmha.database.record.EncryptedData
-import org.jungmha.database.record.UpdateContact
+
 import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
@@ -31,9 +31,11 @@ import org.jungmha.security.xss.XssDetector
 
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
+import org.jungmha.database.form.DogWalkerForm
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+
 import java.util.*
 
 // * Dog Walkers Controller
@@ -42,8 +44,8 @@ import java.util.*
  * คลาสนี้เป็น Controller สำหรับดำเนินการที่เกี่ยวข้องกับ Dog Walkers
  */
 @Tag(
-    name = "User account Dog Walkers",
-    description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+    name = "User Dog Walkers",
+    description = "API ที่เกี่ยวข้องกับ Dog Walkers",
 )
 @Controller("api/v1")
 @Bean
@@ -146,7 +148,7 @@ class DogWalkersController @Inject constructor(
 
 
     /**
-     * สำหรับแก้ไขข้อมูลส่วนตัวของ Dog Walkers
+     * สำหรับแก้ไขข้อมูลส่วนตัวของ Dog Walkers 🗝️ 🔒
      *
      * @param access Access-Token สำหรับตรวจสอบความถูกต้องและสิทธิ์การใช้งาน
      * @param payload ข้อมูลที่ถูก Encrypt ที่จะถูกใช้ในการแก้ไขข้อมูล
@@ -156,7 +158,7 @@ class DogWalkersController @Inject constructor(
         content = [
             Content(
                 mediaType = "application/json",
-                schema = Schema(implementation = UpdateContact::class)
+                schema = Schema(implementation = DogWalkerForm::class)
             )
         ]
     )

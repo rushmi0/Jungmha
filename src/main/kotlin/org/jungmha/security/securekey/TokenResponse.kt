@@ -1,10 +1,13 @@
 package org.jungmha.security.securekey
 
 import io.micronaut.serde.annotation.Serdeable
+import jakarta.persistence.Embedded
 
 @Serdeable.Serializable
 data class TokenResponse(
+    @Embedded
     val serverPublicKey: ServerPublickey,
+    @Embedded
     val token: ApiResponseToken
 )
 
