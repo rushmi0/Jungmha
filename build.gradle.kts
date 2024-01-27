@@ -10,6 +10,7 @@ plugins {
     id("io.micronaut.aot") version "4.2.0"
     id("nu.studer.jooq") version "8.2"
     id("com.google.devtools.ksp") version "1.9.21-1.0.16"
+    id("org.graalvm.buildtools.native") version "0.9.28"
 }
 
 version = "0.1"
@@ -58,12 +59,18 @@ dependencies {
     // https://mvnrepository.com/artifact/io.micronaut.rxjava2/micronaut-rxjava2
     implementation("io.micronaut.rxjava2:micronaut-rxjava2:2.2.1")
 
-
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
 
 }
 
+
+graalvmNative {
+    binaries.all {
+        resources.autodetect()
+    }
+    toolchainDetection.set(false)
+}
 
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
@@ -86,15 +93,6 @@ tasks {
 
 }
 
-kotlin {
-
-    sourceSets.all {
-        languageSettings {
-            version = 2.0
-        }
-    }
-
-}
 
 application {
     mainClass.set("org.jungmha.ApplicationKt")

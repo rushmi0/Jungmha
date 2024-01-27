@@ -30,7 +30,7 @@ services:
       - |
         chmod +x gradlew;
         ./gradlew assemble;
-        java -jar build/docker/main/layers/application.jar
+        java -jar build/docker/optimized/layers/application.jar
     networks:
       - dev_network
 
