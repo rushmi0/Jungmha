@@ -53,8 +53,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-    // https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava
-    //implementation("io.reactivex.rxjava2:rxjava:2.2.21")
 
     // https://mvnrepository.com/artifact/io.micronaut.rxjava2/micronaut-rxjava2
     implementation("io.micronaut.rxjava2:micronaut-rxjava2:2.2.1")
@@ -66,11 +64,22 @@ dependencies {
 
 
 graalvmNative {
-    binaries.all {
-        resources.autodetect()
+    binaries {
+        all {
+            // native-build-tools reads this to find native-image unless either JAVA_HOME or GRAALVM_HOME are set:
+            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/tasks/BuildNativeImageTask.java#L211
+            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/internal/NativeImageExecutableLocator.java#L89
+            //  https://github.com/graalvm/native-build-tools/issues/542
+            javaLauncher.set(javaToolchains.launcherFor {
+                // Compile with native-image from GraalVM for JDK17
+                languageVersion.set(JavaLanguageVersion.of(17))
+                vendor.set(JvmVendorSpec.GRAAL_VM)
+            })
+        }
     }
-    toolchainDetection.set(false)
 }
+
+
 
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
@@ -99,7 +108,7 @@ application {
 }
 
 
-graalvmNative.toolchainDetection.set(false)
+//graalvmNative.toolchainDetection.set(true)
 micronaut {
     runtime("netty")
     testRuntime("junit5")
@@ -168,4 +177,5 @@ jooq {
         }
     }
 }
+
 
