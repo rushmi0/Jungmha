@@ -11,7 +11,7 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - C:\Items\mysoftwares\JVM\sm\Jungmha\src\main\resources\db\migration:/docker-entrypoint-initdb.d/
+      - C:\Users\api25\OneDrive\Desktop\Backend\Jungmha\src\main\resources\db\migration:/docker-entrypoint-initdb.d/
 
 
   sonarqube:
