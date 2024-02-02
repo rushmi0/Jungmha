@@ -18,7 +18,7 @@
 <!--    <logger name="io.micronaut.flyway" level="INFO"/>-->
     <logger name="com.zaxxer.hikari.pool" level="INFO"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

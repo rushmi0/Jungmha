@@ -22,18 +22,14 @@ class WelcomeController {
     @Get(uri = "/", produces = [MediaType.TEXT_HTML])
     fun public(): String? = resource
 
-    @Get(uri = "/sh", produces = [MediaType.TEXT_HTML])
+    @Get(uri = "/shop", produces = [MediaType.TEXT_HTML])
     fun shop(): String? = resource
 
-    @Get(uri = "/login/user", produces = [MediaType.TEXT_HTML])
+    @Get(uri = "/login", produces = [MediaType.TEXT_HTML])
     fun login(): String? = resource
-    @Get(uri = "/login/caretaker", produces = [MediaType.TEXT_HTML])
-    fun loginCaretaker(): String? = resource
 
     @Get(uri = "/register/user", produces = [MediaType.TEXT_HTML])
     fun register(): String? = resource
-    @Get(uri = "/register/caretaker", produces = [MediaType.TEXT_HTML])
-    fun registerCaretaker(): String? = resource
 
     @Get(uri = "/profile", produces = [MediaType.TEXT_HTML])
     fun profile(): String? = resource
