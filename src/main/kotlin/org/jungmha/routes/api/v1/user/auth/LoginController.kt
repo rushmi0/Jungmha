@@ -12,7 +12,9 @@ import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.SignatureForm
@@ -25,12 +27,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 /**
- * **คลาส LoginController**
+ * คลาส LoginController
  *
  * Controller สำหรับการจัดการเกี่ยวกับการเข้าสู่ระบบ (Sign-In) ของผู้ใช้
  * ซึ่งรับผิดชอบในการตรวจสอบลายเซ็นเจอร์ (Signature) และการสร้าง Token สำหรับผู้ใช้ที่เข้าสู่ระบบสำเร็จ
  */
 
+@Tag(
+    name = "User auth",
+   //description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -42,7 +48,7 @@ class LoginController @Inject constructor(
 ) {
 
     /**
-     * **เมธอด signIn**
+     * เมธอด signIn
      *
      * ใช้สำหรับการเข้าสู่ระบบผู้ใช้ โดยตรวจสอบลายเซ็นเจอร์และสร้าง Token สำหรับผู้ใช้ที่เข้าสู่ระบบสำเร็จ
      *
@@ -56,7 +62,7 @@ class LoginController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        //schema = Schema(implementation = NormalInfo::class)
+                        schema = Schema(implementation = TokenResponse::class)
                     )
                 ]
             )

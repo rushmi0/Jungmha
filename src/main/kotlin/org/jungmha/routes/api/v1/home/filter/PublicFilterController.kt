@@ -9,6 +9,7 @@ import io.micronaut.http.annotation.QueryValue
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PublicDogWalkerInfo
@@ -21,6 +22,10 @@ import java.util.stream.Collectors
 /**
  * คลาสนี้เป็น Controller สำหรับการกรองข้อมูล Public Dog Walker
  */
+@Tag(
+    name = "Home filter",
+    //description = "API ที่เกี่ยวข้องกับ "
+)
 @Controller("api/v1")
 @Bean
 @RequestScope

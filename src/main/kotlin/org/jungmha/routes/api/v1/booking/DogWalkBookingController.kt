@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.constants.DogWalkBookingsValidate
@@ -43,6 +44,10 @@ import java.util.ArrayDeque
  * คลาสนี้เป็น Controller สำหรับการจองบริการพาเดินสุนัขเดินเล่น
  */
 //@SecurityRequirement(name = "Access-Token")
+@Tag(
+    name = "Booking",
+    //description = "API ที่เกี่ยวข้องกับ "
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -67,7 +72,7 @@ class DogWalkBookingController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = DogWalkBookings::class)
+                        //schema = Schema(implementation = DogWalkBookings::class)
                     )
                 ]
             )

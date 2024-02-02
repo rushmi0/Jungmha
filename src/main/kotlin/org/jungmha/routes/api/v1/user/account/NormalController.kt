@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.statement.UserServiceImpl
@@ -36,6 +37,11 @@ import java.util.*
 /**
  * คลาสนี้เป็น Controller สำหรับการจัดการข้อมูลบัญชีผู้ใช้ทั่วไป
  */
+
+@Tag(
+    name = "User normal",
+    //description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope

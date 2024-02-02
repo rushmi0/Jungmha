@@ -2,6 +2,7 @@ package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
+import jakarta.persistence.Embedded
 
 @Introspected
 @Serdeable.Serializable
@@ -27,5 +28,6 @@ data class Insights(
     val locationName: String,
     val idCardNumber: String,
     val verify: Boolean,
+    @Embedded
     val price: PriceData
 )

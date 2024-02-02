@@ -2,15 +2,19 @@ package org.jungmha.database.record
 
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
+import jakarta.persistence.Embedded
 
 
 @Introspected
 @Serdeable.Serializable
 data class PrivateDogWalkerInfo(
     val walkerID: Int,
+    @Embedded
     val detail: WalkerDetail,
+    val countUsed: Int,
     val countReview: Int,
     val totalReview: Int,
+    @Embedded
     val contact: WalkerContact,
     val review: List<WalkerReview>
 )
@@ -22,6 +26,7 @@ data class WalkerDetail(
     val profileImage: String,
     val verify: Boolean,
     val location: String,
+    @Embedded
     val price: PriceData
 )
 

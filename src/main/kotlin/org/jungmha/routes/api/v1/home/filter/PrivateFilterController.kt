@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.database.record.PrivateDogWalkerInfo
@@ -31,6 +32,11 @@ import java.util.stream.Collectors
 /**
  * คลาสนี้เป็น Controller สำหรับการดึงข้อมูล Dog Walker จากฐานข้อมูลโดยให้บริการเฉพาะผู้ใช้ที่มีสิทธิ์ view-only
  */
+
+@Tag(
+    name = "Home filter",
+    //description = "API ที่เกี่ยวข้องกับ"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -108,6 +114,7 @@ class PrivateFilterController @Inject constructor(
                     val pBigMatch = (!pBig.isPresent || data.detail.price.big <= pBig.get())
 
                     verifyMatch && nameMatch && locationMatch && pSmallMatch && pMediumMatch && pBigMatch
+
                 }.limit(max.orElse(Integer.MAX_VALUE).toLong())
                     .collect(Collectors.toList())
             }

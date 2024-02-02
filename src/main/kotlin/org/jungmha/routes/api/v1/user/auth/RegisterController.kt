@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.parameters.RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.EncryptedData
@@ -39,6 +40,10 @@ import org.jungmha.security.securekey.TokenResponse
 /**
  * คลาสนี้เป็น Controller สำหรับดำเนินการลงทะเบียนผู้ใช้
  */
+@Tag(
+    name = "User auth",
+    //description = "API ที่เกี่ยวข้องกับ "
+)
 @SecurityRequirement(name = "Access-Token")
 @Controller("api/v1")
 @Bean
@@ -72,6 +77,7 @@ class RegisterController @Inject constructor(
                 )
             ]
         ),
+
         responses = [
             ApiResponse(
                 responseCode = "200",

@@ -11,6 +11,11 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import org.jungmha.database.form.IdentityForm
 import org.jungmha.database.statement.UserServiceImpl
@@ -18,6 +23,7 @@ import org.jungmha.database.record.Identity
 import org.jungmha.security.securekey.ECDHkey
 import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.toPublicKey
+import org.jungmha.security.securekey.ServerPublickey
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.math.BigInteger
@@ -27,6 +33,10 @@ import java.math.BigInteger
 /**
  * คลาสนี้เป็น Controller สำหรับการเปิดช่องสื่อสาร (Open Channel)
  */
+@Tag(
+    name = "User auth",
+    //description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
 @Controller("api/v1")
 @Bean
 @RequestScope
@@ -43,6 +53,20 @@ class OpenChannelController @Inject constructor(
      * @param payload ข้อมูลที่ใช้ในการกำหนดตัวตนของผู้ใช้
      * @return HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการเปิดช่องสื่อสาร
      */
+    @Operation(
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการเปิดช่องสื่อสาร",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ServerPublickey::class)
+                    )
+                ]
+            )
+        ]
+    )
     @Post(
         uri = "/auth/open-channel",
         consumes = [MediaType.APPLICATION_JSON],
@@ -87,7 +111,11 @@ class OpenChannelController @Inject constructor(
                 val statement: Boolean = service.insert(id)
                 if (statement) {
                     LOG.info("Create channel successful for New User")
-                    HttpResponse.created(publicKey)
+                    HttpResponse.created(
+                        ServerPublickey(
+                            publicKey =  publicKey
+                        )
+                    )
                 } else {
                     LOG.error("Failed to create a channel for the account")
                     HttpResponse.serverError("Failed to create a channel for the account")
