@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: #353535;
+  height: screen;
+  font-family: 'Jaldi', sans-serif;
+}
+
+.navbar {
+    background-color: #F7F7F7;
+}
+
+:root {
+  background-color: #f8f9fa;
+}

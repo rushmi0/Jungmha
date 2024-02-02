@@ -1,0 +1,28 @@
+.logForm {
+    @apply bg-[#EBF8FF] h-[100vh] p-12 
+}
+.logHeader {
+    @apply text-4xl text-[#45BBBD] font-bold text-center my-12
+}
+.logGuide {
+    @apply bg-[#1999B2]
+}
+.subHead {
+    @apply text-xl font-light my-4 text-[#718096]
+}
+
+.inputInfo {
+    @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3
+}
+
+.link {
+    @apply text-[#45BBBD] underline 
+}
+
+.logBtn {
+    @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] px-[10rem] mt-6 mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+}
+
+.txtDes {
+    @apply text-lg text-[#718096] mt-2
+}

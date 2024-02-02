@@ -1,0 +1,19 @@
+.headText {
+    @apply font-bold text-[#0B4550] 
+}
+
+.subText {
+    @apply font-light text-[#414141] 
+}
+
+.desContent {
+    @apply flex-col items-center pl-4
+}
+
+.icons {
+    @apply text-4xl
+}
+
+.featureBox {
+    @apply flex items-center
+}

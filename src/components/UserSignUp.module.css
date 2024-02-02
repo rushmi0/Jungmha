@@ -1,0 +1,4 @@
+
+.box {
+    @apply flex xl:grid xl:grid-cols-2 bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
+}

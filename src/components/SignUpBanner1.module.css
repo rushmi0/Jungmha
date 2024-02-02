@@ -1,0 +1,3 @@
+.bgImg {
+    @apply xl:bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] xl:bg-cover xl:bg-right xl:w-full xl:h-screen 
+}
