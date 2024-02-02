@@ -11,7 +11,7 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - /home/rushmi0/items/JVM/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
+      - /home/rushmi0/items/Software/Kotlin/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
     networks:
       - dev_network
 
@@ -22,7 +22,7 @@ services:
     ports:
       - "80:8080"
     volumes:
-      - /home/rushmi0/items/JVM/Jungmha:/app/source-code
+      - /home/rushmi0/items/Software/Kotlin/Jungmha:/app/source-code
     working_dir: /app/source-code
     command:
       - sh

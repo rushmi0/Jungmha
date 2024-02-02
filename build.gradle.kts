@@ -53,7 +53,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
-
     // https://mvnrepository.com/artifact/io.micronaut.rxjava2/micronaut-rxjava2
     implementation("io.micronaut.rxjava2:micronaut-rxjava2:2.2.1")
 
