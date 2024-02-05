@@ -1,5 +1,8 @@
 version: "3.9"
 
+networks:
+  dev_network:
+
 services:
 
   jungmhaDB:
@@ -16,7 +19,7 @@ services:
       - dev_network
 
   jungmhaApp:
-    container_name: jungmha-app
+    container_name: jungmha-jit-app
     image: amazoncorretto:17
     restart: unless-stopped
     ports:
@@ -34,5 +37,3 @@ services:
     networks:
       - dev_network
 
-networks:
-  dev_network:

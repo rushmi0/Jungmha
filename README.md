@@ -1,32 +1,18 @@
-# เอกสาร API ของ Jungmha
+# Jungmha
 
-เอกสารนี้ให้ข้อมูลเกี่ยวกับ API ของ Jungmha ซึ่งเป็นบริการที่เชื่อมโยงเจ้าของสุนัขกับผู้พาสุนัขเดินเล่น (Dog Walkers) ด้านล่างนี้คือรายการของเส้นทาง API ที่พร้อมให้บริการ พร้อมกับความสามารถและสัญลักษณ์ที่บ่งชี้ว่า API พร้อมใช้งานหรือไม่
+title Labyrinth
 
-## สารบัญ
-- **Dog Walker**
-  - ✅ Private Dog Walker 🔒
-  - ✅ Public Dog Walker
+Bowie -> Goblin: You remind me of the babe
+Goblin -> Bowie: What babe?
+Bowie -> Goblin: The babe with the power
+Goblin -> Bowie: What power?
+note right of Bowie, Goblin: Most people get muddled here!
+Bowie -> Goblin: "The power of voodoo"
+Goblin -> Bowie: "Who-do?"
+Bowie -> Goblin: You do!
+Goblin -> Bowie: Do what?
+Bowie -> Goblin: Remind me of the babe!
 
-- **User**
-  - ✅ **Auth**
-    - ✅ Sign In
-    - ✅ Sign Up
-    - ✅ Booking
-    - ✅ Upload Profile image 🔒
+Bowie -> Audience: Sings
 
-- **Dog**
-  - ✅ Dogs
-
-- **Home**
-  - ✅ Filter
-    - ✅ Private Filter 🔒
-    - ✅ Public Filter
-
-- **etc**
-  - ✅ Open Image URL
-  - ✅ Index
-
-
-**Legend:**
-- ✅: API path ready for use.
-- ❌: API path not ready for use.
+terminators box

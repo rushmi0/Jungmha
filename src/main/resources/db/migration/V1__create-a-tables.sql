@@ -287,14 +287,3 @@ CREATE TRIGGER tr_dogwalkerreviews_update_count_review
     ON DogWalkerReviews
     FOR EACH ROW
 EXECUTE FUNCTION update_count_review();
-
-
-CREATE TABLE IF NOT EXISTS DirectMessage
-(
-    dm_id      INTEGER PRIMARY KEY,
-    pubkey     VARCHAR(255) NOT NULL,
-    created_at INT          NOT NULL,
-    tag        VARCHAR(255) NOT NULL,
-    content    TEXT         NOT NULL
-);
-
