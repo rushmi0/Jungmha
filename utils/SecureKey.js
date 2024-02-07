@@ -79,7 +79,7 @@ const EllipticCurve = () => {
         const sharedKeyBuffer = Buffer.from(sharedKey.toArray('be'), 'hex');
 
         // หรือคุณสามารถนำ sharedKeyBuffer ไปใช้ต่อไปได้ตามที่คุณต้องการ
-        return sharedKeyBuffer.toString('hex');
+        return sharedKeyBuffer//.toString('hex');
     };
 
 

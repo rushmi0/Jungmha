@@ -1,5 +1,5 @@
 import {Buffer} from "buffer";
-import AES from "../AES.js";
+import AES from "../../utils/AES.js";
 
 
 const aes = AES()

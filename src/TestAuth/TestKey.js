@@ -1,7 +1,8 @@
-import EllipticCurve from "../SecureKey.js";
-import {Buffer} from "buffer";
-import AES from "../AES.js";
+import EllipticCurve from "../../utils/SecureKey.js";
+import AES from "../../utils/AES.js";
 
+
+const aes = AES()
 const ec = EllipticCurve();
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\
 // `Account 1`
@@ -23,14 +24,8 @@ const sharedKey = ec.calculateSharedKey(
     serverPublicKey
 );
 
-// นำ Shared Key ไปใช้งานต่อไป... โดยนำไป Encrypt ข้อมูลด้วย AES
-console.log("Shared Key:", sharedKey);
 
-
-
-
-const aes = AES()
-
+//let sharedKey = Buffer.from("3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78", 'hex');
 
 let data = {
     "firstName": "สมหมาย",
@@ -51,8 +46,8 @@ console.log('Decrypted data:', decryptedData);
 
 
 // ถ้าถึงข้อมูล
-// let firstName = decryptedData.firstName;
-// console.log('ชื่อ :', firstName);
+let firstName = decryptedData.firstName;
+console.log('ชื่อ :', firstName);
 
-// let lastName = decryptedData.lastName;
-// console.log('นามสกุล :', lastName);
+let lastName = decryptedData.lastName;
+console.log('นามสกุล :', lastName);
