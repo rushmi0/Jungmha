@@ -1,0 +1,55 @@
+
+
+@media (min-width: 1400px) {
+    /* xxl */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex-none
+    }
+   
+}
+    
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex-none
+    }
+    
+}
+    
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex-none
+    }
+    
+}
+    
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .burgerMenu {
+        @apply menu menu-horizontal px-1
+    }
+    .mainMenu {
+        @apply hidden
+    }
+    
+}
+    
+@media (max-width: 767px) {
+    /* sm */
+    .burgerMenu {
+        @apply menu menu-horizontal px-1
+    }
+    .mainMenu {
+        @apply hidden
+    }
+}

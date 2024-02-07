@@ -1,0 +1,128 @@
+@media (min-width: 1400px) {
+    /* xxl */
+   .box {
+    @apply bg-[#DBF3FF] shadow
+   }
+
+   .containerAuto {
+    @apply container mx-auto
+   }
+
+   .gridBox {
+    @apply grid grid-cols-2 justify-items-center items-center
+   }
+   .subHead {
+    @apply text-lg mb-4 text-[#0B4550]
+    }
+   .header1 {
+    @apply text-4xl font-bold text-[#0B4550] mb-3
+   }
+   .header2 {
+    @apply text-4xl font-bold text-[#45BBBD]
+   }
+   
+}
+    
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .box {
+        @apply bg-[#DBF3FF] shadow
+    }
+
+    .containerAuto {
+        @apply container mx-auto
+    }
+
+    .subHead {
+        @apply text-lg mb-4 text-[#0B4550]
+    }
+
+    .gridBox {
+        @apply grid grid-cols-2 justify-items-center items-center
+    }
+    .header1 {
+        @apply text-4xl font-bold text-[#0B4550] mb-3
+    }
+    .header2 {
+        @apply text-4xl font-bold text-[#45BBBD]
+    }
+    
+}
+    
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    
+    .box {
+        @apply bg-[#DBF3FF] shadow
+    }
+
+    .subHead {
+        @apply text-lg mb-4 text-[#0B4550]
+    }
+
+    .gridBox {
+        @apply grid grid-cols-2 justify-items-center items-center
+    }
+    .header1 {
+        @apply text-4xl font-bold text-[#0B4550] mb-3
+    }
+    .header2 {
+        @apply text-4xl font-bold text-[#45BBBD]
+    }
+    
+}
+    
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .box {
+        @apply bg-[url("../assets/bgDog.svg")] bg-cover bg-center shadow
+    }
+   
+    .gridBox {
+        @apply grid grid-cols-1 justify-items-center items-center
+    }
+    
+    .subHead {
+        @apply text-lg mb-4 text-[#f7f7f7]
+    }
+
+    .imgBanner {
+        @apply hidden
+    }
+    
+    .header1 {
+        @apply text-4xl font-bold text-[#f7f7f7] mb-3
+    }
+    
+    .header2 {
+        @apply text-4xl font-bold text-[#45BBBD]
+    }
+    
+
+}
+    
+@media (max-width: 767px) {
+    /* sm */
+    .box {
+        @apply bg-[url("../assets/bgDog.svg")] bg-cover bg-center shadow
+    }
+    .containerAuto {
+        @apply container mx-auto
+    }
+
+    .imgBanner {
+        @apply hidden
+    }
+    .gridBox {
+        @apply grid grid-cols-1 justify-items-center items-center
+    }
+    .header1 {
+        @apply text-4xl font-bold text-[#f7f7f7] mb-3
+    }
+    .header2 {
+        @apply text-4xl font-bold text-[#45BBBD]
+    }
+    .subHead {
+        @apply text-lg mb-4 text-[#f7f7f7]
+    }
+}
