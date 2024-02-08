@@ -2,3 +2,15 @@
 .box {
     @apply flex xl:grid xl:grid-cols-2 bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
 }
+
+.inputInfo {
+    @apply border-2 border-[#CBD5E0] rounded text-lg w-[810px] bg-[#fff] p-2 mb-5
+}
+
+.inputInfo2 {
+    @apply border-2 border-[#CBD5E0] rounded text-lg w-[370px] bg-[#fff] p-2 mb-5
+}
+
+.inputInfo3 {
+    @apply border-2 border-[#CBD5E0] rounded text-lg w-[370px] bg-[#fff] p-2 mb-5 me-[4.3rem]
+}

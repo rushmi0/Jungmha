@@ -7,7 +7,7 @@ import RootLayout from './components/RootLayout';
 import Home from './page/Home';
 import UserLogin from './components/Login/UserLogin';
 import CaretakerLogin from './components/Login/CaretakerLogin';
-import Test from './TestAuth/Test';
+
 
 function App() {
 
@@ -28,7 +28,7 @@ function App() {
           {/* Register */}
           <Route path="/register/user" element={<UserSignUp/>}></Route>
           <Route path="/register/caretaker" element={<CaretakerSignUp/>}></Route>
-          <Route path="/test" element={<Test/>}></Route>
+
           
         </Routes>
       </BrowserRouter>
