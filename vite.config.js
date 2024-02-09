@@ -10,9 +10,11 @@ export default defineConfig({
   resolve: {
     alias: {
       process: "process/browser",
-      stream: "stream-browserify",
+
       zlib: "browserify-zlib",
-      util: 'util'
+      util: 'util',
+      crypto: 'crypto-browserify',
+      buffer: 'buffer',
     }
   }
 })

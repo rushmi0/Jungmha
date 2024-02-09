@@ -15,6 +15,8 @@
     "axios": "^1.6.7",
     "browser-crypto": "^2.1.0",
     "buffer": "^6.0.3",
+    "crypto": "^1.0.1",
+    "crypto-browserify": "^3.12.0",
     "elliptic": "^6.5.4",
     "framer-motion": "^11.0.3",
     "laravel-vite": "^0.0.24",
@@ -24,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^5.0.1",
     "react-router-dom": "^6.21.3",
+    "rollup-plugin-node-polyfills": "^0.2.1",
     "webcrypto": "^0.1.1"
   },
   "devDependencies": {
