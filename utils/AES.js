@@ -5,7 +5,7 @@ const AES = () => {
 
     const encrypt = (data, sharedKey) => {
 
-        let iv = crypto.randomFillSync(new Uint8Array(16));
+        let iv = new Uint8Array(16);
 
         const cipher = crypto.createCipheriv(
             'aes-256-cbc',
