@@ -14,28 +14,7 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - /home/rushmi0/items/Software/Kotlin/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
-    networks:
-      - dev_network
-
-  jungmha-aot-app:
-    container_name: jungmha-aot-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    volumes:
-      - /home/rushmi0/items/Software/Kotlin/Jungmha:/app/source-code
-    ports:
-      - "8080:8080"
-    working_dir: /app/source-code
-    command:
-      - sh
-      - -c
-      - |
-        chmod +x gradlew;
-        ./gradlew nativeOptimizedCompile;
-        ls -al
+      - ./Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
     networks:
       - dev_network
 
@@ -46,7 +25,7 @@ services:
     ports:
       - "80:8080"
     volumes:
-      - /home/rushmi0/items/Software/Kotlin/Jungmha:/app/source-code
+      - ./:/app/source-code
     working_dir: /app/source-code
     command:
       - sh
@@ -61,4 +40,5 @@ services:
   cloudflared-tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:latest
+    restart: unless-stopped
     command: tunnel --no-autoupdate run --token eyJhIjoiOWY0MTBlZjhhY2ZmYWQzYjY1YmJhNzZiMzQzZjhiZTYiLCJ0IjoiZTk3N2NmYzQtMWJiOS00YjliLTg5NGQtYzA1YWU3NjRjZjZkIiwicyI6IlpUazBObUkwTURndFpqVTROQzAwTnpoakxUazNOMkV0Tm1SaE1qUTBOems1Tm1NeiJ9
