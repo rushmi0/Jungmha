@@ -23,13 +23,15 @@ function UserSignUp() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [userType, setUserType] = useState("");
+    const [pubKey, setPubKey] = useState("");
+    const [serverPubKey, setServerPubKey] = useState("");
+    const userType = "Normal";
 
-    const [testData, setTestData] = useState("");
 
     const aes = AES()
     const ec = EllipticCurve();
-    const url = "localhost:8080/api/v1/auth/sign-up";
+    const url = "http://localhost:8080/api/v1/auth/sign-up";
+    const connection = "http://localhost:8080/api/v1/auth/open-channel";
 
     const onUsernameEnter = (e) => {
         setUsername(e.target.value);
@@ -70,29 +72,10 @@ function UserSignUp() {
         setPhoneNumber(e.target.value);
     };
 
-    const userTypeHandler = () => {
-        const userUrl = "/register/user";
-
-        if(window.location.pathname === userUrl) {
-            setUserType("Normal");
-        } else {
-            setUserType("");
-        }
-    };
-
-    const onSubmitData = (e) => {
-        e.preventDefault();
-        passCheck();
-        const privateKey = ec.genPrivateKey(pass);
-        console.log(privateKey);
-
-        const publicKey = ec.generateKeyPair(privateKey);
-
-        const serverPublicKey = Buffer.from("0347d5cb133e59866bd1adf84adc291bf00fb05e03fb5355deda66e91815e320a8", 'hex');
-
+    const dataEncrypt = () => {
         const sharedKey = ec.calculateSharedKey(
-            publicKey,
-            serverPublicKey
+            pubKey,
+            serverPubKey
         );
 
         let data = {
@@ -108,15 +91,30 @@ function UserSignUp() {
 
         let dataToSend = aes.encrypt(jsonString, sharedKey);
         console.log('Encrypted data:', dataToSend);
+    }
+    const onSubmitData = (e) => {
+        e.preventDefault();
+        passCheck();
+        const privateKey = ec.genPrivateKey(pass);
+        console.log("Private key", privateKey);
+        const publicKey = ec.generateKeyPair(privateKey);
+        console.log("Public Key", publicKey);
 
-        alert(data);
-        console.log(data);
+        setPubKey(publicKey) ;
 
-        setTestData(firstName);
+        let payload = {
+            "userName": username,
+            "authenKey": publicKey
+        };
 
-        axios.post(url, dataToSend)
+        const postResponse = axios.post(connection, payload)
             .then(console.log("Data posted!")).catch((err) => console.log(err));
 
+
+        const serverPublicKey = postResponse.data["publicKey"]; // Bug อยู่ตรงนี้อ่ะ มันบอกว่า properties of undefined ('reading publicKey)
+        setServerPubKey(serverPublicKey);
+        console.log("Server PublicKey: ", serverPublicKey);
+        dataEncrypt();
 
     };
 
