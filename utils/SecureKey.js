@@ -1,7 +1,6 @@
 import elliptic from 'elliptic';
 import sha256 from "./Sha256.js";
 import { Buffer } from 'buffer';
-import AES from "./AES.js";
 
 const EllipticCurve = () => {
 
