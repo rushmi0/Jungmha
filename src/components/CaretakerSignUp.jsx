@@ -2,7 +2,7 @@ import React from 'react'
 import {motion} from 'framer-motion';
 import SignUpBanner2 from './SignUpBanner2';
 import classes from './UserSignUp.module.css';
-import logo from '../assets/logo.svg';
+import logo from '../assets/Logo.svg';
 
 function CaretakerSignUp() {
   return (

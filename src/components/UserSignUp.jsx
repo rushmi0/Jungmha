@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {motion} from 'framer-motion';
 import SignUpBanner1 from './SignUpBanner1';
 import classes from './UserSignUp.module.css';
-import logo from '../assets/logo.svg';
+import logo from '../assets/Logo.svg';
 import axios from "axios";
 import EllipticCurve from "../../utils/SecureKey.js";
 import AES from "../../utils/AES.js";
