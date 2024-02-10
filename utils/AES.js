@@ -1,12 +1,10 @@
 import crypto from 'crypto-browserify';
-import {Buffer} from 'buffer';
+import { Buffer } from "buffer";
 
 const AES = () => {
 
     const encrypt = (data, sharedKey) => {
-
-        let iv = Buffer.alloc(16);
-
+        let iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv(
             'aes-256-cbc',
             Buffer.from(sharedKey, 'hex'),
@@ -16,17 +14,15 @@ const AES = () => {
         let encryptedData = cipher.update(data, 'utf8', 'base64');
         encryptedData += cipher.final('base64');
 
-        let ivBase64 = Buffer.from(iv.buffer).toString('base64');
+        let ivBase64 = iv.toString('base64');
 
         return encryptedData + '?iv=' + ivBase64;
     };
 
     const decrypt = (encryptedData, sharedKey) => {
-
         let [encryptedString, ivBase64] = encryptedData.split('?iv=');
-
         let ivDecoded = Buffer.from(ivBase64, 'base64');
-        const decipher = crypto.createDecipheriv('aes-256-cbc', sharedKey, ivDecoded);
+        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(sharedKey, 'hex'), ivDecoded);
 
         let decryptedString = decipher.update(encryptedString, 'base64', 'utf8');
         decryptedString += decipher.final('utf8');
