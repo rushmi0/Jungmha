@@ -42,8 +42,7 @@ function UserLogin() {
             </div>
             <div className={classes.logGuide}>
                 
-                <div className='relative bg-[#f7f7f7] m-[10rem] p-[2rem] rounded-lg z-40 shadow-md
-}'>
+                <div className='relative bg-[#f7f7f7] m-[10rem] p-[2rem] rounded-lg z-40 shadow-md'>
                     <p className='text-4xl text-[#45BBBD] font-bold mb-3'>No time no problem</p>
                     <p className='text-lg text-[#718096]'>Worried about leaving your furry friend behind? Let's us take care of your dog while you busy. Whether you're heading out for a day trip, a work conference, or a long-awaited vacation, rest assured your pup is in the best paws possible. We offer a variety of services to cater to every dog's needs, from playful daycare adventures to cozy home boarding with loving families.</p>
                     <a href="/" className={classes.logBtn}>See more</a>

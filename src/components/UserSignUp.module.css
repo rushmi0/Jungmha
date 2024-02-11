@@ -1,16 +1,152 @@
 
-.box {
-    @apply flex xl:grid xl:grid-cols-2 bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
+
+
+
+@media (min-width: 1400px) {
+    /* xxl */
+    .box {
+        @apply flex bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
+    }
+
+    .inputInfo {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo2 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo3 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .infoBox {
+        @apply flex flex-col justify-center m-10 p-10
+    }
+    .textChange {
+        @apply text-lg text-[#718096]
+    }
+    .logoHeader {
+        @apply flex m-10 w-[900px] justify-between items-center p-10
+    }
 }
 
-.inputInfo {
-    @apply border-2 border-[#CBD5E0] rounded text-lg w-[810px] bg-[#fff] p-2 mb-5
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .box {
+        @apply flex bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center  overflow-hidden h-screen
+    }
+
+    .textChange {
+        @apply text-lg text-[#f7f7f7]
+    }
+    .infoBox {
+        @apply flex flex-col justify-center m-10 px-6 py-16 bg-[#f7f7f7] rounded shadow
+    }
+    .inputInfo {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+    .logoHeader {
+        @apply flex m-10 w-[900px] justify-between items-center p-10
+    }
+
+    .inputInfo2 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo3 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
 }
 
-.inputInfo2 {
-    @apply border-2 border-[#CBD5E0] rounded text-lg w-[370px] bg-[#fff] p-2 mb-5
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    .box {
+        @apply flex bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
+    }
+    .textChange {
+        @apply text-lg text-[#f7f7f7]
+    }
+    .infoBox {
+        @apply flex flex-col justify-center m-10 px-6 py-16 bg-[#f7f7f7] rounded shadow
+    }
+    .logoHeader {
+        @apply flex m-10 w-[900px] justify-between items-center p-10
+    }
+
+    .inputInfo {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo2 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo3 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+
 }
 
-.inputInfo3 {
-    @apply border-2 border-[#CBD5E0] rounded text-lg w-[370px] bg-[#fff] p-2 mb-5 me-[4.3rem]
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .box {
+        @apply flex bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] xl:bg-[url('')] overflow-hidden h-screen
+    }
+
+    .logoHeader {
+        @apply flex m-10 w-[900px] justify-between items-center p-10
+    }
+
+    .textChange {
+        @apply text-lg text-[#f7f7f7]
+    }
+    .infoBox {
+        @apply flex flex-col justify-center m-10 px-6 py-16 bg-[#f7f7f7] rounded shadow
+    }
+
+    .inputInfo {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo2 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo3 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+
+}
+
+@media (max-width: 767px) {
+    /* sm */
+    .box {
+        @apply flex bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-center xl:bg-[#EBF8FF] overflow-hidden h-screen
+    }
+    .logoHeader {
+        @apply flex m-10 w-full justify-between items-center p-10
+    }
+
+    .textChange {
+        @apply text-lg text-[#f7f7f7]
+    }
+    .infoBox {
+        @apply flex flex-col justify-center m-10 px-6 py-16 bg-[#f7f7f7] rounded shadow
+    }
+
+    .inputInfo {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo2 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
+
+    .inputInfo3 {
+        @apply border-2 border-[#CBD5E0] rounded text-lg w-full bg-[#fff] p-2 mb-5 input input-bordered input-accent
+    }
 }

@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import UserSignUp from './components/UserSignUp';
 import CaretakerSignUp from './components/CaretakerSignUp';
-import Homepage from './components/Homepage';
+import Homepage from './components/Home/Homepage.jsx';
 import RootLayout from './components/RootLayout';
 import Home from './page/Home';
 import UserLogin from './components/Login/UserLogin';

@@ -75,7 +75,7 @@
 @media (min-width: 768px) and (max-width: 991px) {
     /* md */
     .box {
-        @apply bg-[url("../assets/bgDog.svg")] bg-cover bg-center shadow
+        @apply bg-[url("/src/assets/bgDog.svg")] bg-cover bg-center shadow
     }
    
     .gridBox {
@@ -104,7 +104,7 @@
 @media (max-width: 767px) {
     /* sm */
     .box {
-        @apply bg-[url("../assets/bgDog.svg")] bg-cover bg-center shadow
+        @apply bg-[url("/src/assets/bgDog.svg")] bg-cover bg-center shadow
     }
     .containerAuto {
         @apply container mx-auto

@@ -46,13 +46,16 @@ function UserSignUp() {
 
     }
 
-    const passCheck = () => {
-         if(conPass != pass) {
-            alert("Password and Confirm Password is not the same! Please Try again.");
-            navigate("/register/user");
-
-         }
-
+    const passCheck = (e) => {
+        if(pass !== conPass) {
+            document.getElementById("pass").style.border = "2px solid #FF4A47";
+            document.getElementById("con_pass").style.border = "2px solid #FF4A47";
+            alert("Password and Confirm Password not match! Please Try again.");
+            e.preventDefault();
+        } else {
+            document.getElementById("pass").style.border = "";
+            document.getElementById("con_pass").style.border = "";
+        }
 
     }
 
@@ -86,20 +89,28 @@ function UserSignUp() {
             "userType": userType
         }
 
+
+
         const jsonString = JSON.stringify(data);
         console.log(data);
-
         let dataToSend = aes.encrypt(jsonString, sharedKey);
         console.log('Encrypted data:', dataToSend);
+        axios.post(url, dataToSend).then((res) => {
+            console.log("User Info: ", res.data);
+        }).catch((err) => console.log(err));
+
+
+
+
     }
-    const onSubmitData = (e) => {
-        e.preventDefault();
+
+    const onSubmitData = () => {
         passCheck();
         const privateKey = ec.genPrivateKey(pass);
         console.log("Private key", privateKey);
         const publicKey = ec.generateKeyPair(privateKey);
         console.log("Public Key", publicKey);
-
+        console.log("Username", username);
         setPubKey(publicKey) ;
 
         let payload = {
@@ -107,13 +118,19 @@ function UserSignUp() {
             "authenKey": publicKey
         };
 
-        const postResponse = axios.post(connection, payload)
-            .then(console.log("Data posted!")).catch((err) => console.log(err));
+        axios.post(connection, payload).then((res) => {
+                setServerPubKey(res.data["publicKey"]);
+                return res.data
+        }).catch((err) => console.log(err));
 
 
-        const serverPublicKey = postResponse.data["publicKey"]; // Bug อยู่ตรงนี้อ่ะ มันบอกว่า properties of undefined ('reading publicKey)
-        setServerPubKey(serverPublicKey);
-        console.log("Server PublicKey: ", serverPublicKey);
+        // const serverPublicKey = postResponse.data;
+        // serverPublicKey.then(function (result) {
+        //     (result);
+        //     console.log("Server PublicKey: ", postResponse);
+        // })
+
+        console.log("Server PublicKey: ", String(serverPubKey));
         dataEncrypt();
 
     };
@@ -130,47 +147,60 @@ function UserSignUp() {
           transition={{ duration: 1 }}
         >
 
-         <div className="flex m-10 w-[900px] justify-between items-center p-10">
+         <div className={classes.logoHeader}>
               <img src={logo} alt="jungmha" />
-              <p className="text-lg text-[#718096]">Become our caretaker <a href="/register/caretaker" className="text-[#45BBBD] underline">here</a></p>
+              <p className={classes.textChange}>Become our caretaker <a href="/register/caretaker" className="text-[#45BBBD] underline">here</a></p>
 
           </div>
-          <div className="flex flex-col justify-between m-10 p-10">
-            <h1 className="text-4xl font-extrabold text-[#064E5C] mb-2">Create An Account</h1>
-            <h2 className="text-2xl font-bold text-[#1999B2] mb-2">Information:</h2>
-            <div className="flex justify-between mt-2">
-                <form method="POST">
-                    <input type="text" className={classes.inputInfo} placeholder="username" onChange={onUsernameEnter}
-                           required="required"/>
-                    <input type="text" className={classes.inputInfo3} placeholder="firstname" onChange={onFnameEnter}
-                           required="required"/>
-                    <input type="text" className={classes.inputInfo2} placeholder="lastname" onChange={onLnameEnter}
-                           required="required"/>
-                    <input type="email" className={classes.inputInfo3} placeholder="email" onChange={onEmailEnter}
-                           required="required"/>
-                    <input type="text" className={classes.inputInfo2} placeholder="phone number"
-                           onChange={onNumberEnter} required="required"/>
-                    <input type="password" className={classes.inputInfo3} placeholder="password" onChange={onPassEnter}
-                           required="required" autoComplete="on"/>
-                    <input type="password" className={classes.inputInfo2} placeholder="confirm password"
-                           onChange={onConPassEnter} required="required" autoComplete="on"/>
-                    <input type="text" className={classes.inputInfo} placeholder="address"/>
+            <div className={classes.infoBox}>
+                <h1 className="text-4xl font-extrabold text-[#064E5C] mb-2 mx-auto">Create An Account</h1>
+                <h2 className="text-2xl font-bold text-[#1999B2] mb-2 mx-auto">Information:</h2>
+                <div className="flex justify-between mt-2">
+                    <form method="POST" className="mx-auto">
+                        <input type="text" className={classes.inputInfo} placeholder="username"
+                               onChange={onUsernameEnter}
+                               required="required"/>
+                        <div className="grid grid-cols-2 gap-x-4">
+                            <input type="text" className={classes.inputInfo3} placeholder="firstname"
+                                   onChange={onFnameEnter}
+                                   required="required"/>
+                            <input type="text" className={classes.inputInfo2} placeholder="lastname"
+                                   onChange={onLnameEnter}
+                                   required="required"/>
+                            <input type="email" className={classes.inputInfo3} placeholder="email"
+                                   onChange={onEmailEnter}
+                                   required="required"/>
+                            <input type="text" className={classes.inputInfo2} placeholder="phone number"
+                                   onChange={onNumberEnter} required="required"/>
+                            <input id="pass" type="password" className={classes.inputInfo3} placeholder="password"
+                                   onChange={onPassEnter}
+                                   required="required" autoComplete="on"/>
+                            <input id="con_pass" type="password" className={classes.inputInfo2} placeholder="confirm password"
+                                   onChange={onConPassEnter} required="required" autoComplete="on"/>
+                        </div>
 
-                    <p className="text-xl text-[#718096] mb-5">Already have an account? <a href="/login/user"
-                                                                                           className="text-[#45BBBD] underline">Login</a>
-                    </p>
-                    <button
-                        type="button"
-                        className="mx-auto btn bg-[#45BBBD] text-lg text-[#fff] w-[600px] border-0 hover:bg-white hover:text-black"
-                        onClick={
-                            onSubmitData
-                        }>Sign Up
-                    </button>
-                </form>
+                        <input type="text" className={classes.inputInfo} placeholder="address"/>
+
+                        <div className="grid grid-cols-2 gap-x-4 items-center">
+                            <p className="text-xl text-[#718096] align-items-center">Already have an account? <a href="/login/user"
+                                                                                                   className="text-[#45BBBD] underline">Login</a>
+                            </p>
+                            <button
+                                id="submit"
+                                type="button"
+                                className="btn bg-[#45BBBD] text-lg text-[#fff] w-full border-0 hover:bg-white hover:text-black"
+                                onClick={
+                                    onSubmitData
+                                }>Sign Up
+                            </button>
+                        </div>
+
+
+                    </form>
+
+                </div>
 
             </div>
-
-          </div>
 
 
         </motion.div>

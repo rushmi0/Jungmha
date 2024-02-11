@@ -13,7 +13,7 @@ function Features() {
             <AiOutlineSearch className={classes.icons}/>
             <div className={classes.desContent}>
               <h1 className={classes.headText}>Find Caretaker</h1>
-              <p className={classes.subText}>find caretaker you like to takecare of your dog.</p>
+              <p className={classes.subText}>Find caretaker you like to takecare of your dog.</p>
             </div>
           </div>
           <div className={classes.featureBox}>

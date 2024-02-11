@@ -1,6 +1,6 @@
 import React from 'react'
-import logoBanner from '../assets/dog.svg'
-import bgDog from '../assets/bgDog.svg'
+import logoBanner from '../../assets/dog.svg'
+import bgDog from '../../assets/bgDog.svg'
 import classes from './Homepage.module.css'
 
 function Homepage() {
@@ -14,7 +14,7 @@ function Homepage() {
                         <p className={classes.subHead}>At Jungmha, we provide reliable and affordable dog sitting services in Bangkok. We understand that your dog is a part of your family, and we'll treat them with the same love and care that you do.
 
 </p>
-                        <button className='btn bg-[#45BBBD] text-xl text-[#f7f7f7] border-0 rounded hover:bg-[#A6E2E3] hover:text-[#064E5C] mt-3 font-medium'>Find Caretaker</button>
+                        <a className='btn bg-[#45BBBD] text-xl text-[#f7f7f7] border-0 rounded hover:bg-[#A6E2E3] hover:text-[#064E5C] mt-3 font-medium' href="#caretaker">Find Caretaker</a>
                     </div>
                     <div>
                         <img className={classes.imgBanner} src={logoBanner} alt="Jungmha" />
