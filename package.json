@@ -21,6 +21,7 @@
     "crypto-js": "^4.2.0",
     "elliptic": "^6.5.4",
     "framer-motion": "^11.0.3",
+    "json": "^11.0.0",
     "laravel-vite": "^0.0.24",
     "process": "^0.11.10",
     "random-bytes": "^1.0.0",
