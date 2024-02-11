@@ -1,0 +1,89 @@
+
+
+
+
+
+
+
+@media (min-width: 1400px) {
+    /* xxl */
+    .searchMenu {
+        @apply bg-[#f7f7f7] p-4 container mx-auto rounded shadow-md
+    }
+    .selectMenu {
+        @apply select select-bordered select-accent border-2 border-[#CBD5E0] bg-[#fff]
+    }
+    .searchBtn {
+        @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+    }
+    .searchGrid {
+        @apply grid grid-cols-4 items-center gap-4 py-4 px-6
+    }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .searchMenu {
+        @apply bg-[#f7f7f7] p-4 container mx-auto rounded shadow-md
+    }
+    .selectMenu {
+        @apply select select-bordered select-accent border-2 border-[#CBD5E0] bg-[#fff]
+    }
+    .searchBtn {
+        @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+    }
+    .searchGrid {
+        @apply grid grid-cols-4 items-center gap-4 py-4 px-6
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    .searchMenu {
+        @apply bg-[#f7f7f7] p-4 container mx-auto rounded shadow-md
+    }
+    .selectMenu {
+        @apply select select-bordered select-accent border-2 border-[#CBD5E0] bg-[#fff]
+    }
+    .searchBtn {
+        @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+    }
+    .searchGrid {
+        @apply grid grid-cols-4 items-center gap-4 py-4 px-6
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .searchMenu {
+        @apply bg-[#f7f7f7] p-4 container mx-auto rounded shadow-md
+    }
+    .selectMenu {
+        @apply select select-bordered select-accent border-2 border-[#CBD5E0] bg-[#fff]
+    }
+    .searchBtn {
+        @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+    }
+    .searchGrid {
+        @apply grid grid-cols-2 items-center gap-4 py-4 px-6
+    }
+
+}
+
+@media (max-width: 767px) {
+    /* sm */
+    .searchMenu {
+        @apply bg-[#f7f7f7] p-4 container mx-auto rounded shadow-md
+    }
+    .selectMenu {
+        @apply select select-bordered select-accent border-2 border-[#CBD5E0] bg-[#fff]
+    }
+    .searchBtn {
+        @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
+    }
+    .searchGrid {
+        @apply grid grid-cols-2 items-center gap-4 py-4 px-6
+    }
+}
