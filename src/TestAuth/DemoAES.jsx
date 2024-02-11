@@ -30,7 +30,6 @@ const DemoAES = () => {
                 setEncryptedData(encryptedResult);
             } catch (error) {
                 console.error('Encryption failed:', error);
-                // Handle the error, show an alert or update the state accordingly
             }
         } else {
             alert('กรุณากรอกข้อมูลให้ครบถ้วน');

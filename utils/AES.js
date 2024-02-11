@@ -1,33 +1,22 @@
-import crypto from 'crypto-browserify';
-import { Buffer } from "buffer";
+import CryptoJS from 'crypto-js';
 
 const AES = () => {
 
     const encrypt = (data, sharedKey) => {
-        let iv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv(
-            'aes-256-cbc',
-            Buffer.from(sharedKey, 'hex'),
-            iv
-        );
-
-        let encryptedData = cipher.update(data, 'utf8', 'base64');
-        encryptedData += cipher.final('base64');
-
-        let ivBase64 = iv.toString('base64');
+        const iv = CryptoJS.lib.WordArray.random(16);
+        const encryptedData = CryptoJS.AES.encrypt(data, sharedKey, { iv: iv }).toString();
+        const ivBase64 = CryptoJS.enc.Base64.stringify(iv);
 
         return encryptedData + '?iv=' + ivBase64;
     };
 
     const decrypt = (encryptedData, sharedKey) => {
-        let [encryptedString, ivBase64] = encryptedData.split('?iv=');
-        let ivDecoded = Buffer.from(ivBase64, 'base64');
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(sharedKey, 'hex'), ivDecoded);
+        const [encryptedString, ivBase64] = encryptedData.split('?iv=');
+        const ivDecoded = CryptoJS.enc.Base64.parse(ivBase64);
+        const decrypted = CryptoJS.AES.decrypt(encryptedString, sharedKey, { iv: ivDecoded });
+        const decryptedString = decrypted.toString(CryptoJS.enc.Utf8);
 
-        let decryptedString = decipher.update(encryptedString, 'base64', 'utf8');
-        decryptedString += decipher.final('utf8');
-
-        return JSON.parse(decryptedString);
+        return decryptedString;
     };
 
     return {
