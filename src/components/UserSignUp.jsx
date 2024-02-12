@@ -162,7 +162,7 @@ function UserSignUp() {
             <div className={classes.infoBox}>
                 <h1 className="text-4xl font-extrabold text-[#064E5C] mb-2 mx-auto">Create An Account</h1>
                 <h2 className="text-2xl font-bold text-[#1999B2] mb-2 mx-auto">Information:</h2>
-                <div className="flex justify-between mt-2">
+                <div className="flex justify-center mt-2">
                     <form method="POST" className="mx-auto">
                         <input type="text" className={classes.inputInfo} placeholder="username"
                                onChange={onUsernameEnter}

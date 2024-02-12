@@ -7,7 +7,7 @@ function UserLogin() {
   return (
     <>
     
-        <motion.div className="grid grid-cols-2"
+        <motion.div className={classes.logContainer}
         initial={{ x: -700, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 700, opacity: 0 }}
@@ -49,7 +49,7 @@ function UserLogin() {
                 </div>
                 <p className='text-2xl text-center text-[#f7f7f7]'>Leave your dog with us and let them have the time of their lives!</p>
                 <p className='text-lg text-center text-[#CFD9E0]'>We're the dog experts who will make sure your dog has a great experience.</p>
-                <div dir="rtl"> 
+                <div dir="rtl" id={classes.circle}>
                     <div className='absolute w-[600px] h-[600px] bg-[#fff] rounded-l-full rounded-b-full opacity-15 top-0 start-0 z-10 shadow-lg'>
                     </div>                                        
                 </div>

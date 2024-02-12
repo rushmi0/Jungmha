@@ -6,7 +6,7 @@ import classes from './CaretakerLogin.module.css'
 function CaretakerLogin() {
   return (
     <>
-        <motion.div className="grid grid-cols-2" 
+        <motion.div className={classes.logContainer}
         initial={{ x: 700, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -700, opacity: 0 }}

@@ -69,7 +69,7 @@
         @apply text-lg text-[#f7f7f7]
     }
     .infoBox {
-        @apply flex flex-col justify-center m-10 px-6 py-16 bg-[#f7f7f7] rounded shadow
+        @apply flex flex-col justify-center m-10 py-16 bg-[#f7f7f7] rounded shadow
     }
     .logoHeader {
         @apply flex m-10 w-[900px] justify-between items-center p-10

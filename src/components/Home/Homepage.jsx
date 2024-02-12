@@ -53,7 +53,7 @@ function Homepage() {
                         <motion.div
                             id="imgSlide"
                             key={index}
-                            className="w-full h-full xl:order-last lg:order-first md:order-first sm:order-first"
+                            className="w-full h-full xl:order-last lg:order-first md:order-first sm:order-first order-first"
                             style={{
                                 backgroundImage: `url(${bgImg[index]})`,
                                 backgroundSize: "cover",

@@ -1,3 +1,35 @@
-.bgImg {
-    @apply xl:bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\Caretaker.jpg')] xl:bg-cover xl:bg-right xl:w-full xl:h-screen 
+
+
+@media (min-width: 1400px) {
+    /* xxl */
+
+    .bgImg {
+        @apply bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\Caretaker.jpg')] bg-cover bg-right w-full h-screen
+    }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+
+
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+
+
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+
+
+
+}
+
+@media (max-width: 767px) {
+    /* sm */
+
 }
