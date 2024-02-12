@@ -4,9 +4,9 @@
     @apply bg-[#DBF3FF] shadow
    }
 
-   .containerAuto {
-    @apply container mx-auto
-   }
+   /*.containerAuto {*/
+   /* @apply container mx-auto*/
+   /*}*/
 
    .gridBox {
     @apply grid grid-cols-2 justify-items-center items-center
@@ -20,6 +20,9 @@
    .header2 {
     @apply text-4xl font-bold text-[#45BBBD]
    }
+    .textBg {
+        @apply p-[10rem] bg-[#f7f7f7]
+    }
    
 }
     
@@ -46,6 +49,9 @@
     .header2 {
         @apply text-4xl font-bold text-[#45BBBD]
     }
+    .textBg {
+        @apply p-[10rem] bg-[#f7f7f7]
+    }
     
 }
     
@@ -61,7 +67,7 @@
     }
 
     .gridBox {
-        @apply grid grid-cols-2 justify-items-center items-center
+        @apply grid grid-rows-2 justify-items-center items-center
     }
     .header1 {
         @apply text-4xl font-bold text-[#0B4550] mb-3
@@ -69,21 +75,28 @@
     .header2 {
         @apply text-4xl font-bold text-[#45BBBD]
     }
+    .textBg {
+        @apply p-[10rem] bg-[#f7f7f7]
+    }
     
 }
     
 @media (min-width: 768px) and (max-width: 991px) {
-    /* md */
+    /* md [url("/src/assets/bgDog.jpg")]*/
     .box {
-        @apply bg-[url("/src/assets/bgDog.svg")] bg-cover bg-center shadow
+        @apply bg-[#f7f7f7] bg-cover bg-center shadow
     }
    
     .gridBox {
-        @apply grid grid-cols-1 justify-items-center items-center
+        @apply grid grid-rows-2 justify-items-center items-center
+    }
+
+    .textBg {
+        @apply p-[10rem]
     }
     
     .subHead {
-        @apply text-lg mb-4 text-[#f7f7f7]
+        @apply text-lg mb-4 text-[#0B4550]
     }
 
     .imgBanner {
@@ -91,7 +104,7 @@
     }
     
     .header1 {
-        @apply text-4xl font-bold text-[#f7f7f7] mb-3
+        @apply text-4xl font-bold text-[#0B4550] mb-3
     }
     
     .header2 {
@@ -104,25 +117,30 @@
 @media (max-width: 767px) {
     /* sm */
     .box {
-        @apply bg-[url("/src/assets/bgDog.svg")] bg-cover bg-center shadow
+        @apply bg-[#f7f7f7] bg-cover bg-center shadow
     }
-    .containerAuto {
-        @apply container mx-auto
+
+    .gridBox {
+        @apply grid grid-rows-2 justify-items-center items-center
+    }
+
+    .textBg {
+        @apply p-[10rem]
+    }
+
+    .subHead {
+        @apply text-lg mb-4 text-[#0B4550]
     }
 
     .imgBanner {
         @apply hidden
     }
-    .gridBox {
-        @apply grid grid-cols-1 justify-items-center items-center
-    }
+
     .header1 {
-        @apply text-4xl font-bold text-[#f7f7f7] mb-3
+        @apply text-4xl font-bold text-[#0B4550] mb-3
     }
+
     .header2 {
         @apply text-4xl font-bold text-[#45BBBD]
-    }
-    .subHead {
-        @apply text-lg mb-4 text-[#f7f7f7]
     }
 }

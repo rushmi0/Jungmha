@@ -7,6 +7,8 @@ import RootLayout from './components/RootLayout';
 import Home from './page/Home';
 import UserLogin from './components/Login/UserLogin';
 import CaretakerLogin from './components/Login/CaretakerLogin';
+import UserProfile from "./components/profile/UserProfile.jsx";
+import CaretakerProfile from "./components/profile/CaretakerProfile.jsx";
 
 
 function App() {
@@ -18,8 +20,10 @@ function App() {
           {/* RootLayout contain navigation bar as a component to use in everypage*/}
           <Route element={<RootLayout />}>
           {/* every elements inside RootLayout will show Navigation Bar on the top of the page */}
-            <Route index element={<Home/>}></Route>         
-            
+            <Route index element={<Home/>}></Route>
+            <Route path="/profile/user" element={<UserProfile/>}></Route>
+            <Route path="/profile/caretaker" element={<CaretakerProfile/>}></Route>
+
           </Route>
           {/* RootLayout-end */}
           {/* Login */}

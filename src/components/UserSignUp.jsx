@@ -75,36 +75,43 @@ function UserSignUp() {
         setPhoneNumber(e.target.value);
     };
 
-    const dataEncrypt = () => {
+    const dataEncrypt = async () => {
         const sharedKey = ec.calculateSharedKey(
             pubKey,
             serverPubKey
         );
 
         let data = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "email": email,
-            "phoneNumber": phoneNumber,
-            "userType": userType
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "phoneNumber": phoneNumber,
+                "userType": userType
         }
-
-
 
         const jsonString = JSON.stringify(data);
         console.log(data);
         let dataToSend = aes.encrypt(jsonString, sharedKey);
         console.log('Encrypted data:', dataToSend);
-        axios.post(url, dataToSend).then((res) => {
+
+        const headers = {
+            'Content-Type': 'application/json',
+            "UserName": username
+        }
+
+        const sendDataEncrypt = {
+            "content": dataToSend
+        }
+        console.log(sendDataEncrypt);
+
+        await axios.put(url, sendDataEncrypt, {
+            headers: headers
+        }).then((res) => {
             console.log("User Info: ", res.data);
         }).catch((err) => console.log(err));
-
-
-
-
     }
 
-    const onSubmitData = () => {
+    const onSubmitData = async () => {
         passCheck();
         const privateKey = ec.genPrivateKey(pass);
         console.log("Private key", privateKey);
@@ -118,7 +125,7 @@ function UserSignUp() {
             "authenKey": publicKey
         };
 
-        axios.post(connection, payload).then((res) => {
+        await axios.post(connection, payload).then((res) => {
                 setServerPubKey(res.data["publicKey"]);
                 return res.data
         }).catch((err) => console.log(err));
@@ -131,7 +138,7 @@ function UserSignUp() {
         // })
 
         console.log("Server PublicKey: ", String(serverPubKey));
-        dataEncrypt();
+        await dataEncrypt();
 
     };
 

@@ -1,0 +1,232 @@
+@media (min-width: 1400px) {
+    /* xxl */
+    .bannerProfile {
+        @apply bg-rose-400 p-14 h-[300px]
+    }
+
+    .profile {
+        @apply container grid grid-cols-4 grid-rows-3 items-center mx-auto absolute top-[18%] left-[10%]
+    }
+
+    .imgGrid {
+        @apply col-span-1 row-span-3 py-10 px-0 mx-auto
+    }
+
+    .profileImg {
+        @apply rounded-full h-[300px] w-[300px] border-2 border-accent shadow-md
+    }
+
+    .profileInfo {
+        @apply col-span-3 row-span-3 p-10
+    }
+
+    .profileInfoGrid {
+        @apply grid grid-rows-2
+    }
+
+    .editBtnFlex {
+        @apply flex justify-end w-full mt-24
+    }
+
+    .editBtn {
+        @apply btn btn-accent rounded-full px-6
+    }
+
+    .nameFlex {
+        @apply flex justify-start w-full mt-4 flex-col
+    }
+
+    .nameText {
+        @apply text-2xl font-bold
+    }
+
+    .locationText {
+        @apply text-lg font-light text-[#595959]
+    }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .bannerProfile {
+        @apply bg-rose-200 p-14 h-[300px]
+    }
+
+    .profile {
+        @apply container grid grid-cols-4 grid-rows-3 items-center mx-auto absolute top-[22%] left-[10%]
+    }
+
+    .imgGrid {
+        @apply col-span-1 row-span-3 py-10 px-0 mx-auto
+    }
+
+    .profileImg {
+        @apply rounded-full h-[250px] w-[250px] border-2 border-accent shadow-md
+    }
+
+    .profileInfo {
+        @apply col-span-3 row-span-3 p-10
+    }
+
+    .profileInfoGrid {
+        @apply grid grid-rows-2
+    }
+
+    .editBtnFlex {
+        @apply flex justify-end w-full mt-6
+    }
+
+    .editBtn {
+        @apply btn btn-accent rounded-full px-6
+    }
+
+    .nameFlex {
+        @apply flex justify-start w-full mt-4 flex-col
+    }
+
+    .nameText {
+        @apply text-2xl font-bold
+    }
+
+    .locationText {
+        @apply text-lg font-light text-[#595959]
+    }
+
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    .bannerProfile {
+        @apply bg-rose-100 p-14 h-[300px]
+    }
+
+    .profile {
+        @apply container grid grid-cols-4 grid-rows-3 items-center mx-auto absolute top-[22%] left-[10%]
+    }
+
+    .imgGrid {
+        @apply col-span-1 row-span-3 py-10 px-0 mx-auto
+    }
+
+    .profileImg {
+        @apply rounded-full h-[250px] w-[250px] border-2 border-accent shadow-md
+    }
+
+    .profileInfo {
+        @apply col-span-3 row-span-3 p-10
+    }
+
+    .profileInfoGrid {
+        @apply grid grid-rows-2
+    }
+
+    .editBtnFlex {
+        @apply flex justify-end w-full mt-6
+    }
+
+    .editBtn {
+        @apply btn btn-accent rounded-full px-6
+    }
+
+    .nameFlex {
+        @apply flex justify-start w-full mt-4 flex-col
+    }
+
+    .nameText {
+        @apply text-2xl font-bold
+    }
+
+    .locationText {
+        @apply text-lg font-light text-[#595959]
+    }
+
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .bannerProfile {
+        @apply bg-rose-400 p-14 h-[300px]
+    }
+
+    .profile {
+        @apply container flex flex-col items-center mx-auto absolute top-[18%] left-[10%]
+    }
+
+    .imgGrid {
+        @apply py-10 px-0 mx-auto
+    }
+
+    .profileImg {
+        @apply rounded-full h-[300px] w-[300px] border-2 border-accent shadow-md
+    }
+
+    .profileInfoGrid {
+        @apply flex flex-col
+    }
+
+    .editBtnFlex {
+        @apply flex justify-end w-full mt-6 order-last
+    }
+
+    .editBtn {
+        @apply btn btn-accent rounded-full px-6 mx-auto
+    }
+
+    .nameFlex {
+        @apply flex justify-start w-full mt-4 flex-col
+    }
+
+    .nameText {
+        @apply text-2xl font-bold
+    }
+
+    .locationText {
+        @apply text-lg font-light text-[#595959]
+    }
+
+
+}
+
+@media (max-width: 767px) {
+    /* sm */
+    .bannerProfile {
+        @apply bg-rose-400 p-14 h-[300px]
+    }
+
+    .profile {
+        @apply container flex flex-col items-center mx-auto absolute top-[18%] left-[0%]
+    }
+
+    .imgGrid {
+        @apply py-10 px-0 mx-auto
+    }
+
+    .profileImg {
+        @apply rounded-full h-[300px] w-[300px] border-2 border-accent shadow-md
+    }
+
+    .profileInfoGrid {
+        @apply flex flex-col
+    }
+
+    .editBtnFlex {
+        @apply flex justify-end w-full mt-6 order-last
+    }
+
+    .editBtn {
+        @apply btn btn-accent rounded-full px-6 mx-auto
+    }
+
+    .nameFlex {
+        @apply flex justify-start w-full mt-4 flex-col
+    }
+
+    .nameText {
+        @apply text-2xl font-bold
+    }
+
+    .locationText {
+        @apply text-lg font-light text-[#595959]
+    }
+}
