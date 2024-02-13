@@ -24,7 +24,8 @@ import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.constants.NormalUpdateField
 import org.jungmha.database.record.EncryptedData
 import org.jungmha.database.record.NormalInfo
-import org.jungmha.security.securekey.AES
+import org.jungmha.security.securekey.ChaCha20
+
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.jungmha.security.xss.XssDetector
@@ -49,7 +50,7 @@ import java.util.*
 class NormalController @Inject constructor(
     private val userService: UserServiceImpl,
     private val token: Token,
-    private val aes: AES
+    private val chacha: ChaCha20
 ) {
 
     /**
@@ -126,7 +127,7 @@ class NormalController @Inject constructor(
     private suspend fun NormalInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
-        val encrypted = aes.encrypt(this.toString(), shareKey)
+        val encrypted = chacha.encrypt(this.toString(), shareKey)
         return HttpResponse.ok(EncryptedData(encrypted))
         //return HttpResponse.ok(this)
     }
@@ -190,7 +191,7 @@ class NormalController @Inject constructor(
             val shareKey = userInfo.sharedKey
 
             // ถอดรหัสข้อมูล
-            val decryptedData = aes.decrypt(payload.content, shareKey)
+            val decryptedData = chacha.decrypt(payload.content, shareKey)
 
             val updateQueue = buildUpdateQueue(decryptedData)
 

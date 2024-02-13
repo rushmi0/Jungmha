@@ -24,7 +24,6 @@ import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkersInfo
 import org.jungmha.database.record.EncryptedData
 
-import org.jungmha.security.securekey.AES
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
 import org.jungmha.security.xss.XssDetector
@@ -32,6 +31,7 @@ import org.jungmha.security.xss.XssDetector
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.database.form.DogWalkerForm
+import org.jungmha.security.securekey.ChaCha20
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -55,7 +55,7 @@ class DogWalkersController @Inject constructor(
     private val walkerService: DogsWalkersServiceImpl,
     private val userService: UserServiceImpl,
     private val token: Token,
-    private val aes: AES
+    private val chacha: ChaCha20
 ) {
 
     /**
@@ -139,7 +139,7 @@ class DogWalkersController @Inject constructor(
     private suspend fun DogWalkersInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
-        val encrypted = aes.encrypt(this.toString(), shareKey)
+        val encrypted = chacha.encrypt(this.toString(), shareKey)
         return HttpResponse.ok(EncryptedData(encrypted))
         //return HttpResponse.ok(this)
     }
@@ -227,7 +227,7 @@ class DogWalkersController @Inject constructor(
             val shareKey = userInfo.sharedKey
 
             // Decrypt ข้อมูล
-            val decryptedData: Map<String, Any> = aes.decrypt(payload.content, shareKey)
+            val decryptedData: Map<String, Any> = chacha.decrypt(payload.content, shareKey)
 
             /**
              * โดยในที่นี้เราใช้ queue ในการจัดเก็บฟิลด์ที่ต้องการแก้ไขของ Dog Walkers

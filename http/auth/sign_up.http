@@ -1,10 +1,11 @@
 ### User 1
+# //"content": "yt7ivc7x2/IeXb6jcP+WVccwmhuzlv3w5vb9kvbHZzo2UWzRdh79M4stx3FUaG4+231MgUOGSyscaL+dIvlju5J14cjRBfsUhUfodv5aQx7fVgpFN9upOjUgtkWntJLU+hRJQgGEEx/qsslXh9OuhTbFDlx2gNIE8MJh3xIyq0yUn5r47Lq/O/RHex2LaltJ?iv=pUQTcZ9GcqfAMQjWOuW96g=="
 PUT http://localhost:8080/api/v1/auth/sign-up
 Content-Type: application/json
 UserName: Aura
 
 {
-  "content": "yt7ivc7x2/IeXb6jcP+WVccwmhuzlv3w5vb9kvbHZzo2UWzRdh79M4stx3FUaG4+231MgUOGSyscaL+dIvlju5J14cjRBfsUhUfodv5aQx7fVgpFN9upOjUgtkWntJLU+hRJQgGEEx/qsslXh9OuhTbFDlx2gNIE8MJh3xIyq0yUn5r47Lq/O/RHex2LaltJ?iv=pUQTcZ9GcqfAMQjWOuW96g=="
+  "content" : "JYg/JtU7Mc7J6IFEjayEqSY9N1qtjhuBqM11jt4isK6foIW36ePNm5p2861b2GGEmiWf5Fqqlz2Db/j1Kz9MOnkZZfdM4yJi1trq54Q5A7p0M6dUrvCKibx5386l4XZZjtYRsFDpUajh3BJ9+E1KppjgjdN/+pLz2mMHes99mBbEjmixgHb11irI?iv=AAAAAAAAAAAAAAAA"
 }
 
 

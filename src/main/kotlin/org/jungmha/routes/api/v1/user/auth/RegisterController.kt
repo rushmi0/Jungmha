@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.jungmha.database.form.UserProfileForm
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.EncryptedData
-import org.jungmha.security.securekey.AES
+
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.xss.XssDetector
 import org.jungmha.utils.AccountDirectory
@@ -32,6 +32,7 @@ import jakarta.inject.Inject
 import org.jungmha.constants.EnumField
 import org.jungmha.constants.NormalValidateField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
+import org.jungmha.security.securekey.ChaCha20
 import org.jungmha.security.securekey.TokenResponse
 
 
@@ -53,7 +54,7 @@ class RegisterController @Inject constructor(
     private val userService: UserServiceImpl,
     private val walkersService: DogsWalkersServiceImpl,
     private val token: Token,
-    private val aes: AES
+    private val chacha: ChaCha20
 ) {
 
     private val objectMapper = jacksonObjectMapper()
@@ -125,7 +126,7 @@ class RegisterController @Inject constructor(
             ?: return HttpResponse.badRequest("User not found")
         val shareKey = userInfo.sharedKey
 
-        val decryptedData: Map<String, Any?> = aes.decrypt(payload.content, shareKey)
+        val decryptedData: Map<String, Any?> = chacha.decrypt(payload.content, shareKey)
 
         // ตรวจสอบค่า null และ XSS
         val validationResponse: MutableHttpResponse<out Any?> = validateDecryptedData(
