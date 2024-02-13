@@ -1,7 +1,7 @@
 @media (min-width: 1400px) {
     /* xxl */
     .bgImg {
-        @apply bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\bgImgDog.jpg')] bg-cover bg-right w-full h-screen
+        @apply bg-[url('/public/img/bgImgDog.jpg')] bg-cover bg-right w-full h-screen
     }
 
 }
