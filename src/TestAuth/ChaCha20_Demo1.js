@@ -1,10 +1,9 @@
-import {Buffer} from "buffer";
-import AES from "../../utils/AES.js";
+import ChaCha20 from "../../utils/ChaCha20.js";
 
 
-const aes = AES()
+const chacha = ChaCha20()
 
-let sharedKey = Buffer.from("3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78", 'hex');
+let sharedKey = "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78";
 
 let data = {
     "firstName": "สมหมาย",
@@ -17,10 +16,10 @@ let data = {
 const jsonString = JSON.stringify(data);
 console.log(data);
 
-let dataToSend = aes.encrypt(jsonString, sharedKey);
+let dataToSend = chacha.encrypt(jsonString, sharedKey)
 console.log('Encrypted data:', dataToSend);
 
-let decryptedData = aes.decrypt(dataToSend, sharedKey);
+let decryptedData = chacha.decrypt(dataToSend, sharedKey);
 console.log('Decrypted data:', decryptedData);
 
 

@@ -5,7 +5,7 @@ import classes from './UserSignUp.module.css';
 import logo from '../assets/Logo.svg';
 import axios from "axios";
 import EllipticCurve from "../../utils/SecureKey.js";
-import AES from "../../utils/AES.js";
+
 import {useNavigate} from "react-router-dom";
 import {Buffer} from "buffer";
 

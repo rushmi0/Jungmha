@@ -1,12 +1,13 @@
-import nacl from "tweetnacl";
+import chacha20 from "chacha20";
 
 
 const ChaCha20 = () => {
-    const encrypt = (data, sharedKey) => {
-        const key = Uint8Array.from(Buffer.from(sharedKey, 'hex'));
 
-        const nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
-        const ciphertext = nacl.secretbox(Buffer.from(data), nonce, key);
+    const encrypt = (data, sharedKey) => {
+        const key = Buffer.from(sharedKey, 'hex');
+        const nonce = Buffer.alloc(12);
+
+        const ciphertext = chacha20.encrypt(key, nonce, Buffer.from(data));
 
         const nonceBase64 = Buffer.from(nonce).toString('base64');
         const base64ciphertext = Buffer.from(ciphertext).toString('base64');
@@ -14,39 +15,25 @@ const ChaCha20 = () => {
         return base64ciphertext + '?iv=' + nonceBase64;
     };
 
+
     const decrypt = (data, sharedKey) => {
         const [ciphertextBase64, nonceBase64] = data.split('?iv=');
 
-        const key = Uint8Array.from(Buffer.from(sharedKey, 'hex'));
+        const key= Buffer.from(sharedKey, 'hex');
 
         const nonce= Buffer.from(nonceBase64, 'base64');
         const ciphertext = Buffer.from(ciphertextBase64, 'base64');
 
-        const decryptedText = nacl.secretbox.open(ciphertext, nonce, key);
-        return Buffer.from(decryptedText).toString()
+        const decrypt = chacha20.decrypt(key, nonce, ciphertext).toString()
+        const string_json = Buffer.from(decrypt).toString()
+        return JSON.parse(string_json);
     };
 
     return {
         encrypt,
         decrypt
     };
+
 };
 
 export default ChaCha20;
-
-const chacha20 = ChaCha20();
-const keyHex = '3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78';
-
-const encryptedData = chacha20.encrypt("Mai", keyHex);
-console.log(encryptedData);
-
-const decryptedData = chacha20.decrypt(
-    encryptedData,
-    keyHex
-)
-
-console.log(decryptedData)
-
-
-
-

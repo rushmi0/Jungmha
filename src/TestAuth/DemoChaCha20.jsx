@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Buffer } from "buffer";
-import AES from "../../utils/AES.js";
+import ChaCha20 from "../../utils/ChaCha20.js";
 
-const DemoAES = () => {
+
+
+
+const DemoChaCha20 = () => {
     const [privateKey, setPrivateKey] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -19,13 +22,13 @@ const DemoAES = () => {
         };
 
         const jsonString = JSON.stringify(data);
-        const aes = AES();
+        const chacha = ChaCha20()
 
         if (privateKey && jsonString) {
             try {
-                const encryptedResult = aes.encrypt(
+                const encryptedResult = chacha.encrypt(
                     jsonString,
-                    Buffer.from(privateKey, 'hex')
+                    privateKey
                 );
                 setEncryptedData(encryptedResult);
             } catch (error) {
@@ -39,7 +42,7 @@ const DemoAES = () => {
 
     return (
         <div style={{ maxWidth: '400px', margin: '0 auto', fontFamily: 'Arial, sans-serif' }}>
-            <h1 style={{ textAlign: 'center' }}>AES Encryption Demo</h1>
+            <h1 style={{ textAlign: 'center' }}>ChaCha20 Encryption Demo</h1>
             <div style={{ marginBottom: '15px' }}>
                 <label style={{ display: 'block', marginBottom: '5px' }}>Private Key:</label>
                 <input
@@ -96,4 +99,4 @@ const DemoAES = () => {
     );
 };
 
-export default DemoAES;
+export default DemoChaCha20;
