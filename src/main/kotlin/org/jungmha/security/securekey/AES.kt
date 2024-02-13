@@ -7,12 +7,16 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.security.SecureRandom
+import java.security.Security
+import java.security.spec.AlgorithmParameterSpec
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
-import java.util.Base64
+
 
 @Bean
 @RequestScope
@@ -21,14 +25,18 @@ class AES {
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper()
 
+
+    @Throws(java.lang.Exception::class)
     fun encrypt(data: String, sharedKey: String): String {
         val jsonString = objectMapper.writeValueAsString(data)
+        Security.addProvider(BouncyCastleProvider())
+
 
         val iv = ByteArray(16)
         val random = SecureRandom()
         random.nextBytes(iv)
 
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
         cipher.init(
             Cipher.ENCRYPT_MODE,
             SecretKeySpec(sharedKey.HexToByteArray(),
@@ -43,8 +51,11 @@ class AES {
         return Base64.getEncoder().encodeToString(encryptedData) + "?iv=" + ivBase64
     }
 
+    @Throws(java.lang.Exception::class)
     fun decrypt(encryptedData: String, sharedKey: String): Map<String, Any> {
         try {
+            Security.addProvider(BouncyCastleProvider())
+
             val (encryptedString, ivBase64) = encryptedData.split("?iv=")
             val ivDecoded = Base64.getDecoder().decode(ivBase64)
 
@@ -53,18 +64,17 @@ class AES {
                 throw IllegalArgumentException("Invalid shared key size. It should be 32 characters (128 bits).")
             }
 
-            val decipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+            val decipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(sharedKey.HexToByteArray(), "AES"), IvParameterSpec(ivDecoded))
 
             val decryptedBytes = decipher.doFinal(Base64.getDecoder().decode(encryptedString))
             val decryptedString = decryptedBytes.toString(Charsets.UTF_8)
+            println(decryptedBytes)
 
             val decryptedMap = objectMapper.readValue<Map<String, Any>>(decryptedString)
             return decryptedMap
         } catch (ex: Exception) {
-            // จัดการข้อผิดพลาดที่เกิดขึ้น
-            ex.printStackTrace() // หรือให้ทำการล็อกหรือรายงานข้อผิดพลาดตามความเหมาะสม
-            //throw RuntimeException("Failed to decrypt the data. Reason: ${ex.message}")
+            ex.printStackTrace()
             throw RuntimeException("Failed to decrypt the data. Reason: ${ex.localizedMessage}")
         }
     }
