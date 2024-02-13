@@ -21,7 +21,7 @@
     @apply text-4xl font-bold text-[#45BBBD]
    }
     .textBg {
-        @apply p-[10rem] bg-[#f7f7f7]
+        @apply p-[10rem] bg-[#f7f7f7] z-40
     }
    
 }
@@ -50,7 +50,7 @@
         @apply text-4xl font-bold text-[#45BBBD]
     }
     .textBg {
-        @apply p-[10rem] bg-[#f7f7f7]
+        @apply p-[10rem] bg-[#f7f7f7] z-40
     }
     
 }
@@ -76,7 +76,7 @@
         @apply text-4xl font-bold text-[#45BBBD]
     }
     .textBg {
-        @apply p-[10rem] bg-[#f7f7f7]
+        @apply p-[10rem] bg-[#f7f7f7] z-40
     }
     
 }
@@ -92,7 +92,7 @@
     }
 
     .textBg {
-        @apply p-[10rem]
+        @apply p-[10rem] z-40
     }
     
     .subHead {
@@ -125,7 +125,7 @@
     }
 
     .textBg {
-        @apply p-[10rem]
+        @apply p-[10rem] z-40
     }
 
     .subHead {

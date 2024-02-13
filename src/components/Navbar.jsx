@@ -5,7 +5,7 @@ import classes from './Navbar.module.css'
 function Navbar() {
   return (
     <>
-        <div className="navbar bg-[#7F7F7] shadow-md z-40 relative">
+        <div className="navbar bg-[#7F7F7] shadow-md z-50 relative">
             <div className='container mx-auto '>
                 <div className="flex-1">
                     <a href="/"><img src={logo} alt="jungmha"/></a>
