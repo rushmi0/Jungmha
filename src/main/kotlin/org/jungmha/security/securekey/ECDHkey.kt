@@ -38,8 +38,18 @@ class ECDHkey {
             point
         )
 
-        // เอาเฉพาะพิกัด x และแปลงเป็นเลขฐาน 16 ก่อนคืนค่ากลับไป
-        return curvePoint.x.toString(16)
+        // เอาเฉพาะพิกัด x และแปลงเป็นเลขฐาน 16
+        val coordHex = curvePoint.x.toString(16)
+
+        // ตรวจสอบว่าค่า hexX มีขนาดน้อยกว่า 64 หรือไม่
+        if (coordHex.length < 64) {
+            // เพิ่ม 0 ไปหน้าสุดจนกว่าจะครบ 64 ตัวอักษร
+            return "0".repeat(64 - coordHex.length) + coordHex
+        }
+
+        return coordHex
     }
 
 }
+
+
