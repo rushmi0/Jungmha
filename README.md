@@ -20,7 +20,7 @@
 ต่อไปใช้ [ECDH Key Exchange](https://cryptobook.nakov.com/asymmetric-key-ciphers/ecdh-key-exchange) เพื่อสร้าง Private Key ใหม่ โดยในกระบวนการนี้ Client และ Server จะแลกเปลี่ยน Public Key เพื่อสร้างกุญแจที่ใช้ในการเข้ารหัสข้อมูล
 
 ### 3. ChaCha20
-สุดท้ายใช้ [ChaCha20](https://github.com/nostr-protocol/nips/blob/master/44.md) เพื่อเข้ารหัสข้อมูล โดยใช้ Private Key ที่ได้จากขั้นตอน ECDH
+สุดท้ายใช้ [ChaCha20](https://cryptobook.nakov.com/symmetric-key-ciphers/chacha20-poly1305) เพื่อเข้ารหัสข้อมูล โดยใช้ Private Key ที่ได้จากขั้นตอน ECDH
 
 <div align="center">
   <span><img src="src/main/resources/images/diagram/register.svg" height=1024 width=1024 /></span>
