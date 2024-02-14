@@ -81,9 +81,9 @@ fun main() {
 
     val originalText = "Hello, ChaCha20!"
     val encryptedText = chaCha20EncryptDecrypt.encrypt(originalText, privateKey)
+
     val decryptedText = chaCha20EncryptDecrypt.decrypt(
-        //encryptedText,
-        "JYg/JtU7Mc7J6IFEjayEqSY9N1qtjhuBqM11jt4isK6foIW36ePNm5p2861b2GGEmiWf5Fqqlz2Db/j1Kz9MOnkZZfdM4yJi1trq54Q5A7p0M6dUrvCKibx5386l4XZZjtYRsFDpUajh3BJ9+E1KppjgjdN/+pLz2mMHes99mBbEjmixgHb11irI?iv=AAAAAAAAAAAAAAAA",
+        encryptedText,
         privateKey
     )
 

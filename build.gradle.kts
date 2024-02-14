@@ -65,9 +65,6 @@ dependencies {
     // https://mvnrepository.com/artifact/org.purejava/tweetnacl-java
     implementation("org.purejava:tweetnacl-java:1.1.2")
 
-    // https://mvnrepository.com/artifact/com.github.joshjdevl.libsodiumjni/libsodium-jni
-    runtimeOnly("com.github.joshjdevl.libsodiumjni:libsodium-jni:2.0.2")
-
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
 
