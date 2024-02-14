@@ -1,5 +1,6 @@
 import chacha20 from "chacha20";
 import { randomBytes } from 'crypto';
+import {Buffer} from "buffer";
 
 const ChaCha20 = () => {
     const nonce = randomBytes(12);
