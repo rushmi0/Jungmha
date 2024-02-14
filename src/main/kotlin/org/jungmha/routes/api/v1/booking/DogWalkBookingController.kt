@@ -21,16 +21,14 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.inject.Inject
 import kotlinx.coroutines.coroutineScope
 import org.jungmha.constants.DogWalkBookingsValidate
-import org.jungmha.constants.NormalValidateField
 import org.jungmha.database.statement.DogWalkBookingsServiceImpl
 import org.jungmha.database.statement.UserServiceImpl
 import org.jungmha.database.record.DogWalkBookings
 import org.jungmha.database.record.EncryptedData
 import org.jungmha.routes.api.v1.user.auth.RegisterController.Companion.validateDecryptedData
-import org.jungmha.security.securekey.AES
+import org.jungmha.security.securekey.ChaCha20
 import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenObject
-import org.jungmha.security.xss.XssDetector
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalTime
@@ -56,7 +54,7 @@ class DogWalkBookingController @Inject constructor(
     private val bookingService: DogWalkBookingsServiceImpl,
     private val userService: UserServiceImpl,
     private val token: Token,
-    private val aes: AES
+    private val chacha: ChaCha20
 ) {
 
     /**
@@ -132,7 +130,7 @@ class DogWalkBookingController @Inject constructor(
             val userId: Int = userInfo.userID
             val shareKey = userInfo.sharedKey
 
-            val decryptedData: Map<String, Any?> = aes.decrypt(payload.content, shareKey)
+            val decryptedData: Map<String, Any?> = chacha.decrypt(payload.content, shareKey)
 
             val formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val formatterTime = DateTimeFormatter.ofPattern("HH:mm")

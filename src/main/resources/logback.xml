@@ -10,15 +10,15 @@
         </encoder>
     </appender>
 
-    <logger name="org.jungmha.*" level="DEBUG"/>
-<!--    <logger name="io.micronaut.http.client" level="TRACE"/>-->
+    <logger name="org.jungmha.*" level="INFO"/>
+    <logger name="io.micronaut.http.client" level="TRACE"/>
 <!--    <Logger name="io.micronaut.context.condition" level="DEBUG"/>-->
 
 <!--    <logger name="org.flywaydb.core" level="DEBUG"/>-->
 <!--    <logger name="io.micronaut.flyway" level="INFO"/>-->
-    <logger name="com.zaxxer.hikari.pool" level="INFO"/>
+<!--    <logger name="com.zaxxer.hikari.pool" level="DEBUG"/>-->
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
