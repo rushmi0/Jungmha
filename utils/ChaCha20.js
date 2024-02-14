@@ -1,11 +1,12 @@
 import chacha20 from "chacha20";
-
+import { randomBytes } from 'crypto';
 
 const ChaCha20 = () => {
+    const nonce = randomBytes(12);
 
     const encrypt = (data, sharedKey) => {
         const key = Buffer.from(sharedKey, 'hex');
-        const nonce = Buffer.alloc(12);
+
 
         const ciphertext = chacha20.encrypt(key, nonce, Buffer.from(data));
 
