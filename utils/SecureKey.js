@@ -33,7 +33,7 @@ const EllipticCurve = () => {
         // หา hash ของข้อความ
         const msgHash = sha256.hash(msg);
 
-        const nonce = chacha.generateRandomBytes(12);
+        const nonce = chacha.generateRandomBytes(32);
 
         // เซ็นข้อความและคืนลายเซ็น
         const signature = ec.sign(msgHash, privateKey, 'hex', {
