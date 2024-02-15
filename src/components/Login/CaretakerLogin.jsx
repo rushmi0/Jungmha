@@ -1,9 +1,81 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { motion } from 'framer-motion'
 import logo from '../../assets/Logo.svg'
 import classes from './CaretakerLogin.module.css'
+import {useNavigate} from "react-router-dom";
+import EllipticCurve from "../../../utils/SecureKey.js";
+import axios from "axios";
 
 function CaretakerLogin() {
+    const navigate = useNavigate("");
+    const [username, setUsername] = useState("");
+    const [pass, setPassword] = useState("");
+    const [signature, setSignature] = useState("");
+
+    const ec = EllipticCurve();
+
+
+    const toHome = () => {
+        navigate("/");
+    }
+    const usernameEnter = (e) => {
+        setUsername(e.target.value);
+    }
+
+    const passwordEnter = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const getTimeStamp = () => {
+        return Date.now();
+    }
+
+
+
+    const signMessage = async () => {
+        let condition = username.trim().length !== 0 && pass.trim().length !== 0;
+        if(condition) {
+            document.getElementById("usernameAlert").style.visibility = "invisible";
+            const privateKey = ec.genPrivateKey(pass)
+            console.log("private key: ",privateKey)
+
+            const publicKey = ec.generateKeyPair(privateKey)
+            console.log("public key: ",publicKey)
+
+            // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
+            let timeStamp = getTimeStamp();
+            const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
+            const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
+
+            const sign = ec.signMessage(url_sign, privateKey);
+            console.log("sign: ", sign)
+            setSignature(sign)
+            console.log("signature: ", signature)
+
+            const header = {
+                "Signature": sign
+            }
+
+            await axios.get(url,{
+                headers: header
+            }).then((res) => {
+                console.log("User Info: ", res.data);
+                localStorage.setItem("user-token", res.data);
+                toHome();
+            }).catch((err) => {
+                if(err.response.status === 400) {
+                    alert("Username not exist or password incorrect!");
+                } else {
+                    console.error(err);
+                }
+            });
+        } else if (username.trim().length === 0){
+            alert("Please enter your password!");
+        } else if (pass.trim().length === 0) {
+            alert("Please enter your password!");
+        }
+    }
+
   return (
     <>
         <motion.div className={classes.logContainer}
@@ -43,9 +115,9 @@ function CaretakerLogin() {
                 <h1 className={classes.logHeader}>Login As a <a href="/login/caretaker" className='text-[#1999B2]'>Caretaker</a></h1>
                 <form action="" className='px-[10rem] py-6'>
                     <p className={classes.subHead}>Username</p>
-                    <input type="text" className={classes.inputInfo} />
+                    <input id="usernameAlert" type="text" className={classes.inputInfo} onChange={usernameEnter}/>
                     <p className={classes.subHead}>Password</p>
-                    <input type="password" className={classes.inputInfo} />
+                    <input type="password" className={classes.inputInfo} onChange={passwordEnter}/>
                     <div className='flex justify-between'>
                         <div className='flex items-center'>
                             <span className="label-text font-light me-5">Remember me</span>
@@ -57,7 +129,7 @@ function CaretakerLogin() {
                     </div>
                     <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/caretaker' className={classes.link}>Create now</a></p>
 
-                    <a href='/' className={classes.logBtn}>Login</a>
+                    <a className={classes.logBtn} onClick={signMessage}>Login</a>
                 </form>
                 
             </div>

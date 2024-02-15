@@ -77,71 +77,74 @@ function UserSignUp() {
 
 
     const onSubmitData = async () => {
-        passCheck();
-        const privateKey = ec.genPrivateKey(pass);
-        console.log("Private key", privateKey);
-        const publicKey = ec.generateKeyPair(privateKey);
-        console.log("Public Key length: ", publicKey.length);
-        console.log("Public Key: ", publicKey);
-        console.log("Username", username);
+        let condition = username.trim().length !== 0 || pass.trim().length !== 0 || conPass.trim().length !== 0 || firstName.trim().length !== 0 || lastName.trim().length !== 0 || email.trim().length !== 0 || phoneNumber.trim().length !== 0;
+        if(condition) {
+            passCheck();
+            const privateKey = ec.genPrivateKey(pass);
+            console.log("Private key", privateKey);
+            const publicKey = ec.generateKeyPair(privateKey);
+            console.log("Public Key length: ", publicKey.length);
+            console.log("Public Key: ", publicKey);
+            console.log("Username", username);
 
 
-        let payload = {
-            "userName": username,
-            "authenKey": publicKey
-        };
+            let payload = {
+                "userName": username,
+                "authenKey": publicKey
+            };
 
 
-        let serverPubKey = "";
-        await axios.post(connection, payload).then((res) => {
+            let serverPubKey = "";
+            await axios.post(connection, payload).then((res) => {
                 console.log("serverPubKey:", res.data["publicKey"]);
                 serverPubKey = res.data["publicKey"];
                 return res.data
-        }).catch((err) => console.log(err));
+            }).catch((err) => console.log(err));
 
 
-        console.log("Server PublicKey: ", serverPubKey);
+            console.log("Server PublicKey: ", serverPubKey);
 
 
-        const sharedKey = ec.calculateSharedKey(
-            privateKey,
-            serverPubKey
+            const sharedKey = ec.calculateSharedKey(
+                privateKey,
+                serverPubKey
 
-        );
+            );
 
-        let data = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "email": email,
-            "phoneNumber": phoneNumber,
-            "userType": userType
+            let data = {
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "phoneNumber": phoneNumber,
+                "userType": userType
+            }
+            console.log("share key: ", sharedKey.toString("hex"));
+            console.log("share key length: ", sharedKey.length);
+            const jsonString = JSON.stringify(data);
+            console.log(data);
+            let dataToSend = chacha.encrypt(jsonString, sharedKey);
+            console.log('Encrypted data:', dataToSend);
+
+            const headers = {
+                'Content-Type': 'application/json',
+                "UserName": username
+            }
+
+            const sendDataEncrypt = {
+                "content": dataToSend
+            }
+            console.log("data to send: ",sendDataEncrypt);
+
+            await axios.put(url, sendDataEncrypt, {
+                headers: headers
+            }).then((res) => {
+                console.log("User Info: ", res.data);
+                localStorage.setItem("user-token", res.data);
+                toLogin();
+            }).catch((err) => console.log(err));
+        } else {
+            alert("Please fill up all informations!")
         }
-        console.log("share key: ", sharedKey.toString("hex"));
-        console.log("share key length: ", sharedKey.length);
-        const jsonString = JSON.stringify(data);
-        console.log(data);
-        let dataToSend = chacha.encrypt(jsonString, sharedKey);
-        console.log('Encrypted data:', dataToSend);
-
-        const headers = {
-            'Content-Type': 'application/json',
-            "UserName": username
-        }
-
-        const sendDataEncrypt = {
-            "content": dataToSend
-        }
-        console.log("data to send: ",sendDataEncrypt);
-
-        await axios.put(url, sendDataEncrypt, {
-            headers: headers
-        }).then((res) => {
-            console.log("User Info: ", res.data);
-            localStorage.setItem("user-token", res.data);
-            toLogin();
-        }).catch((err) => console.log(err));
-
-
     };
 
 
