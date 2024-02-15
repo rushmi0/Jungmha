@@ -9,6 +9,7 @@ import UserLogin from './components/Login/UserLogin';
 import CaretakerLogin from './components/Login/CaretakerLogin';
 import UserProfile from "./components/profile/UserProfile.jsx";
 import CaretakerProfile from "./components/profile/CaretakerProfile.jsx";
+import Booking from "./components/Booking/Booking.jsx";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
             <Route index element={<Home/>}></Route>
             <Route path="/profile/user" element={<UserProfile/>}></Route>
             <Route path="/profile/caretaker" element={<CaretakerProfile/>}></Route>
+            <Route path="/booking" element={<Booking/>}></Route>
 
           </Route>
           {/* RootLayout-end */}

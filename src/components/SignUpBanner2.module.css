@@ -4,7 +4,7 @@
     /* xxl */
 
     .bgImg {
-        @apply bg-[url('C:\Users\api25\OneDrive\Desktop\Project\src\assets\Caretaker.jpg')] bg-cover bg-right w-full h-screen
+        @apply bg-[url('/public/img/Caretaker.jpg')] bg-cover bg-right w-full h-screen
     }
 
 }

@@ -6,7 +6,9 @@ function CaretakerCard() {
 
     const [data, setData] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:8080/api/v1/auth/user/dogwalkers").then((res) => {
+        axios.get("http://localhost:8080/api/v1/auth/user/dogwalkers",
+            { headers: { "Access-Token": "eyJ1c2VyTmFtZSI6InVzZXJUZXN0MDM3IiwicGVybWlzc2lvbiI6InZpZXciLCJleHAiOjE3MDc5MzMyOTc1NzksImlhdCI6MTcwNzkzMDcwNTU3OSwic2lnbmF0dXJlIjoiMzA0NDAyMjA0MzIyNzg1YTA3YTUzMGEwZWE1ODVkMDQzMzczMGRlNWEwZjU1NjEwOTk1OWJjODQwOTU0ZmU1MzhjZTIxMmI2MDIyMDI2MmNmMjI4YTJjM2RlY2YzZmNhNDg1NDYyMzc5MzlhZjc5ZThkMjgwZmE5NmY1NGY4OWU3ZDMwZWMwNTA2NGUifQ==" } }
+        ).then((res) => {
             setData(res.data);
         });
     }, []);

@@ -7,10 +7,10 @@ function Homepage() {
     // const timeoutRef = React.useRef(null);
     // const [prevBg ,setPrevBg] = useState("");
     const bgImg = [
-        "../src/assets/login1.jpg",
-        "../src/assets/dogWalker.jpg",
-        "../src/assets/login2.jpg",
-        "../src/assets/Caretaker.jpg"
+        "public/img/login1.jpg",
+        "public/img/dogWalker.jpg",
+        "public/img/login2.jpg",
+        "public/img/Caretaker.jpg"
     ];
 
 

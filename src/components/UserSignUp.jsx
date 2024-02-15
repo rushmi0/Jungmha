@@ -5,16 +5,18 @@ import classes from './UserSignUp.module.css';
 import logo from '../assets/Logo.svg';
 import axios from "axios";
 import EllipticCurve from "../../utils/SecureKey.js";
-import AES from "../../utils/AES.js";
+import ChaCha20 from "../../utils/ChaCha20.js";
 import {useNavigate} from "react-router-dom";
-import {Buffer} from "buffer";
+import { Buffer } from "buffer";
+
+
 
 function UserSignUp() {
     const navigate = useNavigate("");
 
-    const toLogin = () => {
+    const  toLogin = async ()=> {
         navigate("/login/user");
-    };
+    }
 
     const [ username, setUsername ] = useState("");
     const [ pass, setPass ] = useState("");
@@ -25,10 +27,12 @@ function UserSignUp() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [pubKey, setPubKey] = useState("");
     const [serverPubKey, setServerPubKey] = useState("");
+    const [encryptData, setEncryptData] = useState("");
+    const [priKey, setPriKey] = useState("");
     const userType = "Normal";
 
-
-    const aes = AES()
+    //const aes = AES()
+    const chacha = ChaCha20()
     const ec = EllipticCurve();
     const url = "http://localhost:8080/api/v1/auth/sign-up";
     const connection = "http://localhost:8080/api/v1/auth/open-channel";
@@ -77,8 +81,9 @@ function UserSignUp() {
 
     const dataEncrypt = async () => {
         const sharedKey = ec.calculateSharedKey(
-            pubKey,
+            priKey,
             serverPubKey
+
         );
 
         let data = {
@@ -88,10 +93,12 @@ function UserSignUp() {
                 "phoneNumber": phoneNumber,
                 "userType": userType
         }
-
+        console.log("share key: ", sharedKey.toString("hex"));
+        console.log("share key length: ", sharedKey.length);
         const jsonString = JSON.stringify(data);
         console.log(data);
-        let dataToSend = aes.encrypt(jsonString, sharedKey);
+        let dataToSend = chacha.encrypt(jsonString, sharedKey);
+        setEncryptData(dataToSend);
         console.log('Encrypted data:', dataToSend);
 
         const headers = {
@@ -100,14 +107,16 @@ function UserSignUp() {
         }
 
         const sendDataEncrypt = {
-            "content": dataToSend
+            "content": encryptData
         }
-        console.log(sendDataEncrypt);
+        console.log("data to send: ",sendDataEncrypt);
 
         await axios.put(url, sendDataEncrypt, {
             headers: headers
         }).then((res) => {
             console.log("User Info: ", res.data);
+            localStorage.setItem("user-token", res.data);
+            toLogin();
         }).catch((err) => console.log(err));
     }
 
@@ -115,8 +124,10 @@ function UserSignUp() {
         passCheck();
         const privateKey = ec.genPrivateKey(pass);
         console.log("Private key", privateKey);
+        setPriKey(privateKey);
         const publicKey = ec.generateKeyPair(privateKey);
-        console.log("Public Key", publicKey);
+        console.log("Public Key length: ", publicKey.length);
+        console.log("Public Key: ", publicKey);
         console.log("Username", username);
         setPubKey(publicKey) ;
 
@@ -138,7 +149,9 @@ function UserSignUp() {
         // })
 
         console.log("Server PublicKey: ", String(serverPubKey));
+        console.log("Encrypt Data: ", encryptData)
         await dataEncrypt();
+
 
     };
 

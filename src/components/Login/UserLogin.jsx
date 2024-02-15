@@ -1,9 +1,55 @@
-import React from 'react'
+import React, {useState} from 'react'
 import classes from './UserLogin.module.css'
 import logo from '../../assets/Logo.svg'
 import { motion } from 'framer-motion'
+import EllipticCurve from "../../../utils/SecureKey.js";
+import axios from "axios";
 
 function UserLogin() {
+    const [username, setUsername] = useState("");
+    const [pass, setPassword] = useState("");
+    const [signature, setSignature] = useState("");
+
+    const ec = EllipticCurve();
+
+    const usernameEnter = (e) => {
+        setUsername(e.target.value);
+    }
+
+    const passwordEnter = (e) => {
+        setPassword(e.target.value);
+    }
+
+
+    const signMessage = () => {
+        const privateKey = ec.genPrivateKey(pass)
+        console.log("private key: ",privateKey)
+
+        const publicKey = ec.generateKeyPair(privateKey)
+        console.log("public key: ",publicKey)
+
+    // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
+
+        const url = `http://localhost:8080/api/v1/auth/sign-in/${username}`;
+
+        const sign = ec.signMessage(url, privateKey);
+        console.log("signature: ", sign)
+        setSignature(sign)
+
+        const header = {
+
+            "Signature": signature
+        }
+
+        axios.get(url, {
+            headers: header
+        }).then((res) => {
+            console.log("User Info: ", res.data);
+            localStorage.setItem("user-token", res.data);
+        }).catch((err) => console.error(err));
+    }
+
+
   return (
     <>
     
@@ -20,11 +66,11 @@ function UserLogin() {
 
                 </div>
                 <h1 className={classes.logHeader}>Login As a <a href="/login/user" className='text-[#1999B2]'>User</a></h1>
-                <form action="" className='px-[10rem] py-6'>
+                <form className='px-[10rem] py-6' method="GET">
                     <p className={classes.subHead}>Username</p>
-                    <input type="text" className={classes.inputInfo} />
+                    <input type="text" className={classes.inputInfo} onChange={usernameEnter}/>
                     <p className={classes.subHead}>Password</p>
-                    <input type="password" className={classes.inputInfo} />
+                    <input type="password" className={classes.inputInfo} onChange={passwordEnter}/>
                     <div className='flex justify-between'>
                         <div className='flex items-center'>
                             <span className="label-text font-light me-5">Remember me</span>
@@ -36,7 +82,7 @@ function UserLogin() {
                     </div>
                     <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/user' className={classes.link}>Create now</a></p>
 
-                    <a href='/' className={classes.logBtn}>Login</a>
+                    <a href="#" className={classes.logBtn} onClick={signMessage}>Login</a>
                 </form>
                 
             </div>
