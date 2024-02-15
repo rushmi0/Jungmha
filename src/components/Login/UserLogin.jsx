@@ -1,17 +1,23 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import classes from './UserLogin.module.css'
 import logo from '../../assets/Logo.svg'
 import { motion } from 'framer-motion'
 import EllipticCurve from "../../../utils/SecureKey.js";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function UserLogin() {
+    const navigate = useNavigate("");
     const [username, setUsername] = useState("");
     const [pass, setPassword] = useState("");
     const [signature, setSignature] = useState("");
 
     const ec = EllipticCurve();
 
+
+    const toHome = () => {
+        navigate("/");
+    }
     const usernameEnter = (e) => {
         setUsername(e.target.value);
     }
@@ -20,8 +26,13 @@ function UserLogin() {
         setPassword(e.target.value);
     }
 
+    const getTimeStamp = () => {
+        return Date.now();
+    }
 
-    const signMessage = () => {
+
+
+    const signMessage = async () => {
         const privateKey = ec.genPrivateKey(pass)
         console.log("private key: ",privateKey)
 
@@ -29,9 +40,9 @@ function UserLogin() {
         console.log("public key: ",publicKey)
 
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
-
-        const url = `http://localhost:8080/api/v1/auth/sign-in/${username}`;
-        const url_sign = `/auth/sign-in/${username}`
+        let timeStamp = getTimeStamp();
+        const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
+        const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
 
         const sign = ec.signMessage(url_sign, privateKey);
         console.log("sign: ", sign)
@@ -48,6 +59,7 @@ function UserLogin() {
         }).then((res) => {
             console.log("User Info: ", res.data);
             localStorage.setItem("user-token", res.data);
+            toHome();
         }).catch((err) => console.error(err));
 
     }
