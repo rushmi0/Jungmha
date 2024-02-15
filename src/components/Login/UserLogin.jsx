@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import classes from './UserLogin.module.css'
 import logo from '../../assets/Logo.svg'
 import { motion } from 'framer-motion'
@@ -31,23 +31,27 @@ function UserLogin() {
     // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
 
         const url = `http://localhost:8080/api/v1/auth/sign-in/${username}`;
+        const url_sign = `/auth/sign-in/${username}`
 
-        const sign = ec.signMessage(url, privateKey);
-        console.log("signature: ", sign)
+        const sign = ec.signMessage(url_sign, privateKey);
+        console.log("sign: ", sign)
         setSignature(sign)
+        console.log("signature: ", signature)
 
         const header = {
 
-            "Signature": signature
+            "Signature": sign
         }
 
-        axios.get(url, {
+        axios.get(url,{
             headers: header
         }).then((res) => {
             console.log("User Info: ", res.data);
             localStorage.setItem("user-token", res.data);
         }).catch((err) => console.error(err));
+
     }
+
 
 
   return (
@@ -82,7 +86,7 @@ function UserLogin() {
                     </div>
                     <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/user' className={classes.link}>Create now</a></p>
 
-                    <a href="#" className={classes.logBtn} onClick={signMessage}>Login</a>
+                    <a className={classes.logBtn} onClick={signMessage}>Login</a>
                 </form>
                 
             </div>

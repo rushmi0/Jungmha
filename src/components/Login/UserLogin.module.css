@@ -24,7 +24,7 @@
     }
 
     .inputInfo {
-        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3
+        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3 input input-bordered input-accent
     }
 
     .link {
@@ -105,7 +105,7 @@
     }
 
     .inputInfo {
-        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3
+        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3 input input-bordered input-accent
     }
 
     .link {
@@ -145,7 +145,7 @@
     }
 
     .inputInfo {
-        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3
+        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3 input input-bordered input-accent
     }
 
     .link {
@@ -185,7 +185,7 @@
     }
 
     .inputInfo {
-        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3
+        @apply border-2 border-[#CBD5E0] rounded-lg text-lg w-full bg-[#fff] p-2 mb-3 input input-bordered input-accent
     }
 
     .link {

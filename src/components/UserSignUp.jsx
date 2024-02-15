@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {motion} from 'framer-motion';
 import SignUpBanner1 from './SignUpBanner1';
 import classes from './UserSignUp.module.css';
@@ -25,10 +25,6 @@ function UserSignUp() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [pubKey, setPubKey] = useState("");
-    const [serverPubKey, setServerPubKey] = useState("");
-    const [encryptData, setEncryptData] = useState("");
-    const [priKey, setPriKey] = useState("");
     const userType = "Normal";
 
     //const aes = AES()
@@ -79,26 +75,52 @@ function UserSignUp() {
         setPhoneNumber(e.target.value);
     };
 
-    const dataEncrypt = async () => {
+
+    const onSubmitData = async () => {
+        passCheck();
+        const privateKey = ec.genPrivateKey(pass);
+        console.log("Private key", privateKey);
+        const publicKey = ec.generateKeyPair(privateKey);
+        console.log("Public Key length: ", publicKey.length);
+        console.log("Public Key: ", publicKey);
+        console.log("Username", username);
+
+
+        let payload = {
+            "userName": username,
+            "authenKey": publicKey
+        };
+
+
+        let serverPubKey = "";
+        await axios.post(connection, payload).then((res) => {
+                console.log("serverPubKey:", res.data["publicKey"]);
+                serverPubKey = res.data["publicKey"];
+                return res.data
+        }).catch((err) => console.log(err));
+
+
+        console.log("Server PublicKey: ", serverPubKey);
+
+
         const sharedKey = ec.calculateSharedKey(
-            priKey,
+            privateKey,
             serverPubKey
 
         );
 
         let data = {
-                "firstName": firstName,
-                "lastName": lastName,
-                "email": email,
-                "phoneNumber": phoneNumber,
-                "userType": userType
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email,
+            "phoneNumber": phoneNumber,
+            "userType": userType
         }
         console.log("share key: ", sharedKey.toString("hex"));
         console.log("share key length: ", sharedKey.length);
         const jsonString = JSON.stringify(data);
         console.log(data);
         let dataToSend = chacha.encrypt(jsonString, sharedKey);
-        setEncryptData(dataToSend);
         console.log('Encrypted data:', dataToSend);
 
         const headers = {
@@ -107,7 +129,7 @@ function UserSignUp() {
         }
 
         const sendDataEncrypt = {
-            "content": encryptData
+            "content": dataToSend
         }
         console.log("data to send: ",sendDataEncrypt);
 
@@ -118,42 +140,10 @@ function UserSignUp() {
             localStorage.setItem("user-token", res.data);
             toLogin();
         }).catch((err) => console.log(err));
-    }
-
-    const onSubmitData = async () => {
-        passCheck();
-        const privateKey = ec.genPrivateKey(pass);
-        console.log("Private key", privateKey);
-        setPriKey(privateKey);
-        const publicKey = ec.generateKeyPair(privateKey);
-        console.log("Public Key length: ", publicKey.length);
-        console.log("Public Key: ", publicKey);
-        console.log("Username", username);
-        setPubKey(publicKey) ;
-
-        let payload = {
-            "userName": username,
-            "authenKey": publicKey
-        };
-
-        await axios.post(connection, payload).then((res) => {
-                setServerPubKey(res.data["publicKey"]);
-                return res.data
-        }).catch((err) => console.log(err));
-
-
-        // const serverPublicKey = postResponse.data;
-        // serverPublicKey.then(function (result) {
-        //     (result);
-        //     console.log("Server PublicKey: ", postResponse);
-        // })
-
-        console.log("Server PublicKey: ", String(serverPubKey));
-        console.log("Encrypt Data: ", encryptData)
-        await dataEncrypt();
 
 
     };
+
 
   return (
     <>
