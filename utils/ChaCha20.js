@@ -3,15 +3,8 @@ import { Buffer } from "buffer";
 
 const ChaCha20 = () => {
 
-    const generateRandomBytes = (length) => {
-        let byteArray = [];
-        for (let i = 0; i < length; i++) {
-            byteArray.push(Math.floor(Math.random() * 256));
-        }
-        return byteArray;
-    }
 
-    const nonce = generateRandomBytes(12);
+    const nonce = Buffer.alloc(12)//randomBytes(12);
 
     const encrypt = (data, sharedKey) => {
         const key = Buffer.from(sharedKey, 'hex');
@@ -42,7 +35,7 @@ const ChaCha20 = () => {
     return {
         encrypt,
         decrypt,
-        generateRandomBytes
+
     };
 
 };
