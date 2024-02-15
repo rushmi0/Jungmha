@@ -1,12 +1,15 @@
 import elliptic from 'elliptic';
 import sha256 from "./Sha256.js";
 import { Buffer } from 'buffer';
+import ChaCha20 from "./ChaCha20.js";
 
 const EllipticCurve = () => {
 
     // สร้างวัตถุ ec สำหรับใช้กับ elliptic curve ที่กำหนดเอง (secp256k1)
     const ec = new elliptic.ec('secp256k1');
     const LIMIT = 7200;
+
+    const chacha = new ChaCha20()
 
     const genPrivateKey = (pass) => {
 
@@ -30,8 +33,13 @@ const EllipticCurve = () => {
         // หา hash ของข้อความ
         const msgHash = sha256.hash(msg);
 
+        const nonce = chacha.generateRandomBytes(12);
+
         // เซ็นข้อความและคืนลายเซ็น
-        const signature = ec.sign(msgHash, privateKey, 'hex', { canonical: true });
+        const signature = ec.sign(msgHash, privateKey, 'hex', {
+            nonce: nonce,
+            canonical: true
+        });
         return derEncode(signature);
     };
 
