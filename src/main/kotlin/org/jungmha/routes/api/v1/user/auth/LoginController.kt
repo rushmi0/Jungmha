@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.inject.Inject
 import org.jungmha.database.field.UserProfileField
 import org.jungmha.database.form.SignatureForm
 import org.jungmha.database.statement.SignatureServiceImpl
@@ -25,6 +24,8 @@ import org.jungmha.security.securekey.Token
 import org.jungmha.security.securekey.TokenResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.math.BigInteger
+import jakarta.inject.Inject
 
 /**
  * คลาส LoginController
@@ -69,19 +70,20 @@ class LoginController @Inject constructor(
         ]
     )
     @Get(
-        uri = "/auth/sign-in/{username}",
+        uri = "/auth/sign-in/{username}/{unixTime}",
         produces = [MediaType.APPLICATION_JSON]
     )
     suspend fun signIn(
         @Header("Signature") sign: String,
-        username: String
+        username: String,
+        unixTime: String
     ): MutableHttpResponse<out Any?>? {
 
         val userData: UserProfileField? = userService.findUser(username)
 
         return try {
             val response = when {
-                userData != null -> handleUserAuthentication(sign, username, userData)
+                userData != null -> handleUserAuthentication(sign, unixTime, username, userData)
                 else -> {
                     LOG.warn("User not found with username [$username]")
                     return HttpResponse.badRequest("User not found")
@@ -95,7 +97,7 @@ class LoginController @Inject constructor(
     }
 
     /**
-     * **เมธอด handleUserAuthentication**
+     * เมธอด handleUserAuthentication
      *
      * ใช้สำหรับการตรวจสอบลายเซ็นเจอร์และสร้าง Token สำหรับผู้ใช้ที่เข้าสู่ระบบสำเร็จ
      *
@@ -106,13 +108,17 @@ class LoginController @Inject constructor(
      */
     private suspend fun handleUserAuthentication(
         sign: String,
+        unixTime: String,
         username: String,
         userData: UserProfileField
     ): MutableHttpResponse<out Any?> {
         val publickey = userData.authenKey
-        val uri = "/auth/sign-in/$username"
+        val uri = "/auth/sign-in/$username/$unixTime"
 
-        return if (signService.checkSign(username, sign) && ECDSA.verify(uri, publickey, sign)) {
+        val currentUnixTime = System.currentTimeMillis()
+        val isTimeValid: Boolean = (currentUnixTime.toBigInteger() - BigInteger(unixTime)) <= BigInteger("60000")
+
+        return if (signService.checkSign(username, sign) && ECDSA.verify(uri, publickey, sign) && isTimeValid) {
             val authToken: TokenResponse = token.buildTokenPair(username, 50)
             signService.insert(SignatureForm(userData.userID, sign))
             LOG.info("User [$username] Authentication successful")
@@ -128,4 +134,14 @@ class LoginController @Inject constructor(
         val LOG: Logger = LoggerFactory.getLogger(LoginController::class.java)
     }
 
+}
+
+fun main() {
+
+    // /auth/sign-in/HelloWorld3 : d93caff530f5e87058f7ce2df45b932a8f413f3000e1bdcb5cd3359bbd863148
+    val uri = "/auth/sign-in/HelloWorld3"
+
+
+    val unixTime = System.currentTimeMillis()
+    println(unixTime)
 }
