@@ -9,7 +9,13 @@ const EllipticCurve = () => {
     const ec = new elliptic.ec('secp256k1');
     const LIMIT = 7200;
 
-    const chacha = new ChaCha20()
+    const generateRandomBytes = (length) => {
+        let byteArray = [];
+        for (let i = 0; i < length; i++) {
+            byteArray.push(Math.floor(Math.random() * 256));
+        }
+        return byteArray;
+    }
 
     const genPrivateKey = (pass) => {
 
@@ -33,7 +39,7 @@ const EllipticCurve = () => {
         // หา hash ของข้อความ
         const msgHash = sha256.hash(msg);
 
-        const nonce = chacha.generateRandomBytes(32);
+        const nonce = generateRandomBytes(32);
 
         // เซ็นข้อความและคืนลายเซ็น
         const signature = ec.sign(msgHash, privateKey, 'hex', {

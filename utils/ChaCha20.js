@@ -4,7 +4,7 @@ import { Buffer } from "buffer";
 const ChaCha20 = () => {
 
 
-    const nonce = Buffer.alloc(12)//randomBytes(12);
+    const nonce = Buffer.alloc(12);
 
     const encrypt = (data, sharedKey) => {
         const key = Buffer.from(sharedKey, 'hex');
