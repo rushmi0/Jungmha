@@ -81,11 +81,7 @@ const EllipticCurve = () => {
         const otherPublicKey = ec.keyFromPublic(publicKey, 'hex');
         const sharedKey = keyPair.derive(otherPublicKey.getPublic());
 
-        // ดึงค่าที่แชร์จากข้อมูล
-        const sharedKeyBuffer = Buffer.from(sharedKey.toArray('be'), 'hex');
-
-        // หรือคุณสามารถนำ sharedKeyBuffer ไปใช้ต่อไปได้ตามที่คุณต้องการ
-        return sharedKeyBuffer//.toString('hex');
+        return Buffer.from(sharedKey.toArray('be'), 'hex');
     };
 
 
