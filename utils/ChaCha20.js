@@ -1,14 +1,16 @@
 import chacha20 from "chacha20";
 import { Buffer } from "buffer";
+import shiftTo from "./ShiftTo.js";
 
 const ChaCha20 = () => {
 
 
-    const nonce = Buffer.alloc(12);
+    const random = shiftTo()
+
+    const nonce = random.randomBytes(12);//Buffer.alloc(12);
 
     const encrypt = (data, sharedKey) => {
         const key = Buffer.from(sharedKey, 'hex');
-
 
         const ciphertext = chacha20.encrypt(key, nonce, Buffer.from(data));
 
@@ -34,8 +36,7 @@ const ChaCha20 = () => {
 
     return {
         encrypt,
-        decrypt,
-
+        decrypt
     };
 
 };
