@@ -33,34 +33,48 @@ function UserLogin() {
 
 
     const signMessage = async () => {
-        const privateKey = ec.genPrivateKey(pass)
-        console.log("private key: ",privateKey)
+        let condition = username.trim().length !== 0 && pass.trim().length !== 0;
+        if(condition) {
+            document.getElementById("usernameAlert").style.visibility = "invisible";
+            const privateKey = ec.genPrivateKey(pass)
+            console.log("private key: ",privateKey)
 
-        const publicKey = ec.generateKeyPair(privateKey)
-        console.log("public key: ",publicKey)
+            const publicKey = ec.generateKeyPair(privateKey)
+            console.log("public key: ",publicKey)
 
-    // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
-        let timeStamp = getTimeStamp();
-        const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
-        const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
+            // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
+            let timeStamp = getTimeStamp();
+            const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
+            const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
 
-        const sign = ec.signMessage(url_sign, privateKey);
-        console.log("sign: ", sign)
-        setSignature(sign)
-        console.log("signature: ", signature)
+            const sign = ec.signMessage(url_sign, privateKey);
+            console.log("sign: ", sign)
+            setSignature(sign)
+            console.log("signature: ", signature)
 
-        const header = {
+            const header = {
+                "Signature": sign
+            }
 
-            "Signature": sign
+            await axios.get(url,{
+                headers: header
+            }).then((res) => {
+                console.log("User Info: ", res.data);
+                localStorage.setItem("user-token", res.data);
+                toHome();
+            }).catch((err) => {
+                if(err.response.status === 400) {
+                    alert("Username not exist or password incorrect!");
+                } else {
+                    console.error(err);
+                }
+            });
+        } else if (username.trim().length === 0){
+            alert("Please enter your password!");
+        } else if (pass.trim().length === 0) {
+            alert("Please enter your password!");
         }
 
-        axios.get(url,{
-            headers: header
-        }).then((res) => {
-            console.log("User Info: ", res.data);
-            localStorage.setItem("user-token", res.data);
-            toHome();
-        }).catch((err) => console.error(err));
 
     }
 
@@ -84,29 +98,35 @@ function UserLogin() {
                 <h1 className={classes.logHeader}>Login As a <a href="/login/user" className='text-[#1999B2]'>User</a></h1>
                 <form className='px-[10rem] py-6' method="GET">
                     <p className={classes.subHead}>Username</p>
-                    <input type="text" className={classes.inputInfo} onChange={usernameEnter}/>
+                    <input id="usernameAlert" type="text" className={classes.inputInfo} onChange={usernameEnter}/>
+
                     <p className={classes.subHead}>Password</p>
                     <input type="password" className={classes.inputInfo} onChange={passwordEnter}/>
+
                     <div className='flex justify-between'>
                         <div className='flex items-center'>
                             <span className="label-text font-light me-5">Remember me</span>
-                            <input type="checkbox" className="checkbox checkbox-accent" />
+                            <input type="checkbox" className="checkbox checkbox-accent"/>
                         </div>
                         <div className='flex items-center'>
                             <a href='/recovery' className={classes.link}>Forgot password?</a>
-                        </div>                             
+                        </div>
                     </div>
-                    <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/user' className={classes.link}>Create now</a></p>
+                    <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/user'
+                                                                                className={classes.link}>Create now</a>
+                    </p>
 
                     <a className={classes.logBtn} onClick={signMessage}>Login</a>
                 </form>
-                
+
             </div>
             <div className={classes.logGuide}>
-                
+
                 <div className='relative bg-[#f7f7f7] m-[10rem] p-[2rem] rounded-lg z-40 shadow-md'>
                     <p className='text-4xl text-[#45BBBD] font-bold mb-3'>No time no problem</p>
-                    <p className='text-lg text-[#718096]'>Worried about leaving your furry friend behind? Let's us take care of your dog while you busy. Whether you're heading out for a day trip, a work conference, or a long-awaited vacation, rest assured your pup is in the best paws possible. We offer a variety of services to cater to every dog's needs, from playful daycare adventures to cozy home boarding with loving families.</p>
+                    <p className='text-lg text-[#718096]'>Worried about leaving your furry friend behind? Let's us take
+                        care of your dog while you busy. Whether you're heading out for a day trip, a work conference,
+                        or a long-awaited vacation, rest assured your pup is in the best paws possible. We offer a variety of services to cater to every dog's needs, from playful daycare adventures to cozy home boarding with loving families.</p>
                     <a href="/" className={classes.logBtn}>See more</a>
                 </div>
                 <p className='text-2xl text-center text-[#f7f7f7]'>Leave your dog with us and let them have the time of their lives!</p>
