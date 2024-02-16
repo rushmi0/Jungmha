@@ -47,193 +47,25 @@
 
 @media (min-width: 1200px) and (max-width: 1399px) {
     /* xl */
-    .cardGrid {
-        @apply grid grid-cols-1 gap-6 container mx-auto
-    }
 
-    .cardBg {
-        @apply bg-[#f7f7f7] w-full mx-auto shadow-md rounded px-4
-    }
-
-    .cardContent {
-        @apply grid grid-cols-5 items-center py-6 px-0
-    }
-
-    .cardImg {
-        @apply col-span-2 items-center mx-auto
-    }
-
-    .cardImgGrid {
-        @apply grid grid-cols-2
-    }
-
-    .userImg {
-        @apply mx-auto w-[200px] h-[200px] rounded-full col-span-2 border-2 border-accent
-    }
-
-    .rateHeader {
-        @apply mx-auto text-lg py-2 text-[#718096]
-    }
-
-    .cardDetails {
-        @apply col-span-3 border border-s-accent border-s-2 border-t-0 border-e-0 border-b-0 p-6
-    }
-
-    .cardDetailsGrid {
-        @apply grid grid-cols-4 items-center
-    }
-
-    .infoHeader {
-        @apply col-span-1 py-2 text-[#718096]
-    }
-
-    .info {
-        @apply col-span-3
-    }
 
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
     /* lg */
-    .cardGrid {
-        @apply grid grid-cols-1 gap-6 container mx-auto
-    }
 
-    .cardBg {
-        @apply bg-[#f7f7f7] w-full mx-auto shadow-md rounded px-4
-    }
-
-    .cardContent {
-        @apply grid grid-cols-5 items-center py-6 px-0
-    }
-
-    .cardImg {
-        @apply col-span-2 items-center mx-auto
-    }
-
-    .cardImgGrid {
-        @apply grid grid-cols-2
-    }
-
-    .userImg {
-        @apply mx-auto w-[200px] h-[200px] rounded-full col-span-2 border-2 border-accent
-    }
-
-    .rateHeader {
-        @apply mx-auto text-lg py-2 text-[#718096]
-    }
-
-    .cardDetails {
-        @apply col-span-3 border border-s-accent border-s-2 border-t-0 border-e-0 border-b-0 p-6
-    }
-
-    .cardDetailsGrid {
-        @apply grid grid-cols-4 items-center
-    }
-
-    .infoHeader {
-        @apply col-span-1 py-2 text-[#718096]
-    }
-
-    .info {
-        @apply col-span-3
-    }
 
 
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
     /* md */
-    .cardGrid {
-        @apply grid grid-cols-1 gap-6 container mx-auto
-    }
 
-    .cardBg {
-        @apply bg-[#f7f7f7] w-full mx-auto shadow-md rounded px-4
-    }
-
-    .cardContent {
-        @apply grid grid-cols-5 items-center py-6 px-0
-    }
-
-    .cardImg {
-        @apply col-span-2 items-center mx-auto
-    }
-
-    .cardImgGrid {
-        @apply grid grid-cols-2
-    }
-
-    .userImg {
-        @apply mx-auto w-[200px] h-[200px] rounded-full col-span-2 border-2 border-accent
-    }
-
-    .rateHeader {
-        @apply mx-auto text-lg py-2 text-[#718096]
-    }
-
-    .cardDetails {
-        @apply col-span-3 border border-s-accent border-s-2 border-t-0 border-e-0 border-b-0 p-6
-    }
-
-    .cardDetailsGrid {
-        @apply grid grid-cols-4 items-center
-    }
-
-    .infoHeader {
-        @apply col-span-1 py-2 text-[#718096]
-    }
-
-    .info {
-        @apply col-span-3
-    }
 
 
 }
 
 @media (max-width: 767px) {
     /* sm */
-    .cardGrid {
-        @apply grid grid-cols-1 gap-6 container mx-auto
-    }
 
-    .cardBg {
-        @apply bg-[#f7f7f7] w-full mx-auto shadow-md rounded px-4
-    }
-
-    .cardContent {
-        @apply grid grid-cols-5 items-center py-6 px-0
-    }
-
-    .cardImg {
-        @apply col-span-2 items-center mx-auto
-    }
-
-    .cardImgGrid {
-        @apply grid grid-cols-2
-    }
-
-    .userImg {
-        @apply mx-auto w-[150px] h-[150px] rounded-full col-span-2 border-2 border-accent
-    }
-
-    .rateHeader {
-        @apply mx-auto text-lg py-2 text-[#718096]
-    }
-
-    .cardDetails {
-        @apply col-span-3 border border-s-accent border-s-2 border-t-0 border-e-0 border-b-0 p-6
-    }
-
-    .cardDetailsGrid {
-        @apply grid grid-cols-4 items-center
-    }
-
-    .infoHeader {
-        @apply col-span-1 py-2 text-[#718096]
-    }
-
-    .info {
-        @apply col-span-3
-    }
 }

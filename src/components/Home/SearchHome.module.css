@@ -84,6 +84,6 @@
         @apply btn bg-[#45BBBD] border-0 text-[#F7FAFC] mx-auto w-full hover:bg-[#A6E2E3] hover:text-[#064E5C] shadow-md
     }
     .searchGrid {
-        @apply grid grid-cols-1 items-center gap-4 py-4 px-6
+        @apply grid grid-cols-2 items-center gap-4 py-4 px-6
     }
 }
