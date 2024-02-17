@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.user.auth
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -50,6 +51,7 @@ import org.jungmha.security.securekey.TokenResponse
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class RegisterController @Inject constructor(
     private val userService: UserServiceImpl,
     private val walkersService: DogsWalkersServiceImpl,

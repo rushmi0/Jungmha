@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.file
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
@@ -36,6 +37,7 @@ import java.nio.file.StandardCopyOption
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class UploadFileController @Inject constructor(
     taskDispatcher: CoroutineDispatcher?,
     private val service: UserServiceImpl,

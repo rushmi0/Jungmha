@@ -1,6 +1,7 @@
 package org.jungmha.security.securekey
 
 
+import io.micronaut.core.annotation.Introspected
 import org.jungmha.security.securekey.EllipticCurve.P
 import org.jungmha.security.securekey.EllipticCurve.A
 import org.jungmha.security.securekey.EllipticCurve.B
@@ -9,7 +10,7 @@ import org.jungmha.utils.ShiftTo.ByteArrayToBigInteger
 import org.jungmha.utils.ShiftTo.ByteArrayToHex
 import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.math.BigInteger
-
+@Introspected
 object ECPublicKey {
 
 

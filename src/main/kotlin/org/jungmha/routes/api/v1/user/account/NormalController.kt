@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.account
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -47,6 +48,7 @@ import java.util.*
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class NormalController @Inject constructor(
     private val userService: UserServiceImpl,
     private val token: Token,

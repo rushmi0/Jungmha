@@ -1,8 +1,9 @@
 package org.jungmha.security.securekey
 
+import io.micronaut.core.annotation.Introspected
 import java.math.BigInteger
 
-
+@Introspected
 object Secp256K1 {
 
     // * Secp256K1 curve parameters:

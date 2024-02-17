@@ -1,7 +1,8 @@
 package org.jungmha.security.securekey
 
+import io.micronaut.core.annotation.Introspected
 import java.math.BigInteger
-
+@Introspected
 data class TokenObject(
     val userName: String,
     val permission: String,

@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.user.auth
 
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Value
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
@@ -41,6 +42,7 @@ import java.math.BigInteger
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class OpenChannelController @Inject constructor(
     @Value("\${org.jungmha.security.securekey.secret}") private val secretKey: String,
     private val service: UserServiceImpl,

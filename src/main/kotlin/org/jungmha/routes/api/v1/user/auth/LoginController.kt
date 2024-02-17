@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.auth
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
@@ -42,6 +43,7 @@ import jakarta.inject.Inject
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class LoginController @Inject constructor(
     private val signService: SignatureServiceImpl,
     private val userService: UserServiceImpl,

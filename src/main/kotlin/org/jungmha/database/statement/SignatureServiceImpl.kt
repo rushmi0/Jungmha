@@ -1,5 +1,6 @@
 package org.jungmha.database.statement
 
+import io.micronaut.core.annotation.Introspected
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ import org.jungmha.infra.database.Tables.SIGNATURE
 import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+@Introspected
 class SignatureServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?

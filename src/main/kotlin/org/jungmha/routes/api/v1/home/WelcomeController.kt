@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.home
 
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.MediaType
@@ -19,6 +20,7 @@ import java.nio.charset.Charset
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
 @Controller("/")
+@Introspected
 class WelcomeController {
 
     private val resource = javaClass.getResourceAsStream("/public/index.html")

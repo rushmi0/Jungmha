@@ -1,9 +1,11 @@
 package org.jungmha.utils
 
+import io.micronaut.core.annotation.Introspected
 import java.io.File
 import java.math.BigInteger
 import java.security.MessageDigest
 
+@Introspected
 object ShiftTo {
 
 

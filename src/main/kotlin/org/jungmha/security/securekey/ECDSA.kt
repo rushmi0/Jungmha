@@ -1,6 +1,7 @@
 package org.jungmha.security.securekey
 
 
+import io.micronaut.core.annotation.Introspected
 import org.jungmha.security.securekey.EllipticCurve.addPoint
 import org.jungmha.security.securekey.EllipticCurve.getDecompress
 import org.jungmha.security.securekey.EllipticCurve.modinv
@@ -15,7 +16,7 @@ import java.security.SecureRandom
 * สร้างลายเซ็นและตรวจสอบ ECDSA
 * */
 
-
+@Introspected
 object ECDSA {
 
     /*

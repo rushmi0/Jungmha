@@ -1,5 +1,6 @@
 package org.jungmha.security.securekey
 
+import io.micronaut.core.annotation.Introspected
 import org.jungmha.utils.ShiftTo.ByteArrayToBigInteger
 import org.jungmha.utils.ShiftTo.HexToByteArray
 import java.math.BigInteger
@@ -12,7 +13,7 @@ import java.math.BigInteger
 *
 * < Elliptic Curve Cryptography >
 * */
-
+@Introspected
 object EllipticCurve {
 
     // * กำหนดค่าพื้นฐานของเส้นโค้งวงรี โดยใส่ชื่อเส้นโค้งวงรีที่ต้องการใช้งาน

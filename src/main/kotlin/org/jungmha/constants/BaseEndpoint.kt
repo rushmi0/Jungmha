@@ -1,5 +1,8 @@
 package org.jungmha.constants
 
+import io.micronaut.core.annotation.Introspected
+
+@Introspected
 object BaseEndpoint {
 
     val BASE_URL_USER = "http://localhost:8080/api/v1/user"

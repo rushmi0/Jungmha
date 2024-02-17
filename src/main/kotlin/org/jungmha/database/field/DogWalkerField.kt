@@ -1,8 +1,10 @@
 package org.jungmha.database.field
 
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 
 @Serdeable.Serializable
+@Introspected
 data class DogWalkerField(
     val walkerID: Int,
     val userID: Int,
