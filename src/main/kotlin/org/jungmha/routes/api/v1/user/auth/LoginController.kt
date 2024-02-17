@@ -137,13 +137,3 @@ class LoginController @Inject constructor(
     }
 
 }
-
-fun main() {
-
-    // /auth/sign-in/HelloWorld3 : d93caff530f5e87058f7ce2df45b932a8f413f3000e1bdcb5cd3359bbd863148
-    val uri = "/auth/sign-in/HelloWorld3"
-
-
-    val unixTime = System.currentTimeMillis()
-    println(unixTime)
-}
