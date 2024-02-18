@@ -1,8 +1,21 @@
 package org.jungmha
 
+import kotlin.random.Random
+
+data class ImageData(val fileName: String)
+
 fun main() {
 
-    val img = listOf(
+
+    for (i in 0 .. 20) {
+        val randomImageData = getRandomImageData()
+        println(randomImageData)
+    }
+}
+
+fun getRandomImageData(): String {
+
+    val imageFileNames = listOf(
         "101609001.png",
         "103289198.png",
         "103378116.png",
@@ -28,23 +41,9 @@ fun main() {
         "9362787.png",
         "94222565.png",
         "96358978.png"
-    );
+    )
 
-    // สร้างรายการชื่อ
-    val names = listOf("sakura_lover123", "yumi_chan22", "misaki_kawaii88", "aiko_garden99", "emiko_starlight77")
-
-    for (i in 0 .. 10) {
-
-        // สุ่มค่าดัชนี
-        val randomIndex = img.indices.random()
-
-        // ดึงชื่อจากรายการโดยใช้ดัชนีที่สุ่ม
-        val randomName = img[randomIndex]
-
-        // พิมพ์ชื่อที่สุ่ม
-        println("ชื่อที่สุ่ม: $randomName")
-
-    }
-
-
+    val randomIndex = Random.nextInt(imageFileNames.size)
+    val randomFileName = imageFileNames[randomIndex]
+    return ImageData(randomFileName).fileName
 }
