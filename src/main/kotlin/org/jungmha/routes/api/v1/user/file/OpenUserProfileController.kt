@@ -9,6 +9,8 @@ import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
 import jakarta.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.jungmha.database.statement.UserServiceImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -54,7 +56,9 @@ class OpenUserProfileController @Inject constructor(
             // ตรวจสอบว่ามีข้อมูลผู้ใช้และมีไฟล์รูปภาพหรือไม่
             if (user != null && user.imageProfile != "N/A" && user.imageProfile.isNotBlank()) {
                 // อ่านข้อมูลไฟล์รูปภาพเป็น bytes
-                val fileBytes = Files.readAllBytes(Path.of(user.imageProfile))
+                val fileBytes = withContext(Dispatchers.IO) {
+                    Files.readAllBytes(Path.of(user.imageProfile))
+                }
 
                 // ทางระบบทางสื่อมัลติมีเดียคำนวณ Content-Type ของไฟล์
                 val contentType = URLConnection.guessContentTypeFromName(user.imageProfile)
