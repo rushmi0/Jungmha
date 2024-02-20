@@ -14,7 +14,7 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - /home/milko/items/dev/Kotlin/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
+      - /home/milko/items/dev/Kotlin/sm-jungmha/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
     networks:
       - dev_network
 
