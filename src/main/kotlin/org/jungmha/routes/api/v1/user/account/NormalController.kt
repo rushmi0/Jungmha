@@ -135,8 +135,8 @@ class NormalController @Inject constructor(
             this,
             shareKey
         )
-        //return HttpResponse.ok(EncryptedData(encrypted))
-        return HttpResponse.ok(this)
+        return HttpResponse.ok(EncryptedData(encrypted))
+        //return HttpResponse.ok(this)
     }
 
 
