@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.account
 
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micronaut.context.annotation.Bean
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
@@ -125,7 +126,8 @@ class DogWalkersController @Inject constructor(
         val userInfo: DogWalkersInfo? = walkerService.getDogWalkersInfo(name)
 
         return if (userInfo != null) {
-            userInfo.processEncrypting(name)
+            val rawObject = jacksonObjectMapper().writeValueAsString(userInfo)
+            rawObject.processEncrypting(name)
         } else {
             LOG.warn("User info not found for user: $name")
             HttpResponse.notFound("User info not found")
@@ -138,10 +140,13 @@ class DogWalkersController @Inject constructor(
      * @param name ชื่อผู้ใช้
      * @return HttpResponse สำหรับผลลัพธ์ของข้อมูลที่ถูก Encrypt
      */
-    private suspend fun DogWalkersInfo.processEncrypting(name: String): MutableHttpResponse<out Any?> {
+    private suspend fun String.processEncrypting(name: String): MutableHttpResponse<out Any?> {
         // นำข้อมูลมา Encrypt
         val shareKey = userService.findUser(name)?.sharedKey.toString()
-        val encrypted = chacha.encrypt(this.toString(), shareKey)
+        val encrypted = chacha.encrypt(
+            this,
+            shareKey
+        )
         return HttpResponse.ok(EncryptedData(encrypted))
         //return HttpResponse.ok(this)
     }

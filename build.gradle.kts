@@ -10,7 +10,7 @@ plugins {
     id("io.micronaut.aot") version "4.2.0"
     id("nu.studer.jooq") version "8.2"
     id("com.google.devtools.ksp") version "1.9.21-1.0.16"
-    id("org.graalvm.buildtools.native") version "0.9.28"
+    id("org.graalvm.buildtools.native") version "0.10.0"
 }
 
 version = "0.1"
@@ -63,7 +63,7 @@ dependencies {
     implementation("com.google.guava:guava:32.1.2-jre")
 
     // https://mvnrepository.com/artifact/org.purejava/tweetnacl-java
-    implementation("org.purejava:tweetnacl-java:1.1.2")
+    //implementation("org.purejava:tweetnacl-java:1.1.2")
 
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
@@ -74,12 +74,7 @@ dependencies {
 graalvmNative {
     binaries {
         all {
-            // native-build-tools reads this to find native-image unless either JAVA_HOME or GRAALVM_HOME are set:
-            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/tasks/BuildNativeImageTask.java#L211
-            //  https://github.com/graalvm/native-build-tools/blob/0.9.28/native-gradle-plugin/src/main/java/org/graalvm/buildtools/gradle/internal/NativeImageExecutableLocator.java#L89
-            //  https://github.com/graalvm/native-build-tools/issues/542
             javaLauncher.set(javaToolchains.launcherFor {
-                // Compile with native-image from GraalVM for JDK17
                 languageVersion.set(JavaLanguageVersion.of(17))
                 vendor.set(JvmVendorSpec.GRAAL_VM)
             })
