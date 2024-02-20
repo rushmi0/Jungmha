@@ -53,6 +53,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk15on
     implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
 
+    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+    implementation("org.bouncycastle:bcprov-jdk18on:1.77")
+
     // https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
 
@@ -64,9 +67,6 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.purejava/tweetnacl-java
     //implementation("org.purejava:tweetnacl-java:1.1.2")
-
-    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
-    implementation("org.bouncycastle:bcprov-jdk18on:1.77")
 
 }
 

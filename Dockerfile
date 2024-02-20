@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 RUN apt-get update \
-    && apt-get install -y wget git bash\
+    && apt-get install -y wget git bash \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,7 +20,7 @@ EXPOSE 8080
 WORKDIR /app/source-code
 COPY . /app/source-code
 
-#RUN chmod +x gradlew && \
-#    ./gradlew nativeOptimizedCompile; \
+RUN chmod +x gradlew && \
+    ./gradlew nativeOptimizedCompile;
 #    cd build/native/nativeOptimizedCompile; ./jungmha
 
