@@ -5,6 +5,8 @@ import { motion } from 'framer-motion'
 import EllipticCurve from "../../../utils/SecureKey.js";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import {BASE_URL} from "../../../constants/BaseEndpoint.js";
+import chaCha20 from "../../../utils/ChaCha20.js";
 
 function UserLogin() {
     const navigate = useNavigate("");
@@ -31,7 +33,6 @@ function UserLogin() {
     }
 
 
-
     const signMessage = async () => {
         let condition = username.trim().length !== 0 && pass.trim().length !== 0;
         if(condition) {
@@ -44,7 +45,8 @@ function UserLogin() {
 
             // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
             let timeStamp = getTimeStamp();
-            const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
+            const base_url = BASE_URL["baseEndpoint"];
+            const url = base_url + `/api/v1/auth/sign-in/${username}/${timeStamp}`;
             const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
 
             const sign = ec.signMessage(url_sign, privateKey);
@@ -56,11 +58,16 @@ function UserLogin() {
                 "Signature": sign
             }
 
+            let userToken = [];
+
             await axios.get(url,{
                 headers: header
             }).then((res) => {
                 console.log("User Info: ", res.data);
-                localStorage.setItem("user-token", res.data);
+                userToken = JSON.stringify(res.data);
+                localStorage.setItem("user-token", userToken);
+                localStorage.setItem("private-key", privateKey);
+                localStorage.setItem("type", "Normal");
                 toHome();
             }).catch((err) => {
                 if(err.response.status === 400) {
@@ -74,8 +81,6 @@ function UserLogin() {
         } else if (pass.trim().length === 0) {
             alert("Please enter your password!");
         }
-
-
     }
 
 
@@ -103,15 +108,15 @@ function UserLogin() {
                     <p className={classes.subHead}>Password</p>
                     <input type="password" className={classes.inputInfo} onChange={passwordEnter}/>
 
-                    <div className='flex justify-between'>
-                        <div className='flex items-center'>
-                            <span className="label-text font-light me-5">Remember me</span>
-                            <input type="checkbox" className="checkbox checkbox-accent"/>
-                        </div>
-                        <div className='flex items-center'>
-                            <a href='/recovery' className={classes.link}>Forgot password?</a>
-                        </div>
-                    </div>
+                    {/*<div className='flex justify-between'>*/}
+                    {/*    <div className='flex items-center'>*/}
+                    {/*        <span className="label-text font-light me-5">Remember me</span>*/}
+                    {/*        <input type="checkbox" className="checkbox checkbox-accent"/>*/}
+                    {/*    </div>*/}
+                    {/*    <div className='flex items-center'>*/}
+                    {/*        <a href='/recovery' className={classes.link}>Forgot password?</a>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <p className="text-[#718096] mt-6">Dont have an account? <a href='/register/user'
                                                                                 className={classes.link}>Create now</a>
                     </p>

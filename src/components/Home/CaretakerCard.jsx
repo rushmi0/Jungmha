@@ -2,19 +2,41 @@ import React , { useState, useEffect} from 'react';
 import classes from "./CaretakerCard.module.css";
 import { FaRegCheckCircle } from "react-icons/fa";
 import axios from "axios";
+import {BASE_URL} from "../../../constants/BaseEndpoint.js";
 
+export function renderStars(rating) {
+    const fullStars = Math.floor(rating);
+    const halfStars = Math.round(rating * 2) % 2;
 
+    const starIcons = [];
+    for (let i = 0; i < fullStars; i++) {
+        starIcons.push(<input key={i}  type="radio" name="rating-2"
+                              className="mask mask-star-2 bg-orange-400" checked/>);
+    }
+    if (halfStars) {
+        starIcons.push(<input key={fullStars}  type="radio" name="rating-2"
+                              className="mask mask-half-1 bg-orange-400" checked/>);
+    }
+    if(rating === 0) {
+        starIcons.push(<p className="text-lg text-[#8C7979]"> No rating</p>
+        );
+    }
+
+    return <div className="mx-auto">{starIcons}</div>;
+}
 function CaretakerCard({name, price, location, verify}) {
 
-    console.log(name);
-    console.log(price);
-    console.log(location);
-    console.log(verify);
+    //console.log(name);
+    //console.log(price);
+    //console.log(location);
+    //console.log(verify);
     const [data, setData] = useState([]);
     const [isLoad, setLoad] = useState(false);
+    const base_url = BASE_URL["baseEndpoint"];
+    const url = base_url + "/api/v1/home/filter";
     const loadData = async () => {
         setLoad(true);
-        await axios.get("http://localhost:8080/api/v1/home/filter")
+        await axios.get(url)
             .then((res) => {
                 setData(res.data);
                 setLoad(false)
@@ -26,26 +48,7 @@ function CaretakerCard({name, price, location, verify}) {
     console.log(data)
 
 
-    function renderStars(rating) {
-        const fullStars = Math.floor(rating);
-        const halfStars = Math.round(rating * 2) % 2;
 
-        const starIcons = [];
-        for (let i = 0; i < fullStars; i++) {
-            starIcons.push(<input key={i}  type="radio" name="rating-2"
-                   className="mask mask-star-2 bg-orange-400" checked/>);
-        }
-        if (halfStars) {
-            starIcons.push(<input key={fullStars}  type="radio" name="rating-2"
-                                  className="mask mask-half-1 bg-orange-400" checked/>);
-        }
-        if(rating === 0) {
-            starIcons.push(<p className="text-lg text-[#8C7979]"> No rating</p>
-            );
-        }
-
-        return <div className="mx-auto">{starIcons}</div>;
-    }
 
     function renderVerify(ver) {
         const verifyIcons = [];
@@ -113,7 +116,7 @@ function CaretakerCard({name, price, location, verify}) {
                                             </div>
 
                                             <div className={classes.cardDetailsGrid}>
-                                                <p className={classes.infoHeader}>Province</p>
+                                                <p className={classes.infoHeader}>Amphure</p>
                                                 <p className={classes.info}>{careTakerInfo.detail.location}</p>
                                                 <p className={classes.infoHeader}>Small</p>
                                                 <p className={classes.info}>{careTakerInfo.detail.price.small}</p>
@@ -155,3 +158,4 @@ function CaretakerCard({name, price, location, verify}) {
 }
 
 export default CaretakerCard;
+

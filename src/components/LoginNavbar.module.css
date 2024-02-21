@@ -1,0 +1,63 @@
+
+
+@media (min-width: 1400px) {
+    /* xxl */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex items-center p-2
+    }
+
+    .profileNav {
+        @apply w-[45px] h-auto rounded-full border-2 border-accent
+    }
+
+    .verticalHeader {
+        @apply bg-sky-200
+    }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1399px) {
+    /* xl */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex-none
+    }
+
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    /* lg */
+    .burgerMenu {
+        @apply hidden
+    }
+    .mainMenu {
+        @apply flex-none
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    /* md */
+    .burgerMenu {
+        @apply menu menu-horizontal px-1
+    }
+    .mainMenu {
+        @apply hidden
+    }
+
+}
+
+@media (max-width: 767px) {
+    /* sm */
+    .burgerMenu {
+        @apply menu menu-horizontal px-1
+    }
+    .mainMenu {
+        @apply hidden
+    }
+}

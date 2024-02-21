@@ -55,12 +55,15 @@ function CaretakerLogin() {
             const header = {
                 "Signature": sign
             }
-
+            let userToken = [];
             await axios.get(url,{
                 headers: header
             }).then((res) => {
                 console.log("User Info: ", res.data);
-                localStorage.setItem("user-token", res.data);
+                userToken = JSON.stringify(res.data);
+                localStorage.setItem("user-token", userToken);
+                localStorage.setItem("private-key", privateKey);
+                localStorage.setItem("type", "DogWalkers");
                 toHome();
             }).catch((err) => {
                 if(err.response.status === 400) {

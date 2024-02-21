@@ -45,7 +45,7 @@ UserName: Aura
  */
 
 
-let sharedKey = "3e11810c67157bf584db16bbd85d9e9b339b4469e27390365195379cb2168a78";
+let sharedKey = "0c70d1d5b8b000e2f525a618ec0c603e86465321c5edee3463469ff3a353e047";
 
 let data = {
     "firstName": "สมหมาย",
@@ -61,5 +61,6 @@ console.log(data);
 let dataToSend = chacha.encrypt(jsonString, sharedKey)
 console.log('Encrypted data:', dataToSend);
 
+console.log("shared key: ", sharedKey)
 let decryptedData = chacha.decrypt(dataToSend, sharedKey);
 console.log('Decrypted data:', decryptedData);

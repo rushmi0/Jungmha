@@ -37,7 +37,7 @@ function SearchHome() {
 
 
     useEffect(() => {
-        axios.get('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province_with_amphure_tambon.json')
+        axios.get('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_amphure.json')
             .then((res) => {
                 setProvince(res.data);
             });
@@ -59,11 +59,11 @@ function SearchHome() {
                         {/*    <option >Highest Rate</option>*/}
                         {/*</select>*/}
                         <select defaultValue="" className={classes.selectMenu} onChange={locationHandler}>
-                            <option disabled selected>Province</option>
+                            <option disabled selected>Amphure</option>
                             <option selected>Any</option>
                             {province.map((prov) => (
                                 <option key={prov.id} >
-                                    {prov.name_en}
+                                    {prov.name_th}
                                 </option>
                             ))}
 

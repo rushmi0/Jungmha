@@ -8,14 +8,15 @@ import EllipticCurve from "../../utils/SecureKey.js";
 import ChaCha20 from "../../utils/ChaCha20.js";
 import {useNavigate} from "react-router-dom";
 import { Buffer } from "buffer";
+import {BASE_URL} from "../../constants/BaseEndpoint.js";
 
 
 
 function UserSignUp() {
     const navigate = useNavigate("");
 
-    const  toLogin = async ()=> {
-        navigate("/login/user");
+    const  toHome = async ()=> {
+        navigate("/");
     }
 
     const [ username, setUsername ] = useState("");
@@ -30,7 +31,8 @@ function UserSignUp() {
     //const aes = AES()
     const chacha = ChaCha20()
     const ec = EllipticCurve();
-    const url = "http://localhost:8080/api/v1/auth/sign-up";
+    const base_url = BASE_URL["baseEndpoint"];
+    const url = base_url + "/api/v1/auth/sign-up";
     const connection = "http://localhost:8080/api/v1/auth/open-channel";
 
     const onUsernameEnter = (e) => {
@@ -108,7 +110,6 @@ function UserSignUp() {
             const sharedKey = ec.calculateSharedKey(
                 privateKey,
                 serverPubKey
-
             );
 
             let data = {
@@ -118,6 +119,7 @@ function UserSignUp() {
                 "phoneNumber": phoneNumber,
                 "userType": userType
             }
+
             console.log("share key: ", sharedKey.toString("hex"));
             console.log("share key length: ", sharedKey.length);
             const jsonString = JSON.stringify(data);
@@ -135,12 +137,16 @@ function UserSignUp() {
             }
             console.log("data to send: ",sendDataEncrypt);
 
+            let userToken = [];
+
             await axios.put(url, sendDataEncrypt, {
                 headers: headers
             }).then((res) => {
                 console.log("User Info: ", res.data);
-                localStorage.setItem("user-token", res.data);
-                toLogin();
+                userToken = JSON.stringify(res.data);
+                localStorage.setItem("user-token", userToken);
+                localStorage.setItem("shared-key", sharedKey);
+                toHome();
             }).catch((err) => console.log(err));
         } else {
             alert("Please fill up all informations!")

@@ -13,7 +13,19 @@ import Booking from "./components/Booking/Booking.jsx";
 
 
 function App() {
-
+    const hours = 1; // to clear the localStorage after 1 hour
+                   // (if someone want to clear after 8hrs simply change hours=8)
+    const now = new Date().getTime();
+    const setupTime = localStorage.getItem('setupTime');
+    if (setupTime == null) {
+        localStorage.setItem('setupTime', now)
+    } else {
+        if(now-setupTime > hours*60*60*1000) {
+            localStorage.clear()
+            window.location.reload();
+            localStorage.setItem('setupTime', now);
+        }
+    }
   return (
     <>
        <BrowserRouter>

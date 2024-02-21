@@ -4,8 +4,7 @@ import classes from './Homepage.module.css'
 
 function Homepage() {
     const [index, setIndex] = useState(0);
-    // const timeoutRef = React.useRef(null);
-    // const [prevBg ,setPrevBg] = useState("");
+    const timeoutRef = React.useRef(null);
     const bgImg = [
         "public/img/login1.jpg",
         "public/img/dogWalker.jpg",
@@ -14,22 +13,11 @@ function Homepage() {
     ];
 
 
-    // useEffect(() => {
-    //
-    //     timeoutRef.current =
-    //         setTimeout(
-    //             () => {
-    //                 setIndex(
-    //                     //(prevIndex) =>
-    //                 //     prevIndex === bgImg.length - 1 ? 0 : prevIndex + 1
-    //                 index === 2 ? 0 : index + 1
-    //                 )
-    //             }
-    //                ,
-    //             delay
-    //             )
-    //     return () => {};
-    // }, [index]);
+
+    useEffect(() => {
+        const getDataFromLocalStorage = JSON.parse(localStorage.getItem("user-token"))
+        console.log("User-Token: ", getDataFromLocalStorage) ;
+    }, [])
 
 
     useEffect(() => {
