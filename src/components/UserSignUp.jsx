@@ -145,7 +145,8 @@ function UserSignUp() {
                 console.log("User Info: ", res.data);
                 userToken = JSON.stringify(res.data);
                 localStorage.setItem("user-token", userToken);
-                localStorage.setItem("shared-key", sharedKey);
+                localStorage.setItem("private-key", privateKey);
+                localStorage.setItem("type", "Normal");
                 toHome();
             }).catch((err) => console.log(err));
         } else {

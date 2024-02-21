@@ -127,7 +127,7 @@ function CaretakerCard({name, price, location, verify}) {
                                             </div>
                                             <div className="flex justify-end w-full">
                                                 <a className='btn bg-[#45BBBD] text-xl text-[#f7f7f7] border-0 rounded hover:bg-[#A6E2E3] hover:text-[#064E5C] mt-3 font-medium '
-                                                   href="#caretaker">View Details</a>
+                                                   href="/booking">View Details</a>
                                             </div>
                                         </div>
                                     </div>
