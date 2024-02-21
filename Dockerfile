@@ -20,7 +20,7 @@ COPY . /app/source-code
 
 RUN java -version
 
-#RUN chmod +x gradlew && \
+#RUN  ./gradlew generateJooq && \
 #    ./gradlew nativeOptimizedCompile;
 #    cd build/native/nativeOptimizedCompile; ./jungmha
 

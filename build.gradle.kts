@@ -63,9 +63,6 @@ dependencies {
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
 
-    // https://mvnrepository.com/artifact/org.purejava/tweetnacl-java
-    //implementation("org.purejava:tweetnacl-java:1.1.2")
-
 }
 
 

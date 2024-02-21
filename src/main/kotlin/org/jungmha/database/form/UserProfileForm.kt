@@ -8,6 +8,7 @@ import io.micronaut.serde.annotation.Serdeable
 data class UserProfileForm(
     val firstName: String,
     val lastName: String,
+    val locationName: String,
     val email: String,
     val phoneNumber: String,
     val userType: String

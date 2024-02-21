@@ -6,6 +6,7 @@ import io.micronaut.core.annotation.Introspected
 enum class NormalValidateField(override val fieldName: String) : EnumField {
     FIRST_NAME("firstName"),
     LAST_NAME("lastName"),
+    LOCATION_NAME("locationName"),
     EMAIL("email"),
     PHONE_NUMBER("phoneNumber"),
     USER_TYPE("userType")
