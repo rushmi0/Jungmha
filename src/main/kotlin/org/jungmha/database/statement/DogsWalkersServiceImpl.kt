@@ -63,7 +63,7 @@ class DogsWalkersServiceImpl @Inject constructor(
             val record = query.select(
                 dk.WALKER_ID,
                 dk.USER_ID,
-                dk.LOCATION_NAME,
+                u.LOCATION_NAME,
                 dk.ID_CARD_NUMBER,
                 dk.VERIFICATION,
                 dk.PRICE_SMALL,
@@ -82,7 +82,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 DogWalkerField(
                     walkerID = it[DOGWALKERS.WALKER_ID],
                     userID = it[DOGWALKERS.USER_ID],
-                    locationName = it[DOGWALKERS.LOCATION_NAME],
+                    locationName = it[USERPROFILES.LOCATION_NAME],
                     idCardNumber = it[DOGWALKERS.ID_CARD_NUMBER],
                     verification = it[DOGWALKERS.VERIFICATION],
                     priceSmall = it[DOGWALKERS.PRICE_SMALL],
@@ -159,7 +159,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     dw.COUNT_USED,
                     dw.COUNT_REVIEW,
                     dw.TOTAL_REVIEW,
-                    dw.LOCATION_NAME,
+                    up.LOCATION_NAME,
                     dw.VERIFICATION,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
@@ -191,7 +191,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             countUsed = record[dw.COUNT_USED],
                             countReview = record[dw.COUNT_REVIEW],
                             totalReview = record[dw.TOTAL_REVIEW],
-                            locationName = record[dw.LOCATION_NAME],
+                            locationName = record[up.LOCATION_NAME],
                             idCardNumber = record[dw.ID_CARD_NUMBER],
                             verify = record[dw.VERIFICATION],
 
@@ -233,7 +233,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     up.IMAGE_PROFILE,
                     dw.VERIFICATION,
                     dw.TOTAL_REVIEW,
-                    dw.LOCATION_NAME,
+                    up.LOCATION_NAME,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
                     dw.PRICE_BIG,
@@ -254,7 +254,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                                     record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
                                 }" else "N/A",
                                 verify = record[dw.VERIFICATION],
-                                location = record[dw.LOCATION_NAME],
+                                location = record[up.LOCATION_NAME],
                                 price = PriceData(
                                     small = record[dw.PRICE_SMALL],
                                     medium = record[dw.PRICE_MEDIUM],
@@ -289,7 +289,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     dw.COUNT_USED,
                     dw.COUNT_REVIEW,
                     dw.TOTAL_REVIEW,
-                    dw.LOCATION_NAME,
+                    up.LOCATION_NAME,
                     dw.PRICE_SMALL,
                     dw.PRICE_MEDIUM,
                     dw.PRICE_BIG,
@@ -329,7 +329,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
                             }" else "N/A",
                             verify = record[dw.VERIFICATION],
-                            location = record[dw.LOCATION_NAME],
+                            location = record[up.LOCATION_NAME],
                             price = PriceData(
                                 small = record[dw.PRICE_SMALL],
                                 medium = record[dw.PRICE_MEDIUM],
@@ -416,7 +416,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                         .set(DOGWALKERS.ID_CARD_NUMBER, DSL.`val`(newValue))
 
                     "location" -> query.update(DOGWALKERS)
-                        .set(DOGWALKERS.LOCATION_NAME, DSL.`val`(newValue))
+                        .set(USERPROFILES.LOCATION_NAME, DSL.`val`(newValue))
 
                     "small" -> query.update(DOGWALKERS)
                         .set(DOGWALKERS.PRICE_SMALL, DSL.`val`(Integer.valueOf(newValue)))
