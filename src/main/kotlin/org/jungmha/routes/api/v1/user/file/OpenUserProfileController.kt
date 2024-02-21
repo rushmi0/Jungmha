@@ -55,10 +55,9 @@ class OpenUserProfileController @Inject constructor(
 
             // ตรวจสอบว่ามีข้อมูลผู้ใช้และมีไฟล์รูปภาพหรือไม่
             if (user != null && user.imageProfile != "N/A" && user.imageProfile.isNotBlank()) {
-                // อ่านข้อมูลไฟล์รูปภาพเป็น bytes
-                val fileBytes = withContext(Dispatchers.IO) {
-                    Files.readAllBytes(Path.of(user.imageProfile))
-                }
+
+                // อ่านข้อมูลไฟล์รูปภาพเป็น bytes โดยใช้ suspend function
+                val fileBytes = readFileBytes(user.imageProfile)
 
                 // ทางระบบทางสื่อมัลติมีเดียคำนวณ Content-Type ของไฟล์
                 val contentType = URLConnection.guessContentTypeFromName(user.imageProfile)
@@ -80,6 +79,11 @@ class OpenUserProfileController @Inject constructor(
         }
     }
 
+    suspend fun readFileBytes(filePath: String): ByteArray {
+        return withContext(Dispatchers.IO) {
+            Files.readAllBytes(Path.of(filePath))
+        }
+    }
 
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(OpenUserProfileController::class.java)

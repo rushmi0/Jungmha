@@ -72,7 +72,7 @@ class DogWalkBookingController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        //schema = Schema(implementation = DogWalkBookings::class)
+                        schema = Schema(implementation = DogWalkBookings::class)
                     )
                 ]
             )

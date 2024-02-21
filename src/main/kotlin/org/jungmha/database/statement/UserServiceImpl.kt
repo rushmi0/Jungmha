@@ -293,9 +293,24 @@ class UserServiceImpl @Inject constructor(
                     .set(USERPROFILES.USER_TYPE, payload.userType)
                     .where(USERPROFILES.USERNAME.eq(userName))
 
+                val userID = query
+                    .select(USERPROFILES.USER_ID)
+                    .from(USERPROFILES)
+                    .where(USERPROFILES.USERNAME.eq(userName));
+
+                val record = query.insertInto(
+                    DOGWALKERS,
+                    DOGWALKERS.USER_ID,
+                    DOGWALKERS.LOCATION_NAME
+                )
+                    .values(
+                    DSL.value(userID).coerce(Int::class.java),
+                    DSL.value(payload.locationName).coerce(String::class.java)
+                ).execute()
+
                 val result = updateRows.execute()
 
-                if (result > 0) {
+                if (result > 0 && record > 0) {
                     LOG.info("Update successful for user [$userName] on thread [$currentThreadName]")
                 } else {
                     LOG.warn("Update did not affect any rows for user [$userName] on thread [$currentThreadName]")

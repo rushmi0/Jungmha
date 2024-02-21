@@ -82,7 +82,6 @@ class RegisterController @Inject constructor(
                 )
             ]
         ),
-
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -143,7 +142,7 @@ class RegisterController @Inject constructor(
         }
 
         // ใช้ ObjectMapper เพื่อแปลง decryptedData เป็น UserProfileForm (Kotlin Object)
-        val userData = objectMapper.convertValue(decryptedData, UserProfileForm::class.java)
+        val userData: UserProfileForm = objectMapper.convertValue(decryptedData, UserProfileForm::class.java)
 
         val statement: Boolean = userService.updateMultiField(name, userData)
         return if (statement) {
