@@ -4,7 +4,7 @@ Content-Type: application/json
 UserName: Aura
 
 {
-  "content" : "08d3vTEvVhP1GG3hYh9VIAYRjGsDqVVIXU29VXsIhQpqFk9Nua+uZ2RxgFqmUOE50Wll9BP/N6kYekteILSGGqkWBZbIKJvDDRflHESjpzN9hf1gbk/O8tz/PbmFiZjtNKFXSBdxmLaSN5708E8zx9ExgD5i7oZUf+zjL+bpXw==?iv=NaJQm654XN4+4K96"
+  "content" : "ZZ+Eccu4euOE5mnUlE9shArrQ1RsvqzZCGa3mGqGQ9TKSQaiUiYBoX4C6EB1q1xQge9DVkgcWAKfYTVGnTHBD6tcoelPbuftTfFON0Bq+/Idca0h4TipTOfDRA1XohVb4kAeQzy3sxW6eeaDbdiW07MLl5NU5XWGGZQbyBM9urXfq0U8JiYJaUAaI4YpgXdQwBBilqVAKwRn/Xii6aK90MI=?iv=TM1cI4gg0gd59UmG"
 }
 
 
@@ -15,6 +15,15 @@ UserName: Rushmi0
 
 {
   "content": "PWFTdAu0KqHpJhN1AmU60iVmJg/zWhu5rL9sVHsFGBeJ84RYidfOiCLZIPuJLtfXJps0FeqqSIOPYyx8eW2IniqnLpSfyQ8zxa6ljlJLJ5Ek/2l1sO01ZDonltmCccwGTe1GwHvTrNO2EOP/CnmAJsppNpCD3AGD/sj2+u+HV39xEPJETCDyG8muadZLUx+k?iv=XNJhr8omGp5W0AMZA3vJRg=="
+}
+
+### User 3
+PUT http://localhost:8080/api/v1/auth/sign-up
+Content-Type: application/json
+UserName: userTest026
+
+{
+  "content": "5YQ4zvG3YzJuh5dk0baCZImFzfOJ0wVuBqBUaV1jmdJEhNOfQXmM4KH2QgHgbebqx4p8Bqc08nl5SbMF2rmAmI4NR53+01YEnjfLIKjHoNosyOJmVVmhWSm+OhklzdiOFQSiCZFj1HanB6KypmOhA+D5ja5KVOIjmPZIYFDtueJoacQ=?iv=AAAAAAAAAAAAAAAA"
 }
 
 
