@@ -13,14 +13,14 @@ RUN wget  https://download.oracle.com/graalvm/17/latest/graalvm-jdk-17_linux-x64
 ENV JAVA_HOME=/opt/graalvm
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-RUN java -version
-
 EXPOSE 8080
 
 WORKDIR /app/source-code
 COPY . /app/source-code
 
-RUN chmod +x gradlew && \
-    ./gradlew nativeOptimizedCompile;
+RUN java -version
+
+#RUN chmod +x gradlew && \
+#    ./gradlew nativeOptimizedCompile;
 #    cd build/native/nativeOptimizedCompile; ./jungmha
 

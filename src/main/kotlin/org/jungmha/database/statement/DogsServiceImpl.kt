@@ -169,7 +169,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext affectedRows > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update", e.message)
+                LOG.error("An error occurred during update: ${e.message}")
                 return@withContext false
             }
         }
