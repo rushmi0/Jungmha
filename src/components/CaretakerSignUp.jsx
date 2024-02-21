@@ -132,12 +132,15 @@ function CaretakerSignUp() {
                 "content": dataToSend
             }
             console.log("data to send: ",sendDataEncrypt);
-
+            let userToken = [];
             await axios.put(url, sendDataEncrypt, {
                 headers: headers
             }).then((res) => {
                 console.log("User Info: ", res.data);
-                localStorage.setItem("user-token", res.data);
+                userToken = JSON.stringify(res.data);
+                localStorage.setItem("user-token", userToken);
+                localStorage.setItem("private-key", privateKey);
+                localStorage.setItem("type", "Normal");
                 toLogin();
             }).catch((err) => console.log(err));
         } else {

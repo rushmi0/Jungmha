@@ -19,7 +19,6 @@ function Navbar() {
     const url = base_url + "/api/v1/auth/user/normal";
     const [render, setRender] = useState(false);
 
-
     const header = {
         "Access-Token" : viewToken
     }
@@ -53,17 +52,13 @@ function Navbar() {
             console.log("Encrypt Data: ", enData);
             let decryptData = cha.decrypt(enData, sharedKey);
             dcData = decryptData;
-            setData([...dcData]);
+            setData(dcData);
             console.log("Decrypt Data: ", dcData);
             console.log(dcData.accountType);
             setProImg(dcData.profileImage);
             setRender(true);
         }).catch((err) => {
-            if(err.response.status === 400) {
-                alert("Please login!");
-            } else {
-                console.error(err);
-            }
+            console.error(err);
         });
     }
     useEffect(() => {
