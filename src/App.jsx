@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useNavigate} from 'react-router-dom';
 import './App.css';
 import UserSignUp from './components/UserSignUp';
 import CaretakerSignUp from './components/CaretakerSignUp';
@@ -10,6 +10,7 @@ import CaretakerLogin from './components/Login/CaretakerLogin';
 import UserProfile from "./components/profile/UserProfile.jsx";
 import CaretakerProfile from "./components/profile/CaretakerProfile.jsx";
 import Booking from "./components/Booking/Booking.jsx";
+import {useEffect} from "react";
 
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
                    // (if someone want to clear after 8hrs simply change hours=8)
     const now = new Date().getTime();
     const setupTime = localStorage.getItem('setupTime');
+
+
     if (setupTime == null) {
         localStorage.setItem('setupTime', now)
     } else {
@@ -26,6 +29,7 @@ function App() {
             localStorage.setItem('setupTime', now);
         }
     }
+
   return (
     <>
        <BrowserRouter>

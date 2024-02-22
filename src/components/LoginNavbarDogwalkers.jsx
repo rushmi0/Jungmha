@@ -10,7 +10,6 @@ import {BASE_URL} from "../../constants/BaseEndpoint.js";
 
 function LoginNavbarDogwalkers() {
     const [data, setData] = useState([]);
-    const img = defaultImg;
     const [proImg, setProImg] = useState("");
     const token = JSON.parse(localStorage.getItem("user-token"));
     const viewToken = token.token.view;
@@ -71,6 +70,42 @@ function LoginNavbarDogwalkers() {
         console.log("Retrieve Data: ", data);
     }, []);
 
+    const [file, setFile] = useState(null);
+    const img = defaultImg;
+    const [previewImage, setPreviewImage] = useState(img);
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+        setPreviewImage(URL.createObjectURL(selectedFile));
+    };
+
+    const editToken = token.token.edit;
+    const editHeader = {
+        'Content-Type': 'multipart/form-data',
+        "Access-Token": editToken
+    }
+
+    const handleUpload = async () => {
+        if (file) {
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const apiUrl = base_url + '/api/v1/auth/user/upload';
+
+                await axios.post(apiUrl, formData, {
+                    headers: editHeader
+                });
+                getData();
+                alert('Image uploaded successfully');
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        } else {
+            console.error('No file selected.');
+        }
+    };
     return (
         <>
             <div className="navbar bg-[#7F7F7] shadow-md z-50 relative">
@@ -89,7 +124,7 @@ function LoginNavbarDogwalkers() {
                             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                 <div className="w-10 rounded-full">
                                     <img id="profileImg" alt="Tailwind CSS Navbar component"
-                                         src={img}/>
+                                         src={proImg}/>
                                 </div>
                             </div>
                             <ul tabIndex={0}
@@ -109,12 +144,12 @@ function LoginNavbarDogwalkers() {
 
             {render && (
                 <>
-                    <dialog id="userModal" className="modal">
+                    <dialog id="userModal" className="modal" key={data.userID}>
                         <div className="modal-box w-11/12 max-w-7xl bg-transparent shadow-none">
                             <div className="grid grid-cols-3 p-2 items-center gap-4 h-full">
                                 <div className="bg-[#f7f7f7] col-span-1 p-6 px-8 w-full h-full rounded-s-2xl shadow-md">
                                     <img src={proImg}
-                                         className="w-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
+                                         className="w-[180px] h-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
                                     <div className="text-lg">
                                         <h3 className="text-center text-2xl mb-4">{data.userName}</h3>
                                         <p>Name: {data.firstName} {data.lastName}</p>
@@ -138,7 +173,7 @@ function LoginNavbarDogwalkers() {
 
                                 <div className="bg-[#f7f7f7] col-span-2 w-full p-6 px-8 w-full rounded-e-2xl shadow-md">
                                     <div className="p-2">
-                                        <h3 className="mb-4 text-2xl">Caretaker's Schedule for April 10 to April 17</h3>
+                                        <h3 className="mb-4 text-2xl">{data.userName}'s Schedule for February 26 to March 3</h3>
                                         <div>
                                             <div className="overflow-x-auto">
                                                 <table className="table">
@@ -162,7 +197,9 @@ function LoginNavbarDogwalkers() {
                                                     {/* row 1 */}
                                                     <tr>
                                                         <td className={classes.verticalHeader}>Monday</td>
-                                                        <td className="bg-rose-500" colSpan="2">User's name</td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td className="bg-rose-500" colSpan="2">ApirakLogin</td>
                                                     </tr>
                                                     {/* row 2 */}
                                                     <tr className="hover:bg-accent">
@@ -191,7 +228,10 @@ function LoginNavbarDogwalkers() {
 
                                         <div className="flex justify-end">
                                             <button
-                                                className="btn btn-accent mt-4 text-sm rounded-none me-4">Edit
+                                                className="btn btn-accent mt-4 text-sm rounded-none me-4"
+                                                onClick={() => {
+                                                    document.getElementById('editUserModal').showModal()
+                                                }}>Edit
                                                 Profile
                                             </button>
                                             <form method="dialog">
@@ -204,6 +244,30 @@ function LoginNavbarDogwalkers() {
                                 </div>
                             </div>
                         </div>
+                        <dialog id="editUserModal" className="modal">
+                            <div className="modal-box bg-transparent shadow-none">
+                                <div className="grid p-2 items-center gap-4">
+                                    <div className="bg-[#f7f7f7] col-span-1 p-6 px-8 w-full rounded-2xl shadow-md">
+                                        <img src={previewImage}
+                                             className="w-[180px] h-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
+                                        <div className="text-lg">
+                                            <input type="file"
+                                                   accept="image/*"
+                                                   className="file-input file-input-bordered file-input-accent bg-[#CBD5E0] w-full hover:file-input-info"
+                                                   onChange={handleFileChange}/>
+                                        </div>
+                                        <div className="modal-action">
+                                            <button className="btn btn-accent" onClick={handleUpload}>Upload</button>
+                                            <form method="dialog">
+                                                {/* if there is a button, it will close the modal */}
+                                                <button className="btn btn-error">Close</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </dialog>
                     </dialog>
                 </>
             )}

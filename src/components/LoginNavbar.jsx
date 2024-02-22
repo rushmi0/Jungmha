@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import logo from '../assets/Logo.svg'
-import classes from './LoginNavbar.module.css'
-import profile from '../assets/profile.jpg';
 import axios from "axios";
 import defaultImg from "../assets/user.svg"
 import {BASE_URL} from "../../constants/BaseEndpoint.js";
@@ -11,13 +9,14 @@ import chaCha20 from "../../utils/ChaCha20.js";
 
 function Navbar() {
     const [data, setData] = useState(null);
-    const img = defaultImg;
+
     const [proImg, setProImg] = useState("");
     const token = JSON.parse(localStorage.getItem("user-token"));
     const viewToken = token.token.view;
     const base_url = BASE_URL["baseEndpoint"];
     const url = base_url + "/api/v1/auth/user/normal";
     const [render, setRender] = useState(false);
+
 
     const header = {
         "Access-Token" : viewToken
@@ -50,11 +49,11 @@ function Navbar() {
         }).then((res) => {
             enData = res.data.content;
             console.log("Encrypt Data: ", enData);
-            let decryptData = cha.decrypt(enData, sharedKey);
-            dcData = decryptData;
+            dcData = cha.decrypt(enData, sharedKey);
             setData(dcData);
             console.log("Decrypt Data: ", dcData);
             console.log(dcData.accountType);
+            localStorage.setItem("user-id", dcData.userID);
             setProImg(dcData.profileImage);
             setRender(true);
         }).catch((err) => {
@@ -66,12 +65,42 @@ function Navbar() {
         console.log("Data: ", data);
     }, []);
 
-    const editToken = token.token.edit;
+    const [file, setFile] = useState(null);
+    const img = defaultImg;
+    const [previewImage, setPreviewImage] = useState(img);
 
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        setFile(selectedFile);
+        setPreviewImage(URL.createObjectURL(selectedFile));
+    };
+
+    const editToken = token.token.edit;
     const editHeader = {
+        'Content-Type': 'multipart/form-data',
         "Access-Token": editToken
     }
 
+    const handleUpload = async () => {
+        if (file) {
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const apiUrl = base_url + '/api/v1/auth/user/upload';
+
+                await axios.post(apiUrl, formData, {
+                    headers: editHeader
+                });
+                getData();
+                alert('Image uploaded successfully');
+            } catch (error) {
+                console.error('Error uploading image:', error);
+            }
+        } else {
+            console.error('No file selected.');
+        }
+    };
 
 
 
@@ -94,7 +123,7 @@ function Navbar() {
                             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                                 <div className="w-10 rounded-full">
                                     <img id="profileImg" alt="Tailwind CSS Navbar component"
-                                         src={img}/>
+                                         src={proImg}/>
                                 </div>
                             </div>
                             <ul tabIndex={0}
@@ -118,19 +147,18 @@ function Navbar() {
                         <div className="modal-box bg-transparent shadow-none">
                             <div className="grid p-2 items-center gap-4">
                                 <div className="bg-[#f7f7f7] col-span-1 p-6 px-8 w-full rounded-2xl shadow-md">
-                                    <img src={img}
-                                         className="w-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
+                                    <img src={proImg}
+                                         className="w-[180px] h-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
                                     <div className="text-lg">
                                         <h3 className="text-center text-2xl mb-4">{data.userName}</h3>
                                         <p>Tel: {data.phoneNumber}</p>
                                         <p>Email: {data.email}</p>
-                                        <p>Location: Amphures</p>
                                     </div>
                                     <div className="modal-action">
-                                        <button className="btn btn-accent" onClick={()=> {
-                                            document.getElementById('userModal').
-                                            document.getElementById('my_modal_5').showModal()
-                                        }}>Edit Profile</button>
+                                        <button className="btn btn-accent" onClick={() => {
+                                           document.getElementById('editUserModal').showModal()
+                                        }}>Edit Profile
+                                        </button>
                                         <form method="dialog">
                                             {/* if there is a button, it will close the modal */}
                                             <button className="btn btn-error">Close</button>
@@ -140,22 +168,34 @@ function Navbar() {
                             </div>
 
                         </div>
+                        <dialog id="editUserModal" className="modal">
+                            <div className="modal-box bg-transparent shadow-none">
+                                <div className="grid p-2 items-center gap-4">
+                                    <div className="bg-[#f7f7f7] col-span-1 p-6 px-8 w-full rounded-2xl shadow-md">
+                                        <img src={previewImage}
+                                             className="w-[180px] h-[180px] rounded-full border-2 border-accent mb-4 mx-auto"/>
+                                        <div className="text-lg">
+                                            <input type="file"
+                                                   accept="image/*"
+                                                   className="file-input file-input-bordered file-input-accent bg-[#CBD5E0] w-full hover:file-input-info"
+                                            onChange={handleFileChange}/>
+                                        </div>
+                                        <div className="modal-action">
+                                            <button className="btn btn-accent" onClick={handleUpload}>Upload</button>
+                                            <form method="dialog">
+                                                {/* if there is a button, it will close the modal */}
+                                                <button className="btn btn-error">Close</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </dialog>
                     </dialog>
+
                 </>
             )}
-
-            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle z-40">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg">Hello!</h3>
-                    <p className="py-4">Press ESC key or click the button below to close</p>
-                    <div className="modal-action">
-                        <form method="dialog">
-                            {/* if there is a button in form, it will close the modal */}
-                            <button className="btn">Close</button>
-                        </form>
-                    </div>
-                </div>
-            </dialog>
         </>
     )
 }

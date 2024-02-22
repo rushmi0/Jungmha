@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {motion} from 'framer-motion';
 import SignUpBanner2 from './SignUpBanner2';
 import classes from './UserSignUp.module.css';
@@ -12,8 +12,8 @@ function CaretakerSignUp() {
 
     const navigate = useNavigate("");
 
-    const  toLogin = async ()=> {
-        navigate("/login/caretaker");
+    const  toHome = async ()=> {
+        navigate("/");
     }
 
     const [ username, setUsername ] = useState("");
@@ -23,7 +23,9 @@ function CaretakerSignUp() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [addr, setAddr] = useState("");
     const userType = "DogWalkers";
+    const [amphure, setAmphure] = useState([]);
 
     //const aes = AES()
     const chacha = ChaCha20()
@@ -57,6 +59,10 @@ function CaretakerSignUp() {
 
     }
 
+    const onAddrEnter = (e) => {
+        setAddr(e.target.value);
+    }
+
     const onFnameEnter = (e) => {
         setFirstName(e.target.value);
     };
@@ -75,6 +81,7 @@ function CaretakerSignUp() {
 
 
     const onSubmitData = async () => {
+        let isLoad = false;
         let condition = username.trim().length !== 0 || pass.trim().length !== 0 || conPass.trim().length !== 0 || firstName.trim().length !== 0 || lastName.trim().length !== 0 || email.trim().length !== 0 || phoneNumber.trim().length !== 0;
         if(condition) {
             passCheck();
@@ -96,6 +103,7 @@ function CaretakerSignUp() {
             await axios.post(connection, payload).then((res) => {
                 console.log("serverPubKey:", res.data["publicKey"]);
                 serverPubKey = res.data["publicKey"];
+                isLoad = true;
                 return res.data
             }).catch((err) => console.log(err));
 
@@ -112,6 +120,7 @@ function CaretakerSignUp() {
             let data = {
                 "firstName": firstName,
                 "lastName": lastName,
+                "locationName": addr,
                 "email": email,
                 "phoneNumber": phoneNumber,
                 "userType": userType
@@ -133,20 +142,33 @@ function CaretakerSignUp() {
             }
             console.log("data to send: ",sendDataEncrypt);
             let userToken = [];
-            await axios.put(url, sendDataEncrypt, {
-                headers: headers
-            }).then((res) => {
-                console.log("User Info: ", res.data);
-                userToken = JSON.stringify(res.data);
-                localStorage.setItem("user-token", userToken);
-                localStorage.setItem("private-key", privateKey);
-                localStorage.setItem("type", "Normal");
-                toLogin();
-            }).catch((err) => console.log(err));
+            if(isLoad) {
+                await axios.put(url, sendDataEncrypt, {
+                    headers: headers
+                }).then((res) => {
+                    console.log("User Info: ", res.data);
+                    userToken = JSON.stringify(res.data);
+                    localStorage.setItem("user-token", userToken);
+                    localStorage.setItem("private-key", privateKey);
+                    localStorage.setItem("type", "DogWalkers");
+                    localStorage.setItem("status", "login");
+                    toHome();
+                }).catch((err) => console.log(err));
+            } else {
+                alert("Error!")
+            }
+
         } else {
             alert("Please fill up all informations!")
         }
     };
+
+    useEffect(() => {
+        axios.get('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_amphure.json')
+            .then((res) => {
+                setAmphure(res.data);
+            });
+    }, [])
   return (
     <>
       <div className={classes.box}>
@@ -179,12 +201,20 @@ function CaretakerSignUp() {
                             <input id="con_pass" type="password" className={classes.inputInfo2} placeholder="confirm password" onChange={onConPassEnter}/>
 
                         </div>
-                        <input type="text" className={classes.inputInfo} placeholder="address"/>
-                        <div className="flex justify-between items-center w-full">
-                            <p className="text-xl text-[#718096] mb-5">Upload resume: </p>
-                            <input type="file"
-                                   className="file-input file-input-bordered file-input-accent bg-[#CBD5E0] w-full max-w-xs mb-5 hover:file-input-info"/>
-                        </div>
+                        <select defaultValue="" className={classes.inputInfo} onChange={onAddrEnter}>
+                            <option disabled selected>Amphure</option>
+                            <option selected>Any</option>
+                            {amphure.filter((prev) => {
+                                if (prev.province_id === 1) {
+                                    return prev
+                                }
+                            }).map((prov) => (
+                                <option key={prov.id}>
+                                    {prov.name_th}
+                                </option>
+                            ))}
+
+                        </select>
                         <button
                             type="button"
                             className="btn bg-[#45BBBD] text-lg text-[#fff] w-full border-0 hover:bg-white hover:text-black"
@@ -194,9 +224,7 @@ function CaretakerSignUp() {
                             Up
                         </button>
                     </form>
-
                 </div>
-
 
             </div>
 

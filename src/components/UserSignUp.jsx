@@ -26,14 +26,16 @@ function UserSignUp() {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [addr, setAddr] = useState("");
     const userType = "Normal";
+    const [amphure, setAmphure] = useState([]);
 
     //const aes = AES()
     const chacha = ChaCha20()
     const ec = EllipticCurve();
     const base_url = BASE_URL["baseEndpoint"];
     const url = base_url + "/api/v1/auth/sign-up";
-    const connection = "http://localhost:8080/api/v1/auth/open-channel";
+    const connection = base_url + "/api/v1/auth/open-channel";
 
     const onUsernameEnter = (e) => {
         setUsername(e.target.value);
@@ -46,6 +48,10 @@ function UserSignUp() {
     const onConPassEnter = (e) => {
         setConPass(e.target.value);
 
+    }
+
+    const onAddrEnter = (e) => {
+        setAddr(e.target.value);
     }
 
     const passCheck = (e) => {
@@ -115,6 +121,7 @@ function UserSignUp() {
             let data = {
                 "firstName": firstName,
                 "lastName": lastName,
+                "locationName": addr,
                 "email": email,
                 "phoneNumber": phoneNumber,
                 "userType": userType
@@ -147,12 +154,20 @@ function UserSignUp() {
                 localStorage.setItem("user-token", userToken);
                 localStorage.setItem("private-key", privateKey);
                 localStorage.setItem("type", "Normal");
+                localStorage.setItem("status", "login");
                 toHome();
             }).catch((err) => console.log(err));
         } else {
             alert("Please fill up all informations!")
         }
     };
+
+    useEffect(() => {
+        axios.get('https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_amphure.json')
+            .then((res) => {
+                setAmphure(res.data);
+            });
+    }, [])
 
 
   return (
@@ -199,11 +214,25 @@ function UserSignUp() {
                                    onChange={onConPassEnter} required="required" autoComplete="on"/>
                         </div>
 
-                        <input type="text" className={classes.inputInfo} placeholder="address"/>
+                        <select defaultValue="" className={classes.inputInfo} onChange={onAddrEnter}>
+                            <option disabled selected>Amphure</option>
+                            <option selected>Any</option>
+                            {amphure.filter((prev) => {
+                                if (prev.province_id === 1) {
+                                    return prev
+                                }
+                            }).map((prov) => (
+                                <option key={prov.id}>
+                                    {prov.name_th}
+                                </option>
+                            ))}
+
+                        </select>
 
                         <div className="grid grid-cols-2 gap-x-4 items-center">
-                            <p className="text-xl text-[#718096] align-items-center">Already have an account? <a href="/login/user"
-                                                                                                   className="text-[#45BBBD] underline">Login</a>
+                            <p className="text-xl text-[#718096] align-items-center">Already have an account? <a
+                                href="/login/user"
+                                className="text-[#45BBBD] underline">Login</a>
                             </p>
                             <button
                                 id="submit"

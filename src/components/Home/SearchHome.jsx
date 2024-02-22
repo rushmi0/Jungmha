@@ -61,7 +61,11 @@ function SearchHome() {
                         <select defaultValue="" className={classes.selectMenu} onChange={locationHandler}>
                             <option disabled selected>Amphure</option>
                             <option selected>Any</option>
-                            {province.map((prov) => (
+                            {province.filter((prev) => {
+                                if(prev.province_id == 1) {
+                                    return prev
+                                }
+                            }).map((prov) => (
                                 <option key={prov.id} >
                                     {prov.name_th}
                                 </option>

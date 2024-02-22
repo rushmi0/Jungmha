@@ -64,6 +64,7 @@ function CaretakerLogin() {
                 localStorage.setItem("user-token", userToken);
                 localStorage.setItem("private-key", privateKey);
                 localStorage.setItem("type", "DogWalkers");
+                localStorage.setItem("status", "login");
                 toHome();
             }).catch((err) => {
                 if(err.response.status === 400) {
