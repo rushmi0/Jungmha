@@ -33,7 +33,7 @@ services:
       - |
         chmod +x gradlew;
         ./gradlew assemble;
-        java -jar build/docker/optimized/layers/application.jarเพิ่มการใช้ qodana เพื่อตรวจสอบโค้ด
+        java -jar build/docker/optimized/layers/application.jar
     networks:
       - dev_network
 
@@ -42,4 +42,4 @@ services:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token
+    command: tunnel --no-autoupdate run --token eyJhIjoiOWY0MTBlZjhhY2ZmYWQzYjY1YmJhNzZiMzQzZjhiZTYiLCJ0IjoiYWQ2ZGFlNjctY2Y4MS00N2JhLThkYWYtODczNDdiMDM1MDQ4IiwicyI6IllXVmpOV1UxTldFdE16UmtOQzAwWWpVNExUZzNNVEF0WXpCbVlqaGtPV1V4TW1KbCJ9

@@ -12,6 +12,7 @@ data class DogWalkersInfo(
     val userName: String,
     val firstName: String,
     val lastName: String,
+    val locationName: String,
     val email: String,
     val phoneNumber: String,
     val accountType: String,
@@ -25,7 +26,7 @@ data class Insights(
     val countUsed: Int,
     val countReview: Int,
     val totalReview: Int,
-    val locationName: String,
+    //val locationName: String,
     val idCardNumber: String,
     val verify: Boolean,
     @Embedded

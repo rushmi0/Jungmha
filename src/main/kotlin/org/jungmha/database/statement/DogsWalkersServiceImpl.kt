@@ -63,7 +63,7 @@ class DogsWalkersServiceImpl @Inject constructor(
             val record = query.select(
                 dk.WALKER_ID,
                 dk.USER_ID,
-                u.LOCATION_NAME,
+                //u.LOCATION_NAME,
                 dk.ID_CARD_NUMBER,
                 dk.VERIFICATION,
                 dk.PRICE_SMALL,
@@ -82,7 +82,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 DogWalkerField(
                     walkerID = it[DOGWALKERS.WALKER_ID],
                     userID = it[DOGWALKERS.USER_ID],
-                    locationName = it[USERPROFILES.LOCATION_NAME],
+                    //locationName = it[USERPROFILES.LOCATION_NAME],
                     idCardNumber = it[DOGWALKERS.ID_CARD_NUMBER],
                     verification = it[DOGWALKERS.VERIFICATION],
                     priceSmall = it[DOGWALKERS.PRICE_SMALL],
@@ -184,6 +184,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                         firstName = record[up.FIRST_NAME],
                         lastName = record[up.LAST_NAME],
                         email = record[up.EMAIL],
+                        locationName = record[up.LOCATION_NAME],
                         phoneNumber = record[up.PHONE_NUMBER],
                         accountType = record[up.USER_TYPE],
 
@@ -191,7 +192,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                             countUsed = record[dw.COUNT_USED],
                             countReview = record[dw.COUNT_REVIEW],
                             totalReview = record[dw.TOTAL_REVIEW],
-                            locationName = record[up.LOCATION_NAME],
+                            //locationName = record[up.LOCATION_NAME],
                             idCardNumber = record[dw.ID_CARD_NUMBER],
                             verify = record[dw.VERIFICATION],
 

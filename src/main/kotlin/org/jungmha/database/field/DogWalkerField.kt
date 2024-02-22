@@ -8,7 +8,7 @@ import io.micronaut.serde.annotation.Serdeable
 data class DogWalkerField(
     val walkerID: Int,
     val userID: Int,
-    val locationName: String,
+    //val locationName: String,
     val idCardNumber: String,
     val verification: Boolean,
     val priceSmall: Int,
