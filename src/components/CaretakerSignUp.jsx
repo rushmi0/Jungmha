@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import ChaCha20 from "../../utils/ChaCha20.js";
 import EllipticCurve from "../../utils/SecureKey.js";
 import axios from "axios";
+import {BASE_URL} from "../../constants/BaseEndpoint.js";
 
 function CaretakerSignUp() {
 
@@ -30,8 +31,9 @@ function CaretakerSignUp() {
     //const aes = AES()
     const chacha = ChaCha20()
     const ec = EllipticCurve();
-    const url = "http://localhost:8080/api/v1/auth/sign-up";
-    const connection = "http://localhost:8080/api/v1/auth/open-channel";
+    const base_url = BASE_URL["baseEndpoint"];
+    const url = base_url + "/api/v1/auth/sign-up";
+    const connection = base_url + "/api/v1/auth/open-channel";
 
     const onUsernameEnter = (e) => {
         setUsername(e.target.value);

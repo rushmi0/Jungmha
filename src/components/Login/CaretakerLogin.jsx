@@ -5,6 +5,7 @@ import classes from './CaretakerLogin.module.css'
 import {useNavigate} from "react-router-dom";
 import EllipticCurve from "../../../utils/SecureKey.js";
 import axios from "axios";
+import {BASE_URL} from "../../../constants/BaseEndpoint.js";
 
 function CaretakerLogin() {
     const navigate = useNavigate("");
@@ -44,7 +45,8 @@ function CaretakerLogin() {
 
             // ++++++++++++++++++++++++++++++++++++++++++++++++++++ \\ 037678a280c054e2371c23ba16b4a9bba6b0194f3a405f0743ba45cce91732a8cb
             let timeStamp = getTimeStamp();
-            const url = `http://localhost:8080/api/v1/auth/sign-in/${username}/${timeStamp}`;
+            const base_url = BASE_URL["baseEndpoint"]
+            const url = base_url + `/api/v1/auth/sign-in/${username}/${timeStamp}`;
             const url_sign = `/auth/sign-in/${username}/${timeStamp}`;
 
             const sign = ec.signMessage(url_sign, privateKey);
