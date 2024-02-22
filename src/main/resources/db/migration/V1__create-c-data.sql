@@ -1,28 +1,28 @@
 -- เพิ่มข้อมูลในตาราง UserProfiles
 INSERT INTO UserProfiles (authen_key, share_key,  image_profile, username, first_name, last_name, location_name, email, phone_number,
                           created_at, user_type)
-VALUES ('028cd65dd43946d52a9ea71622f20930449fcf5ba81f446f420379c4fc2b696109', 'efe904e4f21d5441d42025930481ac3592da6f3ea7409c5deb1e3e3132fa7828', 'src/main/resources/images/preview/3.jpg', 'John', 'John', 'Doe', 'เขตพระนคร', 'john.doe@email.com', '1234567890', NOW(),
+VALUES ('028cd65dd43946d52a9ea71622f20930449fcf5ba81f446f420379c4fc2b696109', 'efe904e4f21d5441d42025930481ac3592da6f3ea7409c5deb1e3e3132fa7828', 'src/main/resources/images/preview/new/1.jpg', 'John', 'John', 'Doe', 'เขตพระนคร', 'john.doe@email.com', '1234567890', NOW(),
         'Normal'),
 
-       ('02c19f28b92efae5ef8b75863ec103808232770407e6bf4981d138ebe5090989e7', '7308bfd6b11469a36e2ea5d6354a009aa2c361a80ffa3354bd3f5dc3ba27fe6a', 'src/main/resources/images/preview/18.jpg', 'Jane', 'Jane', 'Smith', 'เขตพระนคร', 'jane.smith@email.com', '9876543210', NOW(),
+       ('02c19f28b92efae5ef8b75863ec103808232770407e6bf4981d138ebe5090989e7', '7308bfd6b11469a36e2ea5d6354a009aa2c361a80ffa3354bd3f5dc3ba27fe6a', 'src/main/resources/images/preview/new/2.jpg', 'Jane', 'Jane', 'Smith', 'เขตพระนคร', 'jane.smith@email.com', '9876543210', NOW(),
         'DogWalkers'),
 
-       ('03f3231f8991f84ba1f14fdede115743a882d97e7e03cf958d24f9515a4661d9a6', 'f73edc07ea590993e18c3d875ba3395d115be453e91928a3b71f68e689dca7fb', 'src/main/resources/images/preview/15.jpg', 'Bob', 'Bob', 'Johnson', 'เขตดินแดง', 'bob.johnson@email.com', '5556667777', NOW(),
+       ('03f3231f8991f84ba1f14fdede115743a882d97e7e03cf958d24f9515a4661d9a6', 'f73edc07ea590993e18c3d875ba3395d115be453e91928a3b71f68e689dca7fb', 'src/main/resources/images/preview/new/3.jpg', 'Bob', 'Bob', 'Johnson', 'เขตดินแดง', 'bob.johnson@email.com', '5556667777', NOW(),
         'Normal'),
 
-       ('02aa954033a6f13f244890885e9a26d54ba09292094aa6551f290d15282c69c47f', 'a79a8de22db4c35d181a27927c2d2a3d7a4b7226c65ba46ecf9226c21039c040', 'src/main/resources/images/preview/12.jpg', 'Alice', 'Alice', 'Williams', 'เขตดินแดง', 'alice.williams@email.com', '1112223333',
+       ('02aa954033a6f13f244890885e9a26d54ba09292094aa6551f290d15282c69c47f', 'a79a8de22db4c35d181a27927c2d2a3d7a4b7226c65ba46ecf9226c21039c040', 'src/main/resources/images/preview/new/4.jpg', 'Alice', 'Alice', 'Williams', 'เขตดินแดง', 'alice.williams@email.com', '1112223333',
         NOW(), 'DogWalkers'),
 
-       ('0258d51ee9dc922450a9558623537d55e460ddd8023e3e1132bb304e867e3e9cf1', '11ecfcf5d14d7044b789e08e608a5078e72f7979188eef1500ef904b26ffc525', 'src/main/resources/images/preview/19.jpg', 'Charlie', 'Charlie', 'Brown', 'เขตคลองสามวา', 'charlie.brown@email.com', '9998887777',
+       ('0258d51ee9dc922450a9558623537d55e460ddd8023e3e1132bb304e867e3e9cf1', '11ecfcf5d14d7044b789e08e608a5078e72f7979188eef1500ef904b26ffc525', 'src/main/resources/images/preview/new/5.jpg', 'Charlie', 'Charlie', 'Brown', 'เขตคลองสามวา', 'charlie.brown@email.com', '9998887777',
         NOW(), 'Normal'),
 
-       ('03da7fbdc9c20c49b0fade91b74de9f6fb481bdd49c5f043276873d6116448655a', '64341e8890b3931feb6f73a6fb8d33a882156258e41dc6d12111eafc82069c61', 'src/main/resources/images/preview/14.jpg', 'Eva', 'Eva', 'Davis', 'เขตคลองสามวา', 'eva.davis@email.com', '4443332222', NOW(),
+       ('03da7fbdc9c20c49b0fade91b74de9f6fb481bdd49c5f043276873d6116448655a', '64341e8890b3931feb6f73a6fb8d33a882156258e41dc6d12111eafc82069c61', 'src/main/resources/images/preview/new/6.jpg', 'Eva', 'Eva', 'Davis', 'เขตคลองสามวา', 'eva.davis@email.com', '4443332222', NOW(),
         'DogWalkers'),
 
-       ('0233053c6b3165d4ddfe17a337ba130122aeb5764603c90103d4cea023d35a54d1', '2c1dfdaa3a2d54661df593e1b93acae0475548b2893df5ecd304b62558525ec5', 'src/main/resources/images/preview/11.jpg', 'David', 'David', 'Smith', 'เขตห้วยขวาง', 'david.smith@email.com', '7778889999', NOW(),
+       ('0233053c6b3165d4ddfe17a337ba130122aeb5764603c90103d4cea023d35a54d1', '2c1dfdaa3a2d54661df593e1b93acae0475548b2893df5ecd304b62558525ec5', 'src/main/resources/images/preview/new/7.jpg', 'David', 'David', 'Smith', 'เขตห้วยขวาง', 'david.smith@email.com', '7778889999', NOW(),
         'DogWalkers'),
 
-       ('02ab5b4e2b1d3c813368e1a885f695c8c5486a4b530d4532a00b424e532ef6b0aa', '4b5ba8d6c75448ad54f8ffa5e65fe51e301454d2b0687a8c9f9ce08d63406eab', 'src/main/resources/images/preview/1.jpg', 'Emma', 'Emma', 'Jones', 'เขตหลักสี่', 'emma.jones@email.com', '5554443333', NOW(),
+       ('02ab5b4e2b1d3c813368e1a885f695c8c5486a4b530d4532a00b424e532ef6b0aa', '4b5ba8d6c75448ad54f8ffa5e65fe51e301454d2b0687a8c9f9ce08d63406eab', 'src/main/resources/images/preview/new/8.jpg', 'Emma', 'Emma', 'Jones', 'เขตหลักสี่', 'emma.jones@email.com', '5554443333', NOW(),
         'DogWalkers'),
 
        ('0388d8085a5937663b732c4b7939cb9219ef2803b623f72710d0f38b8cf71d25f8', '779a889b3d9ab5e5078e7f2bd740f63ebbbd13a10002da09298f63bd9a94be5f', 'src/main/resources/images/preview/19.jpg', 'Frank', 'Frank', 'Taylor', 'เขตลาดพร้าว', 'frank.taylor@email.com', '1119998888', NOW(),
