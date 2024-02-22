@@ -82,7 +82,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                 DogWalkerField(
                     walkerID = it[DOGWALKERS.WALKER_ID],
                     userID = it[DOGWALKERS.USER_ID],
-                    //locationName = it[USERPROFILES.LOCATION_NAME],
+                    locationName = it[USERPROFILES.LOCATION_NAME],
                     idCardNumber = it[DOGWALKERS.ID_CARD_NUMBER],
                     verification = it[DOGWALKERS.VERIFICATION],
                     priceSmall = it[DOGWALKERS.PRICE_SMALL],

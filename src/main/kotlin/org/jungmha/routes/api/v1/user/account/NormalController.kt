@@ -1,5 +1,8 @@
 package org.jungmha.routes.api.v1.user.account
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micronaut.context.annotation.Bean
 import io.micronaut.core.annotation.Introspected
@@ -112,10 +115,15 @@ class NormalController @Inject constructor(
     private suspend fun processSearching(name: String): MutableHttpResponse<out Any?> {
         // เรียกดูข้อมูลบัญชีผู้ใช้คนนั้นๆ
         val userInfo: NormalInfo? = userService.getUserInfo(name)
+        println(userInfo)
+
+        val objectMapper = ObjectMapper().registerModule(KotlinModule()).registerModule(JavaTimeModule())
+        val jsonString = objectMapper.writeValueAsString(userInfo)
 
         return if (userInfo != null) {
             val rawObject = jacksonObjectMapper().writeValueAsString(userInfo)
-            rawObject.processEncrypting(name)
+            //rawObject.processEncrypting(name)
+            jsonString.processEncrypting(name)
         } else {
             LOG.warn("User info not found for user: $name")
             HttpResponse.notFound("User info not found")
