@@ -17,6 +17,7 @@ class ChaCha20Test {
         firstName = "สมหมาย",
         lastName = "ใจหมา",
         email = "sample1@gmail.com",
+        locationName = "เขตวัฒนา",
         phoneNumber = "0987654321",
         userType = "Normal"
     )
