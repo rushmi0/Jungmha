@@ -50,8 +50,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1")
 
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
     implementation("org.bouncycastle:bcprov-jdk18on:1.77")
@@ -64,6 +62,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation("com.google.guava:guava:32.1.2-jre")
+
 
 }
 
@@ -146,8 +145,8 @@ jooq {
                 //logging = Logging.DEBUG
                 jdbc.apply {
                     driver = "org.postgresql.Driver"
-                    url = "jdbc:postgresql://localhost:5432/postgres"
-                    //url = "jdbc:postgresql://jungmha-postgres:5432/postgres"
+                    //url = "jdbc:postgresql://localhost:5432/postgres"
+                    url = "jdbc:postgresql://jungmha-postgres:5432/postgres"
                     user = "postgres"
                     password = "sql@min"
                     properties.add(Property().apply {

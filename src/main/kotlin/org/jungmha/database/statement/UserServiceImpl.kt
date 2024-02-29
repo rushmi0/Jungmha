@@ -91,7 +91,6 @@ class UserServiceImpl @Inject constructor(
                 up.IMAGE_PROFILE,
                 up.FIRST_NAME,
                 up.LAST_NAME,
-                up.LOCATION_NAME,
                 up.EMAIL,
                 up.PHONE_NUMBER,
                 up.USER_TYPE
@@ -126,7 +125,6 @@ class UserServiceImpl @Inject constructor(
                     userName = record[up.USERNAME],
                     firstName = record[up.FIRST_NAME],
                     lastName = record[up.LAST_NAME],
-                    locationName = record[up.LOCATION_NAME],
                     email = record[up.EMAIL],
                     phoneNumber = record[up.PHONE_NUMBER],
                     accountType = record[up.USER_TYPE],
@@ -179,7 +177,6 @@ class UserServiceImpl @Inject constructor(
                         result[USERPROFILES.USERNAME],
                         result[USERPROFILES.FIRST_NAME],
                         result[USERPROFILES.LAST_NAME],
-                        result[USERPROFILES.LOCATION_NAME],
                         result[USERPROFILES.EMAIL],
                         result[USERPROFILES.PHONE_NUMBER],
                         result[USERPROFILES.CREATED_AT],
@@ -226,7 +223,6 @@ class UserServiceImpl @Inject constructor(
                         record[USERPROFILES.USERNAME],
                         record[USERPROFILES.FIRST_NAME],
                         record[USERPROFILES.LAST_NAME],
-                        record[USERPROFILES.LOCATION_NAME],
                         record[USERPROFILES.EMAIL],
                         record[USERPROFILES.PHONE_NUMBER],
                         record[USERPROFILES.CREATED_AT],
@@ -292,12 +288,10 @@ class UserServiceImpl @Inject constructor(
                 val updateRows = query.update(USERPROFILES)
                     .set(USERPROFILES.FIRST_NAME, payload.firstName)
                     .set(USERPROFILES.LAST_NAME, payload.lastName)
-                    .set(USERPROFILES.LOCATION_NAME, payload.locationName)
                     .set(USERPROFILES.EMAIL, payload.email)
                     .set(USERPROFILES.PHONE_NUMBER, payload.phoneNumber)
                     .set(USERPROFILES.USER_TYPE, payload.userType)
                     .where(USERPROFILES.USERNAME.eq(userName))
-
 
                 val result = updateRows.execute()
 

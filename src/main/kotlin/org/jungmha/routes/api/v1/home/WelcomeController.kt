@@ -27,23 +27,6 @@ class WelcomeController {
         ?.readBytes()
         ?.toString(Charset.defaultCharset())
 
-    @Get(uri = "/", produces = [MediaType.TEXT_HTML])
-    fun public(): String? = resource
-
-    @Get(uri = "/login/user", produces = [MediaType.TEXT_HTML])
-    fun loginUser(): String? = resource
-
-    @Get(uri = "/login/caretaker", produces = [MediaType.TEXT_HTML])
-    fun loginCaretaker(): String? = resource
-
-    @Get(uri = "/register/user", produces = [MediaType.TEXT_HTML])
-    fun registerUser(): String? = resource
-
-    @Get(uri = "/register/caretaker", produces = [MediaType.TEXT_HTML])
-    fun registerCaretaker(): String? = resource
-
-
-
 
 
 }

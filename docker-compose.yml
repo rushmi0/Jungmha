@@ -14,7 +14,7 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - /home/milko/items/dev/Kotlin/sm-jungmha/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
+      - /home/milko/items/dev/Kotlin/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
     networks:
       - dev_network
 
@@ -23,9 +23,9 @@ services:
     image: amazoncorretto:17
     restart: unless-stopped
     ports:
-      - "80:8080"
+      - "8080:8080"
     volumes:
-      - /home/milko/items/dev/Kotlin/sm-jungmha/Jungmha:/app/source-code
+      - /home/milko/items/dev/Kotlin/Jungmha:/app/source-code
     working_dir: /app/source-code
     command:
       - sh

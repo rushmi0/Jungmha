@@ -15,7 +15,6 @@ data class NormalInfo(
     val userName: String,
     val firstName: String,
     val lastName: String,
-    val locationName: String,
     val email: String,
     val phoneNumber: String,
     val accountType: String,
