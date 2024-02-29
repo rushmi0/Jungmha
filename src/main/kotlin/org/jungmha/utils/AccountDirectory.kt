@@ -1,12 +1,35 @@
 package org.jungmha.utils
 
+import io.micronaut.core.annotation.Introspected
+import org.jungmha.utils.AccountDirectory.randomFileName
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
+@Introspected
 object AccountDirectory {
 
     val LOG: Logger = LoggerFactory.getLogger(AccountDirectory::class.java)
+
+    private fun String.listFilesInDefaultDirectory(): List<String> {
+        val defaultDirectory = File(this)
+        return if (defaultDirectory.exists() && defaultDirectory.isDirectory) {
+            defaultDirectory.listFiles()?.map { file -> this + "/" + file.name } ?: emptyList()
+        } else {
+            emptyList()
+        }
+    }
+
+    fun randomFileName(path: String): String? {
+        val files = path.listFilesInDefaultDirectory()
+        return if (files.isNotEmpty()) {
+            val randomIndex = files.indices.random()
+            files[randomIndex]
+        } else {
+            null
+        }
+    }
+
 
     fun createDirectory(typeAccount: String, directoryID: Int): Boolean {
         // กำหนดเส้นทางของไดเร็กทอรีหลัก
@@ -18,16 +41,14 @@ object AccountDirectory {
 
                 "DogWalkers",
                 "Normal" -> {
-                    // สร้างไดเร็กทอรี `profileImage` สำหรับลูกค้า
                     File("$baseDirectory/profileImage").apply { mkdirs() }
-                    true // สร้างไดเร็กทอรีสำเร็จ
+                    true
                 }
 
                 else -> false
             }
 
         } catch (e: Exception) {
-            // แสดงข้อผิดพลาดที่เกิดขึ้น
             LOG.error("There was an error in creating a directory: ${e.message}")
             false
         }
@@ -35,11 +56,8 @@ object AccountDirectory {
 
 
     fun deleteFilesInPathAndCheckExistence(filePath: String): Boolean {
-        // สร้างอ็อบเจกต์ของ File จากที่กำหนดให้
         val fileToDelete = File(filePath)
-
         return try {
-            // ตรวจสอบว่าไฟล์หรือเส้นทางที่ระบุมีอยู่หรือไม่
             if (!fileToDelete.exists() || !fileToDelete.isFile) {
                 LOG.warn("The specified file path does not exist: $filePath")
             }

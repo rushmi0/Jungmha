@@ -1,9 +1,11 @@
 package org.jungmha.database.field
 
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 import java.time.OffsetDateTime
 
 @Serdeable.Serializable
+@Introspected
 data class UserProfileField(
     val userID: Int,
     val authenKey: String,

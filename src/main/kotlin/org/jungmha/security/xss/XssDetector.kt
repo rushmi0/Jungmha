@@ -1,5 +1,8 @@
 package org.jungmha.security.xss
 
+import io.micronaut.core.annotation.Introspected
+
+@Introspected
 class XssDetector {
 
     companion object {

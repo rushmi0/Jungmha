@@ -1,18 +1,18 @@
 package org.jungmha.security.securekey
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
-import org.jungmha.security.securekey.ECPublicKey.compressed
 import org.jungmha.security.securekey.ECPublicKey.pointRecovery
-import org.jungmha.security.securekey.ECPublicKey.toPublicKey
 import org.jungmha.security.securekey.EllipticCurve.multiplyPoint
 import java.math.BigInteger
 
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class ECDHkey {
 
     /**
@@ -38,8 +38,16 @@ class ECDHkey {
             point
         )
 
-        // เอาเฉพาะพิกัด x และแปลงเป็นเลขฐาน 16 ก่อนคืนค่ากลับไป
-        return curvePoint.x.toString(16)
+        // เอาเฉพาะพิกัด x และแปลงเป็นเลขฐาน 16
+        val coordX = curvePoint.x.toString(16)
+
+        // ตรวจสอบว่าค่า coordX มีขนาดน้อยกว่า 64 หรือไม่
+        if (coordX.length < 64) {
+            // เพิ่ม 0 ไปหน้าสุดจนกว่าจะครบ 64 ตัวอักษร
+            return "0".repeat(64 - coordX.length) + coordX
+        }
+
+        return coordX
     }
 
 }

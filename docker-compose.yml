@@ -18,12 +18,12 @@ services:
     networks:
       - dev_network
 
-  jungmha-jit-app:
-    container_name: jungmha-jit-app
+  jungmha-app:
+    container_name: jungmha-app
     image: amazoncorretto:17
     restart: unless-stopped
     ports:
-      - "80:8080"
+      - "8080:8080"
     volumes:
       - /home/milko/items/dev/Kotlin/Jungmha:/app/source-code
     working_dir: /app/source-code
@@ -37,8 +37,9 @@ services:
     networks:
       - dev_network
 
+
   cloudflared-tunnel:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token eyJhIjoiOWY0MTBlZjhhY2ZmYWQzYjY1YmJhNzZiMzQzZjhiZTYiLCJ0IjoiZTk3N2NmYzQtMWJiOS00YjliLTg5NGQtYzA1YWU3NjRjZjZkIiwicyI6IlpUazBObUkwTURndFpqVTROQzAwTnpoakxUazNOMkV0Tm1SaE1qUTBOems1Tm1NeiJ9
+    command: tunnel --no-autoupdate run --token eyJhIjoiOWY0MTBlZjhhY2ZmYWQzYjY1YmJhNzZiMzQzZjhiZTYiLCJ0IjoiYWQ2ZGFlNjctY2Y4MS00N2JhLThkYWYtODczNDdiMDM1MDQ4IiwicyI6IllXVmpOV1UxTldFdE16UmtOQzAwWWpVNExUZzNNVEF0WXpCbVlqaGtPV1V4TW1KbCJ9

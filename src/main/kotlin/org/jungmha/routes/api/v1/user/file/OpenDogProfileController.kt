@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.user.file
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -27,6 +28,7 @@ import java.nio.file.Path
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class OpenDogProfileController @Inject constructor(
     private val service: DogsServiceImpl
 ) {

@@ -1,6 +1,7 @@
 package org.jungmha.database.statement
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class DogsServiceImpl @Inject constructor(
     private val query: DSLContext,
     coroutineDispatcher: CoroutineDispatcher?
@@ -167,7 +169,7 @@ class DogsServiceImpl @Inject constructor(
 
                 return@withContext affectedRows > 0
             } catch (e: Exception) {
-                LOG.error("An error occurred during update", e.message)
+                LOG.error("An error occurred during update: ${e.message}")
                 return@withContext false
             }
         }

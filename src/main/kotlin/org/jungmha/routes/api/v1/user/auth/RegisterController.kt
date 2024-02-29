@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.user.auth
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -34,6 +35,8 @@ import org.jungmha.constants.NormalValidateField
 import org.jungmha.database.statement.DogsWalkersServiceImpl
 import org.jungmha.security.securekey.ChaCha20
 import org.jungmha.security.securekey.TokenResponse
+import org.jungmha.utils.AccountDirectory.randomFileName
+import kotlin.random.Random
 
 
 // * RegisterController
@@ -50,6 +53,7 @@ import org.jungmha.security.securekey.TokenResponse
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class RegisterController @Inject constructor(
     private val userService: UserServiceImpl,
     private val walkersService: DogsWalkersServiceImpl,
@@ -143,6 +147,14 @@ class RegisterController @Inject constructor(
 
         val statement: Boolean = userService.updateMultiField(name, userData)
         return if (statement) {
+
+            val image =  randomFileName("src/main/resources/images/default") ?: "N/A"
+            userService.updateSingleField(
+                userInfo.userID,
+                "imageProfile",
+                image
+            )
+
             val userId = userInfo.userID
             val token = token.buildTokenPair(
                 name,

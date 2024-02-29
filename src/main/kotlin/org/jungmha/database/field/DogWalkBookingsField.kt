@@ -1,11 +1,13 @@
 package org.jungmha.database.field
 
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.serde.annotation.Serdeable
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
 @Serdeable.Serializable
+@Introspected
 data class DogWalkBookingsField(
     val bookingID: Int,
     val walkerID: Int,

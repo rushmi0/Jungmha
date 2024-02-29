@@ -1,8 +1,9 @@
 package org.jungmha.database.statement
 
+import io.micronaut.core.annotation.Introspected
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
+@Introspected
 object ValidateData {
 
     val LOG: Logger = LoggerFactory.getLogger(ValidateData::class.java)

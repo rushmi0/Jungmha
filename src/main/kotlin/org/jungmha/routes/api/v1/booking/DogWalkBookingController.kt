@@ -1,6 +1,7 @@
 package org.jungmha.routes.api.v1.booking
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
@@ -50,6 +51,7 @@ import java.util.ArrayDeque
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class DogWalkBookingController @Inject constructor(
     private val bookingService: DogWalkBookingsServiceImpl,
     private val userService: UserServiceImpl,
@@ -70,7 +72,7 @@ class DogWalkBookingController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        //schema = Schema(implementation = DogWalkBookings::class)
+                        schema = Schema(implementation = DogWalkBookings::class)
                     )
                 ]
             )

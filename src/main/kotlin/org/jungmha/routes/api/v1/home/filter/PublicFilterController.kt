@@ -2,6 +2,7 @@ package org.jungmha.routes.api.v1.home.filter
 
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.MediaType
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -30,6 +31,7 @@ import java.util.stream.Collectors
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class PublicFilterController @Inject constructor(
     private val service: DogsWalkersServiceImpl
 ) {

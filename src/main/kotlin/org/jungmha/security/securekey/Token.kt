@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Value
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
@@ -17,6 +18,7 @@ import java.util.*
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class Token @Inject constructor(
     @Value("\${org.jungmha.security.securekey.secret}") private val secretKey: String,
 ){

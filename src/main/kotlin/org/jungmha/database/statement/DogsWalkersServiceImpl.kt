@@ -1,6 +1,7 @@
 package org.jungmha.database.statement
 
 import io.micronaut.context.annotation.Bean
+import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory
 @Bean
 @RequestScope
 @ExecuteOn(TaskExecutors.IO)
+@Introspected
 class DogsWalkersServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?
