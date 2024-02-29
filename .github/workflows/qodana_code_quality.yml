@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - backend-test
+      - backend
 
 jobs:
   qodana:

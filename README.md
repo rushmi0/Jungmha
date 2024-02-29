@@ -17,7 +17,58 @@
 #### ชั้นที่ 4 Database
 - ฐานข้อมูลนี้คือก้อนของข้อมูล ที่มีการเก็บข้อมูลต่างๆไว้ และในส่วนนนี้ยังมีการ เขียนโปรแกรมทำอะไรบ้างอย่างกับข้อมูล เพื่อให้ฐานข้อมูลฉลาดขึ้น จะได้ลดภาระ หรือลดโค้ดในชั้นที่ 2 และ 3
 
-## 
+## Tech Stack
+
+### Backend Framework
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/micronaut.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+### Programming Language
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/Kotlin.png" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+### Runtime Environment
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/graalvm.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+### Relational Database
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/postgresql.png" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+### IDE (Integrated Development Environment)
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/icon_IntelliJIDEA.png" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+### Code Analysis
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/sonar.png" height=120 width=120 style="border-radius: 20% ; float: left; margin-right: 10px;" /></span>
+  <span><img src="src/main/resources/images/diagram/icons/qodana.jpeg" height=120 width=120 style="border-radius: 20%;" /></span>
+
+</div>
+
+
+### DevOps
+
+<div align="start">
+  <span><img src="src/main/resources/images/diagram/icons/cloudflare.png" height=120 width=120 style="border-radius: 20%; float: left; margin-right: 10px;" /></span>
+  <span><img src="src/main/resources/images/diagram/icons/docker.png" height=120 width=120 style="border-radius: 20%; float: left; margin-right: 10px;" /></span>
+  <span><img src="src/main/resources/images/diagram/icons/github.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
+</div>
+
+
+
+<br/>
 
 
 ## Sequence Diagram
