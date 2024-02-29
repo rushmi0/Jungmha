@@ -46,7 +46,7 @@
 ### IDE (Integrated Development Environment)
 
 <div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/icon_IntelliJIDEA.png" height=120 width=120 style="border-radius: 20%;" /></span>
+  <span><img src="src/main/resources/images/diagram/icons/intellij.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
 </div>
 
 ### Code Analysis
