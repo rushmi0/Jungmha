@@ -30,7 +30,7 @@ dependencies {
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("org.postgresql:postgresql")
 
-    jooqGenerator("org.postgresql:postgresql:42.5.1")
+    jooqGenerator("org.postgresql:postgresql:42.3.9")
 
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.openapi:micronaut-openapi:6.4.0")
