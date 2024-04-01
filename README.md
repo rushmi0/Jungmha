@@ -20,15 +20,22 @@
 ## Tech Stack
 
 ### Backend Framework
+<div align="center">
 
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/micronaut.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
-</div>
+	<table>
 
-### Programming Language
+		<tr>
 
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/Kotlin.png" height=120 width=120 style="border-radius: 20%;" /></span>
+			<td><code><img width="50" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/></code></td>
+
+			<td><code><img width="50" src="https://user-images.githubusercontent.com/25181517/183015296-d406cb7c-e374-440d-8057-580f08121db9.png" alt="Micronaut" title="Micronaut"/></code></td>
+
+			<td><code><img width="50" src="https://user-images.githubusercontent.com/25181517/185062810-7ee0c3d2-17f2-4a98-9d8a-a9576947692b.png" alt="Kotlin" title="Kotlin"/></code></td>
+
+		</tr>
+
+	</table>
+
 </div>
 
 ### Runtime Environment
