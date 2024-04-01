@@ -25,6 +25,7 @@
 		<tr>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/184146221-671413cb-b1ae-47db-a232-b37c99281516.png" alt="SonarQube" title="SonarQube"/></td>
+			<td><img width="64" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/qodana.jpeg" alt="SonarQube" title="SonarQube"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183015296-d406cb7c-e374-440d-8057-580f08121db9.png" alt="Micronaut" title="Micronaut"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183017085-067f30b6-1032-4f89-adc4-ba917d6d0f3a.png" alt="GraalVM" title="GraalVM"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/185062810-7ee0c3d2-17f2-4a98-9d8a-a9576947692b.png" alt="Kotlin" title="Kotlin"/></td>
