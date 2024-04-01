@@ -19,46 +19,14 @@
 
 ## Tech Stack
 
-### Backend Framework
 <div align="center">
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/></code>
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/183015296-d406cb7c-e374-440d-8057-580f08121db9.png" alt="Micronaut" title="Micronaut"/></code>
-	<code><img width="50" src="https://user-images.githubusercontent.com/25181517/185062810-7ee0c3d2-17f2-4a98-9d8a-a9576947692b.png" alt="Kotlin" title="Kotlin"/></code>
-</div>
-
-### Runtime Environment
-
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/graalvm.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
-</div>
-
-### Relational Database
-
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/postgresql.png" height=120 width=120 style="border-radius: 20%;" /></span>
-</div>
-
-### IDE (Integrated Development Environment)
-
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/intellij.jpg" height=120 width=130 style="border-radius: 20%;" /></span>
-</div>
-
-### Code Analysis
-
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/sonar.png" height=120 width=120 style="border-radius: 20% ; float: left; margin-right: 10px;" /></span>
-  <span><img src="src/main/resources/images/diagram/icons/qodana.jpeg" height=120 width=120 style="border-radius: 20%;" /></span>
-
-</div>
-
-
-### DevOps
-
-<div align="start">
-  <span><img src="src/main/resources/images/diagram/icons/cloudflare.png" height=120 width=120 style="border-radius: 20%; float: left; margin-right: 10px;" /></span>
-  <span><img src="src/main/resources/images/diagram/icons/docker.png" height=120 width=120 style="border-radius: 20%; float: left; margin-right: 10px;" /></span>
-  <span><img src="src/main/resources/images/diagram/icons/github.jpg" height=120 width=120 style="border-radius: 20%;" /></span>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/184146221-671413cb-b1ae-47db-a232-b37c99281516.png" alt="SonarQube" title="SonarQube"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/183015296-d406cb7c-e374-440d-8057-580f08121db9.png" alt="Micronaut" title="Micronaut"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/183017085-067f30b6-1032-4f89-adc4-ba917d6d0f3a.png" alt="GraalVM" title="GraalVM"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/185062810-7ee0c3d2-17f2-4a98-9d8a-a9576947692b.png" alt="Kotlin" title="Kotlin"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png" alt="PostgreSQL" title="PostgreSQL"/>
+	<img width="128" src="https://user-images.githubusercontent.com/25181517/117207330-263ba280-adf4-11eb-9b97-0ac5b40bc3be.png" alt="Docker" title="Docker"/>
 </div>
 
 
