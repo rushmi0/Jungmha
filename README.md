@@ -1,5 +1,5 @@
 <div align="center">
-  <span><img src="src/main/resources/images/diagram/Logo.svg" height=512 width=512 /></span>
+  <span><img src="src/main/resources/images/diagram/Logo.svg" height=200 width=512 /></span>
 </div>
 
 
@@ -9,7 +9,7 @@
 - ส่วนของการจัดส่งข้อมูล ที่จะให้บริการต่างๆแก่ Frontend
 
 #### ชั้นที่ 2 Business Logic
-- สำหรับการทำงานของ Method หรือ ส่วนการคำนวณต่างๆ 
+- สำหรับการทำงานของ Method หรือ ส่วนการคำนวณต่างๆ
 
 #### ชั้นที่ 3 Connect and execute SQL
 - ในส่วนนี้จะเป็นการเชื่อมกับฐานข้อมูลและดำเนินการ SQL และ จัดเตรียมรูปแบบข้อมูล ที่จะส่งให้ ขั้นที่ 2 ไปคำนวณต่อ
@@ -26,13 +26,13 @@
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/184146221-671413cb-b1ae-47db-a232-b37c99281516.png" alt="SonarQube" title="SonarQube"/></td>
 			<td><img width="64" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/qodana.jpeg" alt="SonarQube" title="SonarQube"/></td>
-			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183015296-d406cb7c-e374-440d-8057-580f08121db9.png" alt="Micronaut" title="Micronaut"/></td>
+			<td><img width="80" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/micronaut.jpg" alt="Micronaut" title="Micronaut"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183017085-067f30b6-1032-4f89-adc4-ba917d6d0f3a.png" alt="GraalVM" title="GraalVM"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/185062810-7ee0c3d2-17f2-4a98-9d8a-a9576947692b.png" alt="Kotlin" title="Kotlin"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/117208740-bfb78400-adf5-11eb-97bb-09072b6bedfc.png" alt="PostgreSQL" title="PostgreSQL"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/117207330-263ba280-adf4-11eb-9b97-0ac5b40bc3be.png" alt="Docker" title="Docker"/></td>
-			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/186885787-4011a347-1f68-472c-bf8b-31ed1bb4f8ce.png" alt="fedora" title="fedora"/></td>
-		</tr>
+			<td><img width="64" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/cloudflare.png" alt="fedora" title="cloudflare"/></td>
+        </tr>
 	</table>
 </div>
 
@@ -47,8 +47,7 @@
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183897015-94a058a6-b86e-4e42-a37f-bf92061753e5.png" alt="React" title="React"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183568594-85e280a7-0d7e-4d1a-9028-c8c2209e073c.png" alt="Node.js" title="Node.js"/></td>
 			<td><img width="64" src="https://github-production-user-asset-6210df.s3.amazonaws.com/62091613/261395532-b40892ef-efb8-4b0e-a6b5-d1cfc2f3fc35.png" alt="Vite" title="Vite"/></td>
-			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/186884150-05e9ff6d-340e-4802-9533-2c3f02363ee3.png" alt="Windows" title="Windows"/></td>
-		</tr>
+        </tr>
 	</table>
 </div>
 
@@ -59,13 +58,13 @@
 
 ระบบลงทะเบียนและเข้าสู่ระบบ
 
-### Account Register 
+### Account Register
 
 เพื่อความปลอดภัยของข้อมูลที่ส่งไปยังเซิร์ฟเวอร์ การลงทะเบียนจำเป็นต้องมีการสร้างช่องทางสื่อสารที่ปลอดภัย โดยเฉพาะเมื่อข้อมูลที่ส่งมีความลับ เช่น ข้อมูลส่วนตัว หรือข้อความแชท ดังนั้น การใช้ Cryptography เป็นสิ่งสำคัญอย่างยิ่ง
 
 
 #### Elliptic Curve
-ใช้ [Elliptic Curve](https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc) และเส้นโค้ง [Secp256k1](https://www.secg.org/sec2-v2.pdf) ในการสร้าง **Public Key** เป็นรูปแบบบีบอัดขนาด 33 Bytes 
+ใช้ [Elliptic Curve](https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc) และเส้นโค้ง [Secp256k1](https://www.secg.org/sec2-v2.pdf) ในการสร้าง **Public Key** เป็นรูปแบบบีบอัดขนาด 33 Bytes
 
 > _Private Key นั้นสร้างโดยนำ Password มา Hash ด้วย Sha256 ทั้งหมด 7,200 รอบ เพื่อถ่วงเวลาพวกที่จะมา brute force_
 
