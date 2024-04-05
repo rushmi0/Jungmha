@@ -25,24 +25,28 @@ mkdir -p $HOME/.graal
 tar -xvf graalvm-ce-17.0.9.tar.xz -C $HOME/.graal
 ```
 
-ดูให้แน่ชัดว่าตัวเองใช้ bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
+ดูให้แน่ชัดว่าตัวเองใช้ shell bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
 ```shell
 export JAVA_HOME=/home/user/.graal/graalvm-ce-17.0.9
 export PATH=$JAVA_HOME/bin:$PATH
 source ~/.zshrc
 ```
 
-## JIT
-ทำการ compile ไปเป็น bytes code เสร็จแล้วนำไปรันด้วย jvm
+### ตัวเลือกในการใช้งาน
+
+#### Just-in-time (JIT) compilation
+ใช้วิธีการแปลงโค้ดไปเป็น bytes code ก่อน แล้วนำไปรันผ่าน Java Virtual Machine (JVM) ดังนี้
 ```shell
 ./gradlew assemble; java -jar build/docker/optimized/layers/application.jar
 ```
 
-## AOT
-ทำการ compile ไปเป็น native ของ platform นั้นๆ เสร็จแล้วรันได้เลย
+#### Ahead-of-time (AOT) compilation
+ใช้วิธีการแปลงโค้ดไปเป็น native machine code ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
 ```shell
 ./gradlew nativeOptimizedCompile; .build/native/nativeOptimizedCompile/jungmha
 ```
+
+โดยคำสั่งทั้งสองนี้เป็นตัวเลือกในการคอมไพล์และรันโปรแกรม ซึ่ง JIT ทำการคอมไพล์แบบแปลงเป็น bytes code และรันผ่าน JVM ในขณะที่ AOT ทำการคอมไพล์เป็น native code ของแพลตฟอร์มนั้นๆ และรันโดยตรงโดยไม่ต้องผ่าน JVM อีกต่อไป
 <br>
 
 
