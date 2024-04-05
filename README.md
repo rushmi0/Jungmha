@@ -44,6 +44,9 @@ source ~/.zshrc
 ```shell
 ./gradlew nativeOptimizedCompile; .build/native/nativeOptimizedCompile/jungmha
 ```
+<div align="center">
+  <span><img src="src/main/resources/images/diagram/icons/swappy-20240405-203708.png" height=256 width=512 /></span>
+</div>
 
 โดยคำสั่งทั้งสองนี้เป็นตัวเลือกในการคอมไพล์และรันโปรแกรม ซึ่ง JIT ทำการคอมไพล์แบบแปลงเป็น bytes code และรันผ่าน JVM ในขณะที่ AOT ทำการคอมไพล์เป็น native code ของแพลตฟอร์มนั้นๆ และรันโดยตรงโดยไม่ต้องผ่าน JVM อีกต่อไป
 <br>
