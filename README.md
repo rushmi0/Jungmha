@@ -20,8 +20,8 @@ ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jung
 ผมได้จัดเตรียม graalvm ไว้แล้วซึ่งผมโหลดมาโดยใช้ Intellij ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
 
 ```shell
-mkdir -p $HOME/.graal
-tar -xvf graalvm-ce-17.0.9.tar.xz -C ~/.graal
+mkdir -p $HOME/.graal;
+tar -xvf graalvm-ce-17.0.9.tar.gz -C $HOME/.graal
 ```
 
 ดูให้แน่ชัดว่าตัวเองใช้ shell bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
