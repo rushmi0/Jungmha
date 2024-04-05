@@ -2,7 +2,45 @@
   <span><img src="src/main/resources/images/diagram/Logo.svg" height=200 width=512 /></span>
 </div>
 
-## ขั้นตอนการติดตั้ง
+## ขั้นตอนการติดตั้งสำหรับ Linux
+
+### สร้างฐานข้อมูล
+ติดตั้ง docker ให้เรียบร้อยก่อน ถ้ามีอยู่แล้วก็รันคำสั่งนี้ 
+```shell
+ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jungmha up -d jungmhaDB
+```
+
+### ติดตั้ง GraalVM Community Edition
+ผมได้จัดเตรียม graalvm ไว้แล้วซึ่งผมโหลดมาโดยใช้ Intellij ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
+https://docs.oracle.com/en/graalvm/jdk/17/docs/getting-started/installation-linux/#installation-on-linux-platforms
+```shell
+mkdir -p $HOME/.graal
+tar -xvf graalvm-ce-17.0.9.tar.xz -C $HOME/.graal
+```
+
+ดูให้แน่ชัดว่าตัวเองใช้ bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
+```shell
+export JAVA_HOME=/home/user/.graal/graalvm-ce-17.0.9
+export PATH=$JAVA_HOME/bin:$PATH
+source ~/.zshrc
+```
+
+## JIT
+ทำการ compile ไปเป็น bytes code เสร็จแล้วนำไปรันด้วย jvm
+```shell
+./gradlew assemble; java -jar build/docker/optimized/layers/application.jar
+```
+
+## AOT
+ทำการ compile ไปเป็น native ของ platform นั้นๆ เสร็จแล้วรันได้เลย
+```shell
+./gradlew nativeOptimizedCompile; .build/native/nativeOptimizedCompile/jungmha
+```
+<br>
+
+ตัวเลือกอื่นๆ
+ - nativeCompile
+ - nativeOptimizedCompile
 
 
 ## Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
