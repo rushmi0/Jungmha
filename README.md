@@ -19,7 +19,6 @@ ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jung
 ### ติดตั้ง GraalVM Community Edition
 ผมได้จัดเตรียม graalvm ไว้แล้วซึ่งผมโหลดมาโดยใช้ Intellij ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
 
-https://docs.oracle.com/en/graalvm/jdk/17/docs/getting-started/installation-linux/#installation-on-linux-platforms
 ```shell
 mkdir -p $HOME/.graal
 tar -xvf graalvm-ce-17.0.9.tar.xz -C $HOME/.graal
