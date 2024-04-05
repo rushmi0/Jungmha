@@ -14,9 +14,11 @@ services:
     environment:
       POSTGRES_PASSWORD: sql@min
     volumes:
-      - /home/milko/items/dev/Kotlin/Jungmha/src/main/resources/db/migration:/docker-entrypoint-initdb.d/
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d/
     networks:
       - dev_network
+
+
 
   jungmha-app:
     container_name: jungmha-app
@@ -42,4 +44,5 @@ services:
     container_name: cloudflared-tunnel
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token eyJhIjoiOWY0MTBlZjhhY2ZmYWQzYjY1YmJhNzZiMzQzZjhiZTYiLCJ0IjoiYWQ2ZGFlNjctY2Y4MS00N2JhLThkYWYtODczNDdiMDM1MDQ4IiwicyI6IllXVmpOV1UxTldFdE16UmtOQzAwWWpVNExUZzNNVEF0WXpCbVlqaGtPV1V4TW1KbCJ9
+    command: tunnel --no-autoupdate run --token
+

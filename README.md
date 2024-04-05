@@ -2,6 +2,7 @@
   <span><img src="src/main/resources/images/diagram/Logo.svg" height=200 width=512 /></span>
 </div>
 
+## ขั้นตอนการติดตั้ง
 
 
 ## Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
