@@ -4,6 +4,12 @@
 
 ## ขั้นตอนการติดตั้งสำหรับ Linux
 
+
+```shell
+git clone https://github.com/rushmi0/Jungmha.git
+cd Jungmha
+```
+
 ### สร้างฐานข้อมูล
 ติดตั้ง docker ให้เรียบร้อยก่อน ถ้ามีอยู่แล้วก็รันคำสั่งนี้ 
 ```shell
@@ -12,6 +18,7 @@ ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jung
 
 ### ติดตั้ง GraalVM Community Edition
 ผมได้จัดเตรียม graalvm ไว้แล้วซึ่งผมโหลดมาโดยใช้ Intellij ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
+
 https://docs.oracle.com/en/graalvm/jdk/17/docs/getting-started/installation-linux/#installation-on-linux-platforms
 ```shell
 mkdir -p $HOME/.graal
@@ -38,9 +45,6 @@ source ~/.zshrc
 ```
 <br>
 
-ตัวเลือกอื่นๆ
- - nativeCompile
- - nativeOptimizedCompile
 
 
 ## Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
