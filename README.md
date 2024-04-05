@@ -67,7 +67,7 @@ source ~/.zshrc
 <div>
 	<table>
 		<tr>
-			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/192108890-200809d1-439c-4e23-90d3-b090cf9a4eea.png" alt="IntelliJ" title="IntelliJ"/></td>
+			<td><img width="64" src="src/main/resources/images/diagram/icons/idea.svg" alt="IntelliJ" title="IntelliJ"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/184146221-671413cb-b1ae-47db-a232-b37c99281516.png" alt="SonarQube" title="SonarQube"/></td>
 			<td><img width="64" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/qodana.jpeg" alt="SonarQube" title="SonarQube"/></td>
 			<td><img width="80" src="https://raw.githubusercontent.com/rushmi0/Jungmha/backend/src/main/resources/images/diagram/icons/micronaut.jpg" alt="Micronaut" title="Micronaut"/></td>
