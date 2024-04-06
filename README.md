@@ -58,6 +58,7 @@ cd build/native/nativeOptimizedCompile
 
 ### เอกสารการใช้งาน API
 - https://jungmha.rushmi0.win/swagger-ui
+- https://jungmha.rushmi0.win/redoc
 ___
 
 # Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
