@@ -36,13 +36,16 @@ source ~/.zshrc
 #### 🔧  Just-in-time (JIT) compilation
 ใช้วิธีการแปลงโค้ดไปเป็น bytes code ก่อน แล้วนำไปรันผ่าน Java Virtual Machine (JVM) ดังนี้
 ```shell
-./gradlew assemble; java -jar build/docker/optimized/layers/application.jar
+./gradlew assemble
+java -jar build/docker/optimized/layers/application.jar
 ```
 
 #### 🔧   Ahead-of-time (AOT) compilation
-ใช้วิธีการแปลงโค้ดไปเป็น native machine code ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
+ใช้วิธีการแปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
 ```shell
-./gradlew nativeOptimizedCompile; .build/native/nativeOptimizedCompile/jungmha
+./gradlew nativeOptimizedCompile
+cd build/native/nativeOptimizedCompile
+./jungmha
 ```
 <div align="center">
   <span><img src="src/main/resources/images/diagram/icons/swappy-20240405-203708.png" height=256 width=450 /></span>
