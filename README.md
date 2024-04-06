@@ -52,6 +52,9 @@ source ~/.zshrc
 <br>
 <br>
 <br>
+
+### เอกสารการใช้งาน API
+- https://jungmha.rushmi0.win/swagger-ui
 ___
 
 # Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
