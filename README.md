@@ -26,7 +26,7 @@ tar -xvf graalvm-ce-17.0.9.tar.gz -C $HOME/.graal
 
 ดูให้แน่ชัดว่าตัวเองใช้ shell bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
 ```shell
-export JAVA_HOME=/home/user/.graal/graalvm-ce-17.0.9
+export JAVA_HOME=/home/$(whoami)/.graal/graalvm-ce-17.0.9
 export PATH=$JAVA_HOME/bin:$PATH
 source ~/.zshrc
 ```
