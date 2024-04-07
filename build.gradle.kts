@@ -72,7 +72,7 @@ dependencies {
 graalvmNative {
     binaries {
         all {
-            buildArgs.addAll("-H:+AddAllCharsets")
+            buildArgs.add("-H:+AddAllCharsets")
             imageName.set("${project.name}-0.0.1_x86-64-v3_Linux")
             javaLauncher.set(javaToolchains.launcherFor {
                 languageVersion.set(JavaLanguageVersion.of(17))
@@ -90,24 +90,21 @@ java {
 }
 
 tasks {
-
     compileTestKotlin {
         kotlinOptions {
             jvmTarget = "17"
         }
     }
-
     compileKotlin {
         kotlinOptions {
             jvmTarget = "17"
         }
     }
-
 }
 
 
 application {
-    mainClass.set("org.jungmha.ApplicationKt")
+    mainClass.set("win.rushmi0.jungmha.ApplicationKt")
 }
 
 
