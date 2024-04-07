@@ -73,7 +73,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("-H:+AddAllCharsets")
-            imageName.set("${project.name}-0.0.1_x86-64-v3_Linux")
+            imageName.set("${project.name}-0.0.1-alpha")
             javaLauncher.set(javaToolchains.launcherFor {
                 languageVersion.set(JavaLanguageVersion.of(17))
                 vendor.set(JvmVendorSpec.GRAAL_VM)
