@@ -1,0 +1,25 @@
+package win.rushmi0.jungmha.security.xss
+
+import io.micronaut.core.annotation.Introspected
+
+@Introspected
+class XssDetector {
+
+    companion object {
+
+        private val htmlTagsPattern = "<[^>]*>".toRegex()
+        private val jsPattern = ".*<script>.*</script>.*".toRegex()
+
+        fun containsXss(text: String): Boolean {
+            return containsHtmlTags(text) || containsJavascript(text)
+        }
+
+        private fun containsHtmlTags(text: String): Boolean {
+            return htmlTagsPattern.containsMatchIn(text)
+        }
+
+        private fun containsJavascript(text: String): Boolean {
+            return jsPattern.containsMatchIn(text)
+        }
+    }
+}

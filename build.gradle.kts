@@ -11,10 +11,11 @@ plugins {
     id("nu.studer.jooq") version "8.2"
     id("com.google.devtools.ksp") version "1.9.21-1.0.16"
     id("org.graalvm.buildtools.native") version "0.10.0"
+    kotlin("plugin.serialization") version "1.9.21"
 }
 
-version = "0.1"
-group = "org.jungmha"
+version = "0.0.1"
+group = "win.rushmi0.jungmha"
 
 val kotlinVersion = project.properties["kotlinVersion"]
 
@@ -49,6 +50,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
 
     // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
@@ -70,14 +72,16 @@ dependencies {
 graalvmNative {
     binaries {
         all {
+            buildArgs.addAll("-H:+AddAllCharsets")
+            imageName.set("${project.name}-0.0.1_x86-64-v3_Linux")
             javaLauncher.set(javaToolchains.launcherFor {
                 languageVersion.set(JavaLanguageVersion.of(17))
                 vendor.set(JvmVendorSpec.GRAAL_VM)
             })
+            verbose.set(true)
         }
     }
 }
-
 
 
 java {

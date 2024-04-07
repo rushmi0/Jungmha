@@ -1,0 +1,138 @@
+package win.rushmi0.jungmha.routes.api.v1.user.auth
+
+import io.micronaut.context.annotation.Bean
+import io.micronaut.context.annotation.Value
+import io.micronaut.core.annotation.Introspected
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.MediaType
+import io.micronaut.http.MutableHttpResponse
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Post
+import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.inject.Inject
+import win.rushmi0.jungmha.database.form.IdentityForm
+import win.rushmi0.jungmha.database.statement.UserServiceImpl
+import win.rushmi0.jungmha.database.record.Identity
+import win.rushmi0.jungmha.security.securekey.ECDHkey
+import win.rushmi0.jungmha.security.securekey.ECPublicKey.compressed
+import win.rushmi0.jungmha.security.securekey.ECPublicKey.toPublicKey
+import win.rushmi0.jungmha.security.securekey.ServerPublickey
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.math.BigInteger
+
+// * Open Channel Controller
+
+/**
+ * คลาสนี้เป็น Controller สำหรับการเปิดช่องสื่อสาร (Open Channel)
+ */
+@Tag(
+    name = "User auth",
+    //description = "API ที่เกี่ยวข้องกับ Dog Walkers"
+)
+@Controller("api/v1")
+@Bean
+@RequestScope
+@ExecuteOn(TaskExecutors.IO)
+@Introspected
+class OpenChannelController @Inject constructor(
+    @Value("\${org.jungmha.security.securekey.secret}") private val secretKey: String,
+    private val service: UserServiceImpl,
+    private val ecdh: ECDHkey
+) {
+
+    /**
+     * สำหรับการเปิดช่องสื่อสาร (Open Channel)
+     *
+     * @param payload ข้อมูลที่ใช้ในการกำหนดตัวตนของผู้ใช้
+     * @return HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการเปิดช่องสื่อสาร
+     */
+    @Operation(
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "HttpResponse แจ้งเตือนหรือคืนค่าสถานะของการเปิดช่องสื่อสาร",
+                content = [
+                    Content(
+                        mediaType = "application/json",
+                        schema = Schema(implementation = ServerPublickey::class)
+                    )
+                ]
+            )
+        ]
+    )
+    @Post(
+        uri = "/auth/open-channel",
+        consumes = [MediaType.APPLICATION_JSON],
+        produces = [MediaType.APPLICATION_JSON]
+    )
+    suspend fun openChannel(
+        @Body payload: Identity
+    ): MutableHttpResponse<out Any?>? {
+        return try {
+            // ดึง `Private Key` ของ Server
+            val serverPrivateKey = BigInteger(
+                secretKey,
+                16
+            )
+
+            // แปลง `Public Key` ของ Server เป็นรูปแบบที่มีขนาดเล็ก
+            val publicKey: String = serverPrivateKey.toPublicKey().compressed()
+
+            // ดึง `Public Key` ของผู้ใช้จากข้อมูล payload
+            val clientPublicKey: String = payload.authenKey
+
+            // ตรวจสอบว่ามีชื่อผู้ใช้นี้อยู่ฐานข้อมูลแล้วหรือไม่
+            val checkUserName = service.findUser(payload.userName)?.userName
+            if (checkUserName == payload.userName) {
+                LOG.warn("Invalid User Name: $checkUserName")
+                HttpResponse.badRequest("Invalid User Name: $checkUserName")
+            } else {
+                // คำนวณ Shared Key จาก `Private Key` ของ Server และ `Public Key` ของผู้ใช้
+                val sharedKey = ecdh.sharedSecret(
+                    serverPrivateKey,
+                    clientPublicKey
+                )
+
+                // สร้าง Object IdentityForm เพื่อบันทึกข้อมูลตัวตนของผู้ใช้
+                val id = IdentityForm(
+                    payload.userName,
+                    clientPublicKey,
+                    sharedKey
+                )
+
+                // บันทึกข้อมูลลงในฐานข้อมูล
+                val statement: Boolean = service.insert(id)
+                if (statement) {
+                    LOG.info("Create channel successful for New User")
+                    HttpResponse.created(
+                        ServerPublickey(
+                            publicKey =  publicKey
+                        )
+                    )
+                } else {
+                    LOG.error("Failed to create a channel for the account")
+                    HttpResponse.serverError("Failed to create a channel for the account")
+                }
+            }
+        } catch (e: Exception) {
+            // เพิ่มข้อมูลเพิ่มเติมใน LOG
+            LOG.error("Error during open channel operation. Payload: $payload", e)
+            HttpResponse.serverError("Unexpected error during open channel operation")
+        }
+    }
+
+
+    companion object {
+        val LOG: Logger = LoggerFactory.getLogger(OpenChannelController::class.java)
+    }
+
+}

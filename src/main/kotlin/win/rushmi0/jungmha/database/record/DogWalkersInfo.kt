@@ -1,0 +1,33 @@
+package win.rushmi0.jungmha.database.record
+
+import io.micronaut.core.annotation.Introspected
+import io.micronaut.serde.annotation.Serdeable
+import jakarta.persistence.Embedded
+
+@Introspected
+@Serdeable.Serializable
+data class DogWalkersInfo(
+    val UserID: Int,
+    val profileImage: String,
+    val userName: String,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val phoneNumber: String,
+    val accountType: String,
+    val insights: win.rushmi0.jungmha.database.record.Insights,
+    val booking: List<win.rushmi0.jungmha.database.record.BookingList>
+)
+
+@Introspected
+@Serdeable.Serializable
+data class Insights(
+    val countUsed: Int,
+    val countReview: Int,
+    val totalReview: Int,
+    val locationName: String,
+    val idCardNumber: String,
+    val verify: Boolean,
+    @Embedded
+    val price: win.rushmi0.jungmha.database.record.PriceData
+)

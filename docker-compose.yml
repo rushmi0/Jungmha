@@ -27,7 +27,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /home/milko/items/dev/Kotlin/Jungmha:/app/source-code
+      - .:/app/source-code
     working_dir: /app/source-code
     command:
       - sh
