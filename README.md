@@ -16,20 +16,31 @@ cd Jungmha
 ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jungmha up -d jungmhaDB
 ```
 
-### ติดตั้ง GraalVM Community Edition
-ผมได้จัดเตรียม graalvm ไว้แล้วซึ่งผมโหลดมาโดยใช้ Intellij ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
+### ติดตั้ง GraalVM Community Edition สำหรับ JDK17
+โหลด graalvm มาโดยใช้ Intellij idea เลื่อก `graalvm-ce-17.0.+` ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
 
-```shell
-mkdir -p $HOME/.graal
-tar -xvf graalvm-ce-17.0.9.tar.gz -C $HOME/.graal
-```
+- ไปที่ `Project Structure` -> `Project` -> `SDK` -> `Add SDK`
 
-ดูให้แน่ชัดว่าตัวเองใช้ shell bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
+### สร้างตัวแปรสภาพแวดล้อม
+ดูให้แน่ชัดว่าตัวเองใช้ shell แบบไหนอยู่ bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
 ```shell
-export JAVA_HOME=/home/$(whoami)/.graal/graalvm-ce-17.0.9
+export JAVA_HOME=/home/$(whoami)/to/path/graalvm-ce-17.0.9
 export PATH=$JAVA_HOME/bin:$PATH
 source ~/.zshrc
 ```
+
+### ตรวจสอบว่า GraalVM พร้อมใช้งานหรือยัง
+```shell
+java -version
+```
+
+#### ผลที่คาดหวัง
+```shell
+openjdk 17.0.9 2023-10-17
+OpenJDK Runtime Environment (Red_Hat-17.0.9.0.9-4) (build 17.0.9+9)
+OpenJDK 64-Bit Server VM (Red_Hat-17.0.9.0.9-4) (build 17.0.9+9, mixed mode, sharing)
+```
+
 
 ### ตัวเลือกในการใช้งาน
 
