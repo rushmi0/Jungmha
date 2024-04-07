@@ -56,7 +56,7 @@ java -jar build/docker/optimized/layers/application.jar
 ```shell
 ./gradlew nativeOptimizedCompile
 cd build/native/nativeOptimizedCompile
-./jungmha
+./jungmha-0.0.1_x86-64-v3_Linux
 ```
 <div align="center">
   <span><img src="src/main/resources/images/diagram/icons/swappy-20240405-203708.png" height=256 width=450 /></span>
