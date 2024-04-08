@@ -41,13 +41,13 @@ source ~/.zshrc  # หรือใช้ .bashrc หากใช้ bash
 ## การใช้งานสำหรับ Docker
 
 ### 🔧 ⚙️ Just-in-time (JIT) compilation
-ใช้วิธีการแปลงโค้ดไปเป็น bytes code ก่อน แล้วนำไปรันบน Java Virtual Machine (JVM) ดังนี้
+แปลงไปเป็น bytes code แล้วใช้ Java Virtual Machine (JVM) ในการรันโปรแกรม
 ```shell
 docker compose up -d jungmhaDB jungmha-jvm-app
 ```
 
 ### 🔧 ⚙️  Ahead-of-time (AOT) compilation
-ใช้วิธีการแปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
+แปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
 ```shell
 docker compose up -d jungmhaDB jungmha-native-image
 ```
