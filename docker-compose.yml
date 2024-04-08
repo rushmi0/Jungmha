@@ -22,6 +22,7 @@ services:
   jungmha-native-image:
     container_name: jungmha-native-image
     image: ghcr.io/graalvm/graalvm-community:17.0.9
+    restart: unless-stopped
     ports:
       - "8081:8080"
     volumes:
@@ -32,7 +33,6 @@ services:
       - -c
       - |
         chmod +x run_aot_app.sh; ./run_aot_app.sh
-
     networks:
       - dev_network
 
