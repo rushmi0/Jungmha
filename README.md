@@ -2,69 +2,56 @@
   <span><img src="src/main/resources/images/diagram/Logo.svg" height=200 width=512 /></span>
 </div>
 
-## ขั้นตอนการติดตั้งสำหรับ Linux
+## ขั้นตอนการติดตั้งและใช้งาน
 
-
+เริ่มต้นด้วยการคัดลอกโปรเจ็กต์จาก GitHub และเข้าไปยังไดเร็กทอรีของโปรเจ็กต์ที่คุณได้คัดลอก
 ```shell
 git clone https://github.com/rushmi0/Jungmha.git
 cd Jungmha
 ```
 
-### สร้างฐานข้อมูล
-ติดตั้ง docker ให้เรียบร้อยก่อน ถ้ามีอยู่แล้วก็รันคำสั่งนี้ 
-```shell
-ABSOLUTE_PATH=$(pwd);docker compose -f $ABSOLUTE_PATH/docker-compose.yml -p jungmha up -d jungmhaDB
-```
+## ติดตั้ง GraalVM Community Edition สำหรับ JDK17
+1. ดาวน์โหลด GraalVM จากลิงก์นี้: [GraalVM CE Builds](https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9)
+2. ติดตั้ง GraalVM ตามขั้นตอนการติดตั้งที่เหมาะสมกับระบบปฏิบัติการของคุณ
 
-### ติดตั้ง GraalVM Community Edition สำหรับ JDK17
-โหลด graalvm มาโดยใช้ Intellij idea เลื่อก `graalvm-ce-17.0.+` ถ้าโหลดตัวอื่นมาจะใช้ไม่ได้
 
-- ไปที่ `Project Structure` -> `Project` -> `SDK` -> `Add SDK`
+### กำหนดตัวแปรสภาพแวดล้อม
+กำหนดตัวแปร JAVA_HOME และปรับ PATH เพื่อให้ระบบรู้ถึงที่ติดตั้งของ GraalVM
 
-### สร้างตัวแปรสภาพแวดล้อม
-ดูให้แน่ชัดว่าตัวเองใช้ shell แบบไหนอยู่ bash หรือ zsh แล้วปรับแก้ไข (ผมใช้ zsh)
 ```shell
 export JAVA_HOME=/home/$(whoami)/to/path/graalvm-ce-17.0.9
 export PATH=$JAVA_HOME/bin:$PATH
-source ~/.zshrc
+source ~/.zshrc  # หรือใช้ .bashrc หากใช้ bash
 ```
 
-### ตรวจสอบว่า GraalVM พร้อมใช้งานหรือยัง
+### คำสั่งในการใช้ GraalVM ในการคอมไพล์ไปเป็น native binaries
+การใช้ GraalVM เพื่อคอมไพล์โปรแกรมเป็นไฟล์ native binaries ทำให้โปรแกรมสามารถทำงานได้โดยไม่ต้องใช้ Java Virtual Machine (JVM) อีกต่อไป นี่คือคำสั่งใน Gradle เพื่อใช้งาน GraalVM ในการคอมไพล์โปรแกรม
+
+คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries โดยมีการคอมไพล์เบื้องต้น
 ```shell
-java -version
+./gradlew nativeCompile 
 ```
-
-#### ผลที่คาดหวัง
+คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries โดยมีการปรับปรุงเพิ่มเติมในกระบวนการคอมไพล์เพื่อให้ได้ผลที่เร็วและมีประสิทธิภาพมากที่สุดที่เป็นไปได้
 ```shell
-openjdk 17.0.9 2023-10-17
-OpenJDK Runtime Environment (Red_Hat-17.0.9.0.9-4) (build 17.0.9+9)
-OpenJDK 64-Bit Server VM (Red_Hat-17.0.9.0.9-4) (build 17.0.9+9, mixed mode, sharing)
+./gradlew nativeOptimizedCompile 
 ```
 
+<br>
 
-### ตัวเลือกในการใช้งาน
+## การใช้งานสำหรับ Docker
 
-#### 🔧  Just-in-time (JIT) compilation
-ใช้วิธีการแปลงโค้ดไปเป็น bytes code ก่อน แล้วนำไปรันผ่าน Java Virtual Machine (JVM) ดังนี้
+### 🔧 ⚙️ Just-in-time (JIT) compilation
+ใช้วิธีการแปลงโค้ดไปเป็น bytes code ก่อน แล้วนำไปรันบน Java Virtual Machine (JVM) ดังนี้
 ```shell
-./gradlew assemble
-java -jar build/docker/optimized/layers/application.jar
+docker compose up -d jungmhaDB jungmha-jvm-app
 ```
 
-#### 🔧   Ahead-of-time (AOT) compilation
+### 🔧 ⚙️  Ahead-of-time (AOT) compilation
 ใช้วิธีการแปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
 ```shell
-./gradlew nativeOptimizedCompile
-cd build/native/nativeOptimizedCompile
-./jungmha-0.0.1_alpha
+docker compose up -d jungmhaDB jungmha-native-image
 ```
-<div align="center">
-  <span><img src="src/main/resources/images/diagram/icons/swappy-20240405-203708.png" height=256 width=450 /></span>
-</div>
 
-โดยคำสั่งทั้งสองนี้เป็นตัวเลือกในการคอมไพล์และรันโปรแกรม ซึ่ง JIT ทำการคอมไพล์แบบแปลงเป็น bytes code และรันผ่าน JVM ในขณะที่ AOT ทำการคอมไพล์เป็น native code ของแพลตฟอร์มนั้นๆ และรันโดยตรงโดยไม่ต้องผ่าน JVM อีกต่อไป
-<br>
-<br>
 <br>
 
 ### เอกสารการใช้งาน API
