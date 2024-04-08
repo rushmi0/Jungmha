@@ -19,9 +19,25 @@ services:
       - dev_network
 
 
+  jungmha-native-image:
+    container_name: jungmha-native-image
+    image: ghcr.io/graalvm/graalvm-community:17.0.9
+    ports:
+      - "8081:8080"
+    volumes:
+      - .:/app/source-code
+    working_dir: /app/source-code
+    command:
+      - sh
+      - -c
+      - |
+        chmod +x run_aot_app.sh; ./run_aot_app.sh
 
-  jungmha-app:
-    container_name: jungmha-app
+    networks:
+      - dev_network
+
+  jungmha-jvm-app:
+    container_name: jungmha-jvm-app
     image: amazoncorretto:17
     restart: unless-stopped
     ports:
@@ -33,9 +49,7 @@ services:
       - sh
       - -c
       - |
-        chmod +x gradlew;
-        ./gradlew assemble;
-        java -jar build/docker/optimized/layers/application.jar
+        chmod +x run_jit_app.sh; ./run_jit_app.sh
     networks:
       - dev_network
 
