@@ -12,7 +12,7 @@ cd Jungmha
 
 ## ติดตั้ง GraalVM Community Edition สำหรับ JDK17
 1. ดาวน์โหลด GraalVM จากลิงก์นี้: [GraalVM CE Builds](https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9)
-2. ติดตั้ง GraalVM ตามขั้นตอนการติดตั้งที่เหมาะสมกับระบบปฏิบัติการของคุณ
+2. ติดตั้ง GraalVM ตามขั้นตอนการติดตั้งที่เหมาะสมกับระบบปฏิบัติการที่ใช้
 
 
 ### กำหนดตัวแปรสภาพแวดล้อม
