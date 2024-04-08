@@ -73,6 +73,7 @@ graalvmNative {
     binaries {
         all {
             buildArgs.add("-H:+AddAllCharsets")
+            buildArgs.add("-R:MaxHeapSize=2G")
             imageName.set("${project.name}-0.0.1-alpha")
             javaLauncher.set(javaToolchains.launcherFor {
                 languageVersion.set(JavaLanguageVersion.of(17))
