@@ -73,7 +73,7 @@ graalvmNative {
         all {
             // * https://www.graalvm.org/latest/reference-manual/native-image/overview/BuildOutput/?fbclid=IwAR007Rh7fYg-CJZywqhFM8PF5XDWPvgOfaV9txFDqpy6PWjtZp2bXpgncL0_aem_Af0UTqW_wKY5RFkebOwqrANSJn-d6fpSoJLMyra23KLgMNQuur3l75gjN29_Ymw1JYkeX7upxGBzGPFkJ4iRuojh
             buildArgs.add("-H:+AddAllCharsets")
-            buildArgs.add("-R:MaxHeapSize=2G")
+            buildArgs.add("-R:MaxHeapSize=4G")
             imageName.set("${project.name}-0.0.1-alpha")
             javaLauncher.set(javaToolchains.launcherFor {
                 languageVersion.set(JavaLanguageVersion.of(17))
