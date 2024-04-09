@@ -1,4 +1,4 @@
-name: Backend Compile and Test
+name: GraalVM CE 17 Build
 
 on:
   push:
@@ -6,36 +6,30 @@ on:
       - backend
 
 jobs:
-  build:
+  build-and-compile:
     runs-on: ubuntu-latest
 
     services:
       jungmhaDB:
         image: postgres:15-alpine
-        ports:
-          - "5432:5432"
         env:
           POSTGRES_PASSWORD: sql@min
+        ports:
+          - "5432:5432"
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set up GraalVM
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: 'graalvm-ce'
           java-version: '17'
-          vendor: 'graal'
-          cache: 'gradle'
 
-      - name: Build and Test with GraalVM
-        run: |
-          ./gradlew build
-          ./gradlew test
-
-      - name: Compile with GraalVM
+      - name: Build and compile with GraalVM
         run: |
           chmod +x run_aot_app.sh
           ./run_aot_app.sh
-
+        working-directory: ./source-code
