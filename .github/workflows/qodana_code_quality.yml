@@ -1,6 +1,6 @@
 name: Qodana
 on:
-  workflow_dispatch:
+  workflow_dispatch: 'code analysis'
   pull_request:
   push:
     branches:

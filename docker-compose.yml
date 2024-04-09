@@ -36,6 +36,7 @@ services:
     networks:
       - dev_network
 
+
   jungmha-jvm-app:
     container_name: jungmha-jvm-app
     image: amazoncorretto:17
