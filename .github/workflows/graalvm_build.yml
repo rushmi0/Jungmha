@@ -1,4 +1,4 @@
-name: GraalVM CE 17 Build
+name: Build and Run Native Image
 
 on:
   push:
@@ -6,30 +6,25 @@ on:
       - backend
 
 jobs:
-  build-and-compile:
+  build-and-run:
     runs-on: ubuntu-latest
 
     services:
       jungmhaDB:
         image: postgres:15-alpine
-        env:
-          POSTGRES_PASSWORD: sql@min
         ports:
           - "5432:5432"
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        env:
+          POSTGRES_PASSWORD: sql@min
+        options: --health-cmd "pg_isready -U postgres" --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
-      - name: Checkout repository
+      - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Set up GraalVM
-        uses: actions/setup-java@v2
+      - name: Build and Run Native Image
+        uses: docker://ghcr.io/graalvm/graalvm-community:17.0.9
         with:
-          distribution: 'graalvm-ce'
-          java-version: '17'
-
-      - name: Build and compile with GraalVM
-        run: |
-          chmod +x run_aot_app.sh
-          ./run_aot_app.sh
-        working-directory: ./source-code
+          args: bash -c 'chmod +x run_aot_app.sh && ./run_aot_app.sh'
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://jungmha-postgres:5432/postgres
