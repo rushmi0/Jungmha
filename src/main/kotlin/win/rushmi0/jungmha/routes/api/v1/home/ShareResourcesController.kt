@@ -4,8 +4,6 @@ package win.rushmi0.jungmha.routes.api.v1.home
 import io.micronaut.context.annotation.Bean
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.MediaType
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.scheduling.TaskExecutors
 import io.micronaut.scheduling.annotation.ExecuteOn
@@ -21,7 +19,7 @@ import java.nio.charset.Charset
 @ExecuteOn(TaskExecutors.IO)
 @Controller("/")
 @Introspected
-class WelcomeController {
+class ShareResourcesController {
 
     private val resource = javaClass.getResourceAsStream("/public/index.html")
         ?.readBytes()

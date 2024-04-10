@@ -28,7 +28,7 @@ interface DogWalkerReviewService {
      *
      * @return รายการข้อมูล DogWalkerReviewField ทั้งหมด
      */
-    suspend fun dogWalkerReviewAll(): List<win.rushmi0.jungmha.database.field.DogWalkerReviewField>
+    suspend fun dogWalkerReviewAll(): List<DogWalkerReviewField>
 
     /**
      * **เมธอด insert**
@@ -38,7 +38,7 @@ interface DogWalkerReviewService {
      * @param payload ข้อมูลรีวิว DogWalkerReviewForm
      * @return true หากการเพิ่มสำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun insert(payload: win.rushmi0.jungmha.database.form.DogWalkerReviewForm): Boolean
+    suspend fun insert(payload: DogWalkerReviewForm): Boolean
 
     /**
      * **เมธอด updateSingleField**

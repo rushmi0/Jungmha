@@ -28,7 +28,7 @@ interface SignatureService {
      *
      * @return รายการข้อมูล SignatureField ทั้งหมด
      */
-    suspend fun signAll(): List<win.rushmi0.jungmha.database.field.SignatureField>
+    suspend fun signAll(): List<SignatureField>
 
     /**
      * **เมธอด checkSign**
@@ -49,6 +49,6 @@ interface SignatureService {
      * @param payload ข้อมูลลายเซ็นต์ SignatureForm
      * @return true หากการเพิ่มลายเซ็นต์สำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun insert(payload: win.rushmi0.jungmha.database.form.SignatureForm): Boolean
+    suspend fun insert(payload: SignatureForm): Boolean
 
 }

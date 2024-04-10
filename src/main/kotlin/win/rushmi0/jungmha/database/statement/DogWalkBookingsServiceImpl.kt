@@ -13,10 +13,10 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import win.rushmi0.jungmha.database.field.DogWalkBookingsField
 import win.rushmi0.jungmha.database.record.DogWalkBookings
-import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import win.rushmi0.jungmha.database.service.DogWalkBookingsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
 import java.time.LocalTime
 import java.time.OffsetDateTime
 
@@ -28,22 +28,22 @@ import java.time.OffsetDateTime
 class DogWalkBookingsServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?
-) : win.rushmi0.jungmha.database.service.DogWalkBookingsService {
+) : DogWalkBookingsService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun bookingsAll(): List<win.rushmi0.jungmha.database.field.DogWalkBookingsField> {
+    override suspend fun bookingsAll(): List<DogWalkBookingsField> {
         return withContext(dispatcher) {
             try {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Retrieve bookings operation started on thread [${Thread.currentThread().name}]")
+                LOG.info("Retrieve bookings operation started on thread [${Thread.currentThread().name}]")
 
                 val data = query.select()
                     .from(DOGWALKBOOKINGS)
 
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("\n${data.fetch()}")
+                LOG.info("\n${data.fetch()}")
 
                 val result = data.map { record ->
-                    win.rushmi0.jungmha.database.field.DogWalkBookingsField(
+                    DogWalkBookingsField(
                         record[DOGWALKBOOKINGS.BOOKING_ID],
                         record[DOGWALKBOOKINGS.WALKER_ID],
                         record[DOGWALKBOOKINGS.USER_ID],
@@ -59,26 +59,26 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 }
 
                 if (result.isNotEmpty()) {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Retrieve bookings operation successful on thread [${Thread.currentThread().name}]")
+                    LOG.info("Retrieve bookings operation successful on thread [${Thread.currentThread().name}]")
                 } else {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.warn("No bookings found on thread [${Thread.currentThread().name}]")
+                    LOG.warn("No bookings found on thread [${Thread.currentThread().name}]")
                 }
 
                 return@withContext result
             } catch (e: Exception) {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("Error during retrieve bookings operation on thread [${Thread.currentThread().name}]", e)
+                LOG.error("Error during retrieve bookings operation on thread [${Thread.currentThread().name}]", e)
                 emptyList()
             }
         }
     }
 
 
-    override suspend fun insert(userID: Int, payload: win.rushmi0.jungmha.database.record.DogWalkBookings): Boolean {
+    override suspend fun insert(userID: Int, payload: DogWalkBookings): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
             try {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Insert operation started on thread [$currentThreadName]")
+                LOG.info("Insert operation started on thread [$currentThreadName]")
 
                 val result = query.insertInto(
                     DOGWALKBOOKINGS,
@@ -100,14 +100,14 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     .execute()
 
                 if (result > 0) {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Insert successful on thread [$currentThreadName]")
+                    LOG.info("Insert successful on thread [$currentThreadName]")
                 } else {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.warn("Insert did not affect any rows on thread [$currentThreadName]")
+                    LOG.warn("Insert did not affect any rows on thread [$currentThreadName]")
                 }
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("Error during insert operation on thread [$currentThreadName]", e)
+                LOG.error("Error during insert operation on thread [$currentThreadName]", e)
                 false
             }
         }
@@ -140,7 +140,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                         .set(DOGWALKBOOKINGS.TIMESTAMP, DSL.`val`(OffsetDateTime.parse(newValue)))
 
                     else -> {
-                        win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("Field name [$fieldName] not found!!!")
+                        LOG.error("Field name [$fieldName] not found!!!")
                         return@withContext false
                     }
                 }
@@ -148,14 +148,14 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 val affectedRows = updateQuery.where(DOGWALKBOOKINGS.BOOKING_ID.eq(id)).execute()
 
                 if (affectedRows > 0) {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Update successful for field [$fieldName] with new value [$newValue] for DogWalkBooking ID [$id]")
+                    LOG.info("Update successful for field [$fieldName] with new value [$newValue] for DogWalkBooking ID [$id]")
                 } else {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("Update did not affect any rows for field [$fieldName] with new value [$newValue] for DogWalkBooking ID [$id]")
+                    LOG.error("Update did not affect any rows for field [$fieldName] with new value [$newValue] for DogWalkBooking ID [$id]")
                 }
 
                 return@withContext affectedRows > 0
             } catch (e: Exception) {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("An error occurred during update", e)
+                LOG.error("An error occurred during update", e)
                 return@withContext false
             }
         }
@@ -166,21 +166,21 @@ class DogWalkBookingsServiceImpl @Inject constructor(
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
             try {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Delete operation started on thread [$currentThreadName]")
+                LOG.info("Delete operation started on thread [$currentThreadName]")
 
                 val deletedRows = query.deleteFrom(DOGWALKBOOKINGS)
                     .where(DOGWALKBOOKINGS.BOOKING_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (deletedRows > 0) {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.info("Delete successful for booking with ID [$id] on thread [$currentThreadName]")
+                    LOG.info("Delete successful for booking with ID [$id] on thread [$currentThreadName]")
                 } else {
-                    win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.warn("Delete did not affect any rows for booking with ID [$id] on thread [$currentThreadName]")
+                    LOG.warn("Delete did not affect any rows for booking with ID [$id] on thread [$currentThreadName]")
                 }
 
                 return@withContext deletedRows > 0
             } catch (e: Exception) {
-                win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl.Companion.LOG.error("Error during delete operation for booking with ID [$id] on thread [$currentThreadName]", e)
+                LOG.error("Error during delete operation for booking with ID [$id] on thread [$currentThreadName]", e)
                 false
             }
         }
@@ -188,7 +188,7 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
 
     companion object {
-        private val LOG: Logger = LoggerFactory.getLogger(win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl::class.java)
+        private val LOG: Logger = LoggerFactory.getLogger(DogWalkBookingsServiceImpl::class.java)
     }
 
 }

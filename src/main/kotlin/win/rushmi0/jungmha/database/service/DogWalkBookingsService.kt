@@ -28,7 +28,7 @@ interface DogWalkBookingsService {
      *
      * @return รายการข้อมูล DogWalkBookingsField ทั้งหมด
      */
-    suspend fun bookingsAll(): List<win.rushmi0.jungmha.database.field.DogWalkBookingsField>
+    suspend fun bookingsAll(): List<DogWalkBookingsField>
 
     /**
      * **เมธอด insert**
@@ -39,7 +39,7 @@ interface DogWalkBookingsService {
      * @param payload ข้อมูลการจอง DogWalkBookings
      * @return true หากการเพิ่มสำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun insert(userID: Int, payload: win.rushmi0.jungmha.database.record.DogWalkBookings): Boolean
+    suspend fun insert(userID: Int, payload: DogWalkBookings): Boolean
 
     /**
      * **เมธอด updateSingleField**

@@ -135,8 +135,11 @@ class NormalController @Inject constructor(
             this,
             shareKey
         )
+        LOG.info("""
+            Raw Data: $this
+            Encrypted Data: $encrypted
+        """.trimIndent())
         return HttpResponse.ok(EncryptedData(encrypted))
-        //return HttpResponse.ok(this)
     }
 
 

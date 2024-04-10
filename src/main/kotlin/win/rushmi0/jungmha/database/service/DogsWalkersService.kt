@@ -31,7 +31,7 @@ interface DogsWalkersService {
      * @param id ID ของคนเดินสุนัข
      * @return DogWalkerField หรือ null ถ้าไม่พบข้อมูล
      */
-    suspend fun getSingleDogWalkersInfo(id: Int): win.rushmi0.jungmha.database.field.DogWalkerField?
+    suspend fun getSingleDogWalkersInfo(id: Int): DogWalkerField?
 
     /**
      * **เมธอด getDogWalkersInfo**
@@ -41,7 +41,7 @@ interface DogsWalkersService {
      * @param accountName ชื่อบัญชีผู้ใช้ของคนเดินสุนัข
      * @return DogWalkersInfo หรือ null ถ้าไม่พบข้อมูล
      */
-    suspend fun getDogWalkersInfo(accountName: String): win.rushmi0.jungmha.database.record.DogWalkersInfo?
+    suspend fun getDogWalkersInfo(accountName: String): DogWalkersInfo?
 
     /**
      * **เมธอด publicDogWalkersAll**
@@ -50,7 +50,7 @@ interface DogsWalkersService {
      *
      * @return รายการข้อมูล PublicDogWalkerInfo ทั้งหมด
      */
-    suspend fun publicDogWalkersAll(): List<win.rushmi0.jungmha.database.record.PublicDogWalkerInfo>
+    suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo>
 
     /**
      * **เมธอด privateDogWalkersAll**
@@ -59,7 +59,7 @@ interface DogsWalkersService {
      *
      * @return รายการข้อมูล PrivateDogWalkerInfo ทั้งหมด
      */
-    suspend fun privateDogWalkersAll(): List<win.rushmi0.jungmha.database.record.PrivateDogWalkerInfo>
+    suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo>
 
     /**
      * **เมธอด insert**

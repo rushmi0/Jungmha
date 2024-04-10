@@ -29,14 +29,14 @@ interface UserService {
      * @param accountName ชื่อบัญชีผู้ใช้
      * @return ข้อมูลผู้ใช้งานแบบ NormalInfo หรือ null ถ้าไม่พบข้อมูล
      */
-    suspend fun getUserInfo(accountName: String): win.rushmi0.jungmha.database.record.NormalInfo?
+    suspend fun getUserInfo(accountName: String): NormalInfo?
 
     /**
      * **ดึงข้อมูลทั้งหมดของผู้ใช้งาน**
      *
      * @return รายการข้อมูล UserProfileField ทั้งหมด
      */
-    suspend fun userAll(): List<win.rushmi0.jungmha.database.field.UserProfileField>
+    suspend fun userAll(): List<UserProfileField>
 
     /**
      * **ค้นหาข้อมูลผู้ใช้งานจากชื่อบัญชี**
@@ -44,7 +44,7 @@ interface UserService {
      * @param accountName ชื่อบัญชีผู้ใช้
      * @return ข้อมูลผู้ใช้งานแบบ UserProfileField หรือ null ถ้าไม่พบข้อมูล
      */
-    suspend fun findUser(accountName: String): win.rushmi0.jungmha.database.field.UserProfileField?
+    suspend fun findUser(accountName: String): UserProfileField?
 
     /**
      * **เพิ่มข้อมูลผู้ใช้งานใหม่**
@@ -52,7 +52,7 @@ interface UserService {
      * @param payload ข้อมูลสำหรับสร้าง IdentityForm
      * @return true หากการเพิ่มสำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun insert(payload: win.rushmi0.jungmha.database.form.IdentityForm): Boolean
+    suspend fun insert(payload: IdentityForm): Boolean
 
     /**
      * **แก้ไขข้อมูลหลายฟิลด์ของผู้ใช้งาน**
@@ -61,7 +61,7 @@ interface UserService {
      * @param payload ข้อมูลที่ใช้ในการแก้ไข UserProfileForm
      * @return true หากการแก้ไขสำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun updateMultiField(userName: String, payload: win.rushmi0.jungmha.database.form.UserProfileForm): Boolean
+    suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean
 
     /**
      * **แก้ไขข้อมูลเดี่ยวของผู้ใช้งาน**

@@ -74,7 +74,7 @@ class DogController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = win.rushmi0.jungmha.database.field.DogField::class)
+                        schema = Schema(implementation = DogField::class)
                     )
                 ]
             )

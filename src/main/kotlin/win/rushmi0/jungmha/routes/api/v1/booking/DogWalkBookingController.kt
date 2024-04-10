@@ -35,7 +35,6 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.ArrayDeque
 
 // * Dog Walk Booking Controller
 
@@ -53,7 +52,7 @@ import java.util.ArrayDeque
 @ExecuteOn(TaskExecutors.IO)
 @Introspected
 class DogWalkBookingController @Inject constructor(
-    private val bookingService: win.rushmi0.jungmha.database.statement.DogWalkBookingsServiceImpl,
+    private val bookingService: DogWalkBookingsServiceImpl,
     private val userService: UserServiceImpl,
     private val token: Token,
     private val chacha: ChaCha20
@@ -72,7 +71,7 @@ class DogWalkBookingController @Inject constructor(
                 content = [
                     Content(
                         mediaType = "application/json",
-                        schema = Schema(implementation = win.rushmi0.jungmha.database.record.DogWalkBookings::class)
+                        schema = Schema(implementation = DogWalkBookings::class)
                     )
                 ]
             )
@@ -84,7 +83,7 @@ class DogWalkBookingController @Inject constructor(
     )
     suspend fun booking(
         @Header("Access-Token") access: String,
-        @Body payload: win.rushmi0.jungmha.database.record.EncryptedData
+        @Body payload: EncryptedData
     ): MutableHttpResponse<out Any?>? {
         return try {
             // ตรวจสอบความถูกต้องของ Token
@@ -123,7 +122,7 @@ class DogWalkBookingController @Inject constructor(
      */
     private suspend fun processBooking(
         name: String,
-        payload: win.rushmi0.jungmha.database.record.EncryptedData,
+        payload: EncryptedData,
     ): MutableHttpResponse<out Any?>? {
         try {
             val userInfo = userService.findUser(name)
@@ -137,7 +136,7 @@ class DogWalkBookingController @Inject constructor(
             val formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val formatterTime = DateTimeFormatter.ofPattern("HH:mm")
 
-            val bookings = win.rushmi0.jungmha.database.record.DogWalkBookings(
+            val bookings = DogWalkBookings(
                 walkerID = decryptedData["walkerID"] as Int,
                 userID = userId,
                 dogID = decryptedData["dogID"] as Int,
@@ -148,7 +147,7 @@ class DogWalkBookingController @Inject constructor(
 
             // ตรวจสอบค่า null และ XSS
             val validationResponse: MutableHttpResponse<out Any?> = validateDecryptedData(
-                win.rushmi0.jungmha.constants.DogWalkBookingsValidate.entries.toTypedArray(),
+                DogWalkBookingsValidate.entries.toTypedArray(),
                 decryptedData
             )
 

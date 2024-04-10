@@ -29,7 +29,7 @@ interface DogsService {
      * @param dogID ID ของสุนัข
      * @return DogField หรือ null ถ้าไม่พบข้อมูล
      */
-    suspend fun findDog(dogID: Int): win.rushmi0.jungmha.database.field.DogField?
+    suspend fun findDog(dogID: Int): DogField?
 
     /**
      * **เมธอด dogsAll**
@@ -38,7 +38,7 @@ interface DogsService {
      *
      * @return รายการข้อมูล DogField ทั้งหมด
      */
-    suspend fun dogsAll(): List<win.rushmi0.jungmha.database.field.DogField>
+    suspend fun dogsAll(): List<DogField>
 
     /**
      * **เมธอด insert**
@@ -48,7 +48,7 @@ interface DogsService {
      * @param payload ข้อมูลสำหรับสร้าง DogForm
      * @return true หากการเพิ่มสำเร็จ, false หากไม่สำเร็จ
      */
-    suspend fun insert(payload: win.rushmi0.jungmha.database.form.DogForm): Boolean
+    suspend fun insert(payload: DogForm): Boolean
 
     /**
      * **เมธอด updateSingleField**

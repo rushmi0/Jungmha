@@ -10,19 +10,19 @@ import org.jooq.impl.DSL
 import win.rushmi0.jungmha.database.field.SignatureField
 import win.rushmi0.jungmha.database.form.SignatureForm
 import win.rushmi0.jungmha.database.service.SignatureService
-import org.jungmha.infra.database.Tables.SIGNATURE
-import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
+import win.rushmi0.jungmha.infra.database.Tables.SIGNATURE
+import win.rushmi0.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 @Introspected
 class SignatureServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?
-) : win.rushmi0.jungmha.database.service.SignatureService {
+) : SignatureService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun signAll(): List<win.rushmi0.jungmha.database.field.SignatureField> {
+    override suspend fun signAll(): List<SignatureField> {
         TODO("Not yet implemented")
     }
 
@@ -54,7 +54,7 @@ class SignatureServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun insert(payload: win.rushmi0.jungmha.database.form.SignatureForm): Boolean {
+    override suspend fun insert(payload: SignatureForm): Boolean {
         return withContext(dispatcher) {
             try {
                 val record = query.insertInto(

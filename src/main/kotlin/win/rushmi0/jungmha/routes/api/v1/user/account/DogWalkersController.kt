@@ -223,7 +223,7 @@ class DogWalkersController @Inject constructor(
      */
     private suspend fun processDecrypting(
         name: String,
-        payload: win.rushmi0.jungmha.database.record.EncryptedData
+        payload: EncryptedData
     ): MutableHttpResponse<out Any?> {
         try {
             // ค้นหาข้อมูลผู้ใช้

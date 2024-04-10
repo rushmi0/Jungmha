@@ -14,11 +14,11 @@ import org.jooq.impl.DSL
 import win.rushmi0.jungmha.constants.BaseEndpoint.BASE_URL_USER
 import win.rushmi0.jungmha.database.field.DogWalkerField
 import win.rushmi0.jungmha.database.record.*
-import org.jungmha.infra.database.tables.Dogs.DOGS
-import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
-import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
-import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
-import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
+import win.rushmi0.jungmha.infra.database.tables.Dogs.DOGS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
+import win.rushmi0.jungmha.infra.database.tables.Userprofiles.USERPROFILES
 import win.rushmi0.jungmha.utils.ShiftTo.ByteArrayToHex
 import win.rushmi0.jungmha.utils.ShiftTo.SHA256
 import org.slf4j.Logger
@@ -130,7 +130,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
                 val subQueryResult = subQuery.fetch { subRecord ->
-                    win.rushmi0.jungmha.database.record.BookingList(
+                    BookingList(
                         subRecord[dwb.BOOKING_ID],
                         subRecord["user_name"].toString(),
                         subRecord[d.BREED_NAME],
@@ -254,7 +254,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                                 }" else "N/A",
                                 verify = record[dw.VERIFICATION],
                                 location = record[dw.LOCATION_NAME],
-                                price = win.rushmi0.jungmha.database.record.PriceData(
+                                price = PriceData(
                                     small = record[dw.PRICE_SMALL],
                                     medium = record[dw.PRICE_MEDIUM],
                                     big = record[dw.PRICE_BIG]
@@ -360,7 +360,6 @@ class DogsWalkersServiceImpl @Inject constructor(
 
             } catch (e: Exception) {
                 LOG.error("Error retrieving public dog walkers from the database", e)
-                // handle the exception
                 return@withContext emptyList()
             }
         }

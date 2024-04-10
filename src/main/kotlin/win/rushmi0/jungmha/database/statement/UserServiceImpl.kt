@@ -22,12 +22,11 @@ import win.rushmi0.jungmha.database.form.UserProfileForm
 import win.rushmi0.jungmha.database.service.UserService
 import win.rushmi0.jungmha.database.record.NormalInfo
 import win.rushmi0.jungmha.database.record.BookingList
-import org.jungmha.infra.database.tables.Dogs.DOGS
-import org.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
-import org.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
-import org.jungmha.infra.database.tables.Userprofiles.USERPROFILES
-import org.jungmha.infra.database.tables.records.UserprofilesRecord
-import win.rushmi0.jungmha.routes.api.v1.user.account.DogWalkersController
+import win.rushmi0.jungmha.infra.database.tables.Dogs.DOGS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkbookings.DOGWALKBOOKINGS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkers.DOGWALKERS
+import win.rushmi0.jungmha.infra.database.tables.Userprofiles.USERPROFILES
+import win.rushmi0.jungmha.infra.database.tables.records.UserprofilesRecord
 import win.rushmi0.jungmha.utils.ShiftTo.ByteArrayToHex
 import win.rushmi0.jungmha.utils.ShiftTo.SHA256
 import org.slf4j.Logger
@@ -41,11 +40,11 @@ import org.slf4j.LoggerFactory
 class UserServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?
-) : win.rushmi0.jungmha.database.service.UserService {
+) : UserService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun getUserInfo(accountName: String): win.rushmi0.jungmha.database.record.NormalInfo? {
+    override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
 
             LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
@@ -101,7 +100,7 @@ class UserServiceImpl @Inject constructor(
             val result = mainQuery.fetchOne { record ->
 
                 val bookings = subQuery.fetch { subRecord ->
-                    win.rushmi0.jungmha.database.record.BookingList(
+                    BookingList(
                         bookingID = subRecord[dk.BOOKING_ID],
                         userName = subRecord["walker_name"].toString(),
                         breedName = subRecord[d.BREED_NAME],
@@ -117,7 +116,7 @@ class UserServiceImpl @Inject constructor(
                     )
                 }.toList().takeIf { it.isNotEmpty() }
 
-                win.rushmi0.jungmha.database.record.NormalInfo(
+                NormalInfo(
                     userID = record[up.USER_ID],
                     profileImage = if (record[up.IMAGE_PROFILE].toString() != "N/A") "$BASE_URL_USER/${record[up.USERNAME]}/image/${
                         record[up.IMAGE_PROFILE].SHA256().ByteArrayToHex().substring(0, 8)
@@ -149,7 +148,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun findUser(accountName: String): win.rushmi0.jungmha.database.field.UserProfileField? {
+    override suspend fun findUser(accountName: String): UserProfileField? {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
@@ -169,7 +168,7 @@ class UserServiceImpl @Inject constructor(
                 return@withContext if (result != null) {
                     LOG.info("User found with account name [$accountName] on thread [$currentThreadName]")
 
-                    win.rushmi0.jungmha.database.field.UserProfileField(
+                    UserProfileField(
                         result[USERPROFILES.USER_ID],
                         result[USERPROFILES.AUTHEN_KEY],
                         result[USERPROFILES.SHARE_KEY],
@@ -203,7 +202,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun userAll(): List<win.rushmi0.jungmha.database.field.UserProfileField> {
+    override suspend fun userAll(): List<UserProfileField> {
         return withContext(dispatcher) {
             try {
                 val result: Result<Record> = query.select()
@@ -215,7 +214,7 @@ class UserServiceImpl @Inject constructor(
                 LOG.info("Thread ${Thread.currentThread().name} [ID: ${Thread.currentThread().id}] in state ${Thread.currentThread().state}. Is Alive: ${Thread.currentThread().isAlive}")
 
                 return@withContext result.map { record ->
-                    win.rushmi0.jungmha.database.field.UserProfileField(
+                    UserProfileField(
                         record[USERPROFILES.USER_ID],
                         record[USERPROFILES.AUTHEN_KEY],
                         record[USERPROFILES.SHARE_KEY],
@@ -237,7 +236,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun insert(payload: win.rushmi0.jungmha.database.form.IdentityForm): Boolean {
+    override suspend fun insert(payload: IdentityForm): Boolean {
         return withContext(dispatcher) {
             try {
                 LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
@@ -277,7 +276,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
-    override suspend fun updateMultiField(userName: String, payload: win.rushmi0.jungmha.database.form.UserProfileForm): Boolean {
+    override suspend fun updateMultiField(userName: String, payload: UserProfileForm): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
             try {
@@ -357,7 +356,6 @@ class UserServiceImpl @Inject constructor(
             "email" -> USERPROFILES.EMAIL
             "phoneNumber" -> USERPROFILES.PHONE_NUMBER
             else -> throw IllegalArgumentException("Field name [$fieldName] not found!!!")
-
         }
     }
 

@@ -1,9 +1,9 @@
 package win.rushmi0.jungmha.crypto
 
-import org.jungmha.security.securekey.ECDSA
-import org.jungmha.security.securekey.ECPublicKey.compressed
-import org.jungmha.security.securekey.ECPublicKey.toPublicKey
-import org.jungmha.utils.ShiftTo.SHA256
+import win.rushmi0.jungmha.security.securekey.ECDSA
+import win.rushmi0.jungmha.security.securekey.ECPublicKey.compressed
+import win.rushmi0.jungmha.security.securekey.ECPublicKey.toPublicKey
+import win.rushmi0.jungmha.utils.ShiftTo.SHA256
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

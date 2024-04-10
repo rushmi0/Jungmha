@@ -13,7 +13,7 @@ import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import win.rushmi0.jungmha.database.field.DogWalkerReviewField
 import win.rushmi0.jungmha.database.form.DogWalkerReviewForm
-import org.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
+import win.rushmi0.jungmha.infra.database.tables.Dogwalkerreviews.DOGWALKERREVIEWS
 import win.rushmi0.jungmha.database.service.DogWalkerReviewService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,11 +25,11 @@ import org.slf4j.LoggerFactory
 class DogWalkerReviewServiceImpl @Inject constructor(
     private val query: DSLContext,
     taskDispatcher: CoroutineDispatcher?
-) : win.rushmi0.jungmha.database.service.DogWalkerReviewService {
+) : DogWalkerReviewService {
 
     private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
-    override suspend fun dogWalkerReviewAll(): List<win.rushmi0.jungmha.database.field.DogWalkerReviewField> {
+    override suspend fun dogWalkerReviewAll(): List<DogWalkerReviewField> {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
@@ -40,7 +40,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
                     .from(DOGWALKERREVIEWS)
 
                 val result = data.map { record ->
-                    win.rushmi0.jungmha.database.field.DogWalkerReviewField(
+                    DogWalkerReviewField(
                         record[DOGWALKERREVIEWS.REVIEW_ID],
                         record[DOGWALKERREVIEWS.WALKER_ID],
                         record[DOGWALKERREVIEWS.USER_ID],
@@ -63,7 +63,7 @@ class DogWalkerReviewServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun insert(payload: win.rushmi0.jungmha.database.form.DogWalkerReviewForm): Boolean {
+    override suspend fun insert(payload: DogWalkerReviewForm): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 

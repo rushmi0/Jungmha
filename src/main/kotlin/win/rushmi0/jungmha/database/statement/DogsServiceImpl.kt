@@ -16,7 +16,7 @@ import org.jooq.impl.DSL
 import win.rushmi0.jungmha.constants.BaseEndpoint.BASE_URL_DOG
 import win.rushmi0.jungmha.database.field.DogField
 import win.rushmi0.jungmha.database.form.DogForm
-import org.jungmha.infra.database.tables.Dogs.DOGS
+import win.rushmi0.jungmha.infra.database.tables.Dogs.DOGS
 import win.rushmi0.jungmha.database.service.DogsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,7 +49,7 @@ class DogsServiceImpl @Inject constructor(
 
             return if (record != null) {
                 LOG.info("Dog found with ID [$dogID] on thread [$currentThreadName]")
-                win.rushmi0.jungmha.database.field.DogField(
+                DogField(
                     record[DOGS.DOG_ID],
                     record[DOGS.DOG_IMAGE],
                     record[DOGS.BREED_NAME],
@@ -75,7 +75,7 @@ class DogsServiceImpl @Inject constructor(
 
 
 
-    override suspend fun dogsAll(): List<win.rushmi0.jungmha.database.field.DogField> {
+    override suspend fun dogsAll(): List<DogField> {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
 
@@ -86,7 +86,7 @@ class DogsServiceImpl @Inject constructor(
                     .from(DOGS)
 
                 val result = data.fetch { record ->
-                    win.rushmi0.jungmha.database.field.DogField(
+                    DogField(
                         dogId = record[DOGS.DOG_ID],
                         dogImage = if (record[DOGS.DOG_IMAGE].toString() != "N/A") "$BASE_URL_DOG/${record[DOGS.DOG_ID]}/image/${
                             record[DOGS.DOG_IMAGE].SHA256().ByteArrayToHex().substring(0, 8)
