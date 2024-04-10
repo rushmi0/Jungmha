@@ -1,4 +1,5 @@
 name: Qodana
+
 on:
   workflow_dispatch: 'code analysis'
   pull_request:
