@@ -27,10 +27,9 @@ import java.time.OffsetDateTime
 @Introspected
 class DogWalkBookingsServiceImpl @Inject constructor(
     private val query: DSLContext,
-    taskDispatcher: CoroutineDispatcher?
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DogWalkBookingsService {
 
-    private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
     override suspend fun bookingsAll(): List<DogWalkBookingsField> {
         return withContext(dispatcher) {
@@ -40,6 +39,10 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 val data = query.select()
                     .from(DOGWALKBOOKINGS)
 
+                /**
+                 * SELECT *
+                 * FROM dogwalkbookings;
+                 */
                 LOG.info("\n${data.fetch()}")
 
                 val result = data.map { record ->
@@ -59,27 +62,32 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                 }
 
                 if (result.isNotEmpty()) {
-                    LOG.info("Retrieve bookings operation successful on thread [${Thread.currentThread().name}]")
+                    LOG.info("Retrieve bookings operation successful")
                 } else {
-                    LOG.warn("No bookings found on thread [${Thread.currentThread().name}]")
+                    LOG.warn("No bookings found")
                 }
 
                 return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve bookings operation on thread [${Thread.currentThread().name}]", e)
+                LOG.error("Error during retrieve bookings operation", e)
                 emptyList()
             }
         }
     }
 
 
+
     override suspend fun insert(userID: Int, payload: DogWalkBookings): Boolean {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
-
             try {
-                LOG.info("Insert operation started on thread [$currentThreadName]")
+                LOG.info("Insert operation started")
 
+                /**
+                 * INSERT INTO dogwalkbookings
+                 * (walker_id, user_id, dog_id, booking_date, time_start, time_end)
+                 * VALUES
+                 * (:payload.walkerID, :userID, :payload.dogID, :payload.bookingDate, :payload.timeStart, :payload.timeEnd);
+                 */
                 val result = query.insertInto(
                     DOGWALKBOOKINGS,
                     DOGWALKBOOKINGS.WALKER_ID,
@@ -100,18 +108,19 @@ class DogWalkBookingsServiceImpl @Inject constructor(
                     .execute()
 
                 if (result > 0) {
-                    LOG.info("Insert successful on thread [$currentThreadName]")
+                    LOG.info("Insert successful")
                 } else {
-                    LOG.warn("Insert did not affect any rows on thread [$currentThreadName]")
+                    LOG.warn("Insert did not affect any rows")
                 }
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during insert operation on thread [$currentThreadName]", e)
+                LOG.error("Error during insert operation", e)
                 false
             }
         }
     }
+
 
 
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
@@ -164,27 +173,32 @@ class DogWalkBookingsServiceImpl @Inject constructor(
 
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
+            val stackTrace = Thread.currentThread().stackTrace
             try {
-                LOG.info("Delete operation started on thread [$currentThreadName]")
+                LOG.info("Delete operation started from [$stackTrace]")
 
+                /**
+                 * DELETE FROM dogwalkbookings
+                 * WHERE booking_id = :id;
+                 */
                 val deletedRows = query.deleteFrom(DOGWALKBOOKINGS)
                     .where(DOGWALKBOOKINGS.BOOKING_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (deletedRows > 0) {
-                    LOG.info("Delete successful for booking with ID [$id] on thread [$currentThreadName]")
+                    LOG.info("Delete successful for booking with ID [$id]")
                 } else {
-                    LOG.warn("Delete did not affect any rows for booking with ID [$id] on thread [$currentThreadName]")
+                    LOG.warn("Delete did not affect any rows for booking with ID [$id] from [$stackTrace]")
                 }
 
                 return@withContext deletedRows > 0
             } catch (e: Exception) {
-                LOG.error("Error during delete operation for booking with ID [$id] on thread [$currentThreadName]", e)
+                LOG.error("Error during delete operation for booking with ID [$id] from [$stackTrace]", e)
                 false
             }
         }
     }
+
 
 
     companion object {

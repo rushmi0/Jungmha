@@ -30,16 +30,21 @@ import win.rushmi0.jungmha.utils.ShiftTo.toFileName
 @Introspected
 class DogsServiceImpl @Inject constructor(
     private val query: DSLContext,
-    coroutineDispatcher: CoroutineDispatcher?
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DogsService {
 
-    private val dispatcher: CoroutineDispatcher = coroutineDispatcher ?: Dispatchers.IO
+
 
     override suspend fun findDog(dogID: Int): DogField? {
         return try {
             val currentThreadName = Thread.currentThread().name
             LOG.info("Thread $currentThreadName executing findDog")
 
+            /**
+             * SELECT *
+             * FROM dogs
+             * WHERE dogs.dog_id = :dogID;
+             */
             val record: Record? = withContext(dispatcher) {
                 query.select()
                     .from(DOGS)
@@ -82,6 +87,10 @@ class DogsServiceImpl @Inject constructor(
             try {
                 LOG.info("Retrieve dogs operation started on thread [$currentThreadName]")
 
+                /**
+                 * SELECT *
+                 * FROM dogs;
+                 */
                 val data = query.select()
                     .from(DOGS)
 
@@ -111,6 +120,7 @@ class DogsServiceImpl @Inject constructor(
     }
 
 
+
     override suspend fun insert(payload: DogForm): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
@@ -118,6 +128,10 @@ class DogsServiceImpl @Inject constructor(
             try {
                 LOG.info("Insert dog operation started on thread [$currentThreadName]")
 
+                /**
+                 * INSERT INTO dogs (dog_image, breed_name, size)
+                 * VALUES (dogImage, breedName, size);
+                 */
                 val result = query.insertInto(
                     DOGS,
                     DOGS.DOG_IMAGE,
@@ -146,6 +160,7 @@ class DogsServiceImpl @Inject constructor(
     }
 
 
+
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
@@ -159,6 +174,13 @@ class DogsServiceImpl @Inject constructor(
                     }
                 }
 
+                LOG.info("Update operation started for field [$fieldName] with new value [$newValue] for Dog ID [$id]")
+
+                /**
+                 * UPDATE dogs
+                 * SET $fieldName = :newValue
+                 * WHERE dog_id = :id;
+                 */
                 val affectedRows = query.update(DOGS)
                     .set(field, DSL.`val`(newValue))
                     .where(DOGS.DOG_ID.eq(id)).execute()
@@ -178,6 +200,7 @@ class DogsServiceImpl @Inject constructor(
     }
 
 
+
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
             val currentThreadName = Thread.currentThread().name
@@ -185,6 +208,10 @@ class DogsServiceImpl @Inject constructor(
             try {
                 LOG.info("Delete dog operation started on thread [$currentThreadName]")
 
+                /**
+                 * DELETE FROM dogs
+                 * WHERE dog_id = :id;
+                 */
                 val result = query.deleteFrom(DOGS)
                     .where(DOGS.DOG_ID.eq(id))
                     .execute()
@@ -202,6 +229,7 @@ class DogsServiceImpl @Inject constructor(
             }
         }
     }
+
 
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogsServiceImpl::class.java)

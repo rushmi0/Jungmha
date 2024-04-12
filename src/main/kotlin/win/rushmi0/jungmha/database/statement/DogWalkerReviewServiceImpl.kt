@@ -24,18 +24,20 @@ import org.slf4j.LoggerFactory
 @Introspected
 class DogWalkerReviewServiceImpl @Inject constructor(
     private val query: DSLContext,
-    taskDispatcher: CoroutineDispatcher?
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : DogWalkerReviewService {
 
-    private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
     override suspend fun dogWalkerReviewAll(): List<DogWalkerReviewField> {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
+            val stackTrace = Thread.currentThread().stackTrace
 
             try {
-                LOG.info("Retrieve dog walker reviews operation started on thread [$currentThreadName]")
+                LOG.info("Retrieve dog walker reviews operation started")
 
+                /**
+                 * SELECT * FROM dogwalkerreviews;
+                 */
                 val data = query.select()
                     .from(DOGWALKERREVIEWS)
 
@@ -50,26 +52,31 @@ class DogWalkerReviewServiceImpl @Inject constructor(
                 }
 
                 if (result.isNotEmpty()) {
-                    LOG.info("Retrieve dog walker reviews operation successful on thread [$currentThreadName]")
+                    LOG.info("Retrieve dog walker reviews operation successful")
                 } else {
-                    LOG.warn("No dog walker reviews found on thread [$currentThreadName]")
+                    LOG.warn("No dog walker reviews found from [$stackTrace]")
                 }
 
                 return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve dog walker reviews operation on thread [$currentThreadName]", e)
+                LOG.error("Error during retrieve dog walker reviews operation from [$stackTrace]", e)
                 return@withContext emptyList()
             }
         }
     }
 
+
     override suspend fun insert(payload: DogWalkerReviewForm): Boolean {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
+            val stackTrace = Thread.currentThread().stackTrace
 
             try {
-                LOG.info("Insert dog walker review operation started on thread [$currentThreadName]")
+                LOG.info("Insert dog walker review operation started")
 
+                /**
+                 * INSERT INTO dogwalkerreviews (walker_id, user_id, rating, review_text)
+                 * VALUES (:walkerID, :userID, :rating, :reviewText);
+                 */
                 val result = query.insertInto(
                     DOGWALKERREVIEWS,
                     DOGWALKERREVIEWS.WALKER_ID,
@@ -86,18 +93,19 @@ class DogWalkerReviewServiceImpl @Inject constructor(
                     .execute()
 
                 if (result > 0) {
-                    LOG.info("Insert dog walker review successful on thread [$currentThreadName]")
+                    LOG.info("Insert dog walker review successful")
                 } else {
-                    LOG.warn("Insert dog walker review did not affect any rows on thread [$currentThreadName]")
+                    LOG.warn("Insert dog walker review did not affect any rows from [$stackTrace]")
                 }
 
                 return@withContext result > 0
             } catch (e: Exception) {
-                LOG.error("Error during insert dog walker review operation on thread [$currentThreadName]", e)
+                LOG.error("Error during insert dog walker review operation from [$stackTrace]", e)
                 return@withContext false
             }
         }
     }
+
 
 
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
@@ -147,31 +155,36 @@ class DogWalkerReviewServiceImpl @Inject constructor(
 
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
+            val stackTrace = Thread.currentThread().stackTrace
 
             try {
-                LOG.info("Delete dog walker review operation started on thread [$currentThreadName]")
+                LOG.info("Delete dog walker review operation started")
 
+                /**
+                 * DELETE FROM dogwalkerreviews
+                 * WHERE review_id = :id;
+                 */
                 val result = query.deleteFrom(DOGWALKERREVIEWS)
-                    .where(DOGWALKERREVIEWS.REVIEW_ID.eq(DSL.`val`(id))) // ใช้ DSL.`val` เพื่อทำเป็น bind parameter
+                    .where(DOGWALKERREVIEWS.REVIEW_ID.eq(DSL.`val`(id)))
                     .execute()
 
                 if (result > 0) {
-                    LOG.info("Delete dog walker review successful for Dog Walker Review ID [$id] on thread [$currentThreadName]")
+                    LOG.info("Delete dog walker review successful for Dog Walker Review ID [$id]")
                 } else {
-                    LOG.warn("Delete dog walker review did not affect any rows for Dog Walker Review ID [$id] on thread [$currentThreadName]")
+                    LOG.warn("Delete dog walker review did not affect any rows for Dog Walker Review ID [$id] from [$stackTrace]")
                 }
 
                 return@withContext result > 0
             } catch (e: Exception) {
                 LOG.error(
-                    "Error during delete dog walker review operation for Dog Walker Review ID [$id] on thread [$currentThreadName]",
+                    "Error during delete dog walker review operation for Dog Walker Review ID [$id] from [$stackTrace]",
                     e
                 )
                 return@withContext false
             }
         }
     }
+
 
 
     companion object {

@@ -17,10 +17,8 @@ import org.slf4j.LoggerFactory
 @Introspected
 class SignatureServiceImpl @Inject constructor(
     private val query: DSLContext,
-    taskDispatcher: CoroutineDispatcher?
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : SignatureService {
-
-    private val dispatcher: CoroutineDispatcher = taskDispatcher ?: Dispatchers.IO
 
     override suspend fun signAll(): List<SignatureField> {
         TODO("Not yet implemented")
@@ -32,6 +30,12 @@ class SignatureServiceImpl @Inject constructor(
                 val st = SIGNATURE
                 val u = USERPROFILES
 
+                /**
+                 * SELECT signature
+                 * FROM signature s
+                 * JOIN userprofiles u ON u.user_id = s.user_id
+                 * WHERE u.username = :userName AND s.signature = :signature;
+                 */
                 val records = query.select(
                     st.SIGNATURE_
                 )
@@ -40,7 +44,6 @@ class SignatureServiceImpl @Inject constructor(
                     .on(u.USER_ID.eq(st.USER_ID))
                     .where(u.USERNAME.eq(userName).and(st.SIGNATURE_.eq(DSL.`val`(signature))))
                     .fetch()
-
 
                 LOG.info("\n$records")
 
@@ -54,9 +57,15 @@ class SignatureServiceImpl @Inject constructor(
     }
 
 
+
     override suspend fun insert(payload: SignatureForm): Boolean {
         return withContext(dispatcher) {
             try {
+
+                /**
+                 * INSERT INTO signature (user_id, signature)
+                 * VALUES (:userID, :signature);
+                 */
                 val record = query.insertInto(
                     SIGNATURE,
                     SIGNATURE.USER_ID,
@@ -78,13 +87,14 @@ class SignatureServiceImpl @Inject constructor(
                     LOG.warn("No rows inserted for User ID: ${payload.userID}")
                 }
 
-                success
+                return@withContext success
             } catch (e: Exception) {
                 LOG.error("Error inserting Signature: $e")
                 false
             }
         }
     }
+
 
 
     companion object {
