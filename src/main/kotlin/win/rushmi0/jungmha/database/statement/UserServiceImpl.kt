@@ -145,16 +145,12 @@ class UserServiceImpl @Inject constructor(
 
             if (result == null) {
                 LOG.warn("User not found for Account Name: $accountName")
-                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
-                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
                 return@withContext null
             }
 
             if (result.booking == null) {
                 result.copy(booking = emptyList())
             } else {
-                LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
-                LOG.info("Executing Method: ${Thread.currentThread().stackTrace[1].methodName}")
                 result
             }
         }

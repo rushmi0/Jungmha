@@ -38,9 +38,6 @@ class DogsWalkersServiceImpl @Inject constructor(
 
     override suspend fun getSingleDogWalkersInfo(id: Int): DogWalkerField? {
         return withContext(dispatcher) {
-            val currentThread = Thread.currentThread()
-            LOG.info("Current Class: ${Thread.currentThread().stackTrace[1].className}")
-            LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
 
             /**
              * SELECT dk.walker_id,
@@ -96,9 +93,6 @@ class DogsWalkersServiceImpl @Inject constructor(
     override suspend fun getDogWalkersInfo(accountName: String): DogWalkersInfo? {
         return withContext(dispatcher) {
             try {
-                val currentThread = Thread.currentThread()
-                LOG.info("Thread ${currentThread.name} [ID: ${currentThread.id}] in state ${currentThread.state}. Is Alive: ${currentThread.isAlive}")
-                LOG.info("Entering getDogWalkersInfo for Account Name: $accountName")
 
                 val up = USERPROFILES.`as`("up")
                 val dw = DOGWALKERS.`as`("dw")
