@@ -517,8 +517,6 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                 // กำหนดเงื่อนไขว่าต้องอัปเดตแถวใดๆ ที่มี walker_id เท่ากับ id ที่ระบุ
                 val affectedRows = updateRows.where(DOGWALKERS.WALKER_ID.eq(id))
-
-                // ประมวลผลคำสั่ง SQL UPDATE และนับแถวที่ได้รับผลกระทบ
                 val result = affectedRows.execute()
 
                 if (result > 0) {
