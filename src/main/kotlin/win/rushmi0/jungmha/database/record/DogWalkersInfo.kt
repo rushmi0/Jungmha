@@ -15,8 +15,8 @@ data class DogWalkersInfo(
     val email: String,
     val phoneNumber: String,
     val accountType: String,
-    val insights: win.rushmi0.jungmha.database.record.Insights,
-    val booking: List<win.rushmi0.jungmha.database.record.BookingList>
+    val insights: Insights,
+    val booking: List<BookingList>
 )
 
 @Introspected
@@ -29,5 +29,5 @@ data class Insights(
     val idCardNumber: String,
     val verify: Boolean,
     @Embedded
-    val price: win.rushmi0.jungmha.database.record.PriceData
+    val price: PriceData
 )

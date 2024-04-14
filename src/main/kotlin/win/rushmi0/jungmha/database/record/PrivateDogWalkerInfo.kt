@@ -10,13 +10,13 @@ import jakarta.persistence.Embedded
 data class PrivateDogWalkerInfo(
     val walkerID: Int,
     @Embedded
-    val detail: win.rushmi0.jungmha.database.record.WalkerDetail,
+    val detail: WalkerDetail,
     val countUsed: Int,
     val countReview: Int,
     val totalReview: Int,
     @Embedded
-    val contact: win.rushmi0.jungmha.database.record.WalkerContact,
-    val review: List<win.rushmi0.jungmha.database.record.WalkerReview>
+    val contact: WalkerContact,
+    val review: List<WalkerReview>
 )
 
 @Introspected
@@ -27,7 +27,7 @@ data class WalkerDetail(
     val verify: Boolean,
     val location: String,
     @Embedded
-    val price: win.rushmi0.jungmha.database.record.PriceData
+    val price: PriceData
 )
 
 @Introspected

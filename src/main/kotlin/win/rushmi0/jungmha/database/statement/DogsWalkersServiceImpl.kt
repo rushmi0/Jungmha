@@ -1,5 +1,6 @@
 package win.rushmi0.jungmha.database.statement
 
+
 import io.micronaut.context.annotation.Bean
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
@@ -50,7 +51,7 @@ class DogsWalkersServiceImpl @Inject constructor(
              *        dk.price_big
              * FROM dogwalkers dk
              *          JOIN public.userprofiles u on u.user_id = dk.user_id
-             * WHERE dk.user_id = 4;
+             * WHERE dk.user_id = <id>;
              * */
 
             val u = USERPROFILES.`as`("u")
@@ -71,7 +72,6 @@ class DogsWalkersServiceImpl @Inject constructor(
                 .on(u.USER_ID.eq(dk.USER_ID))
                 .where(dk.USER_ID.eq(id))
                 .fetchOne()
-
 
             LOG.info("\n$record")
             return@withContext record?.let {
@@ -94,11 +94,6 @@ class DogsWalkersServiceImpl @Inject constructor(
         return withContext(dispatcher) {
             try {
 
-                val up = USERPROFILES.`as`("up")
-                val dw = DOGWALKERS.`as`("dw")
-                val d = DOGS.`as`("d")
-                val dwb = DOGWALKBOOKINGS.`as`("dwb")
-
                 /**
                  * SELECT dw.walker_id,
                  *        up.image_profile,
@@ -119,9 +114,15 @@ class DogsWalkersServiceImpl @Inject constructor(
                  *        dw.id_card_number
                  * FROM userprofiles up
                  *      JOIN dogwalkers dw ON up.user_id = dw.user_id
-                 * WHERE up.username = :accountName
+                 * WHERE up.username = <accountName>
                  *      AND up.user_type = 'DogWalkers';
                  */
+
+                val up = USERPROFILES.`as`("up")
+                val dw = DOGWALKERS.`as`("dw")
+                val d = DOGS.`as`("d")
+                val dwb = DOGWALKBOOKINGS.`as`("dwb")
+
                 val mainQuery = query.select(
                     dw.WALKER_ID,
                     up.IMAGE_PROFILE,
@@ -250,14 +251,10 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun publicDogWalkersAll(): List<PublicDogWalkerInfo> {
         return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing publicDogWalkersAll")
-
-                val dw = DOGWALKERS
-                val up = USERPROFILES
 
                 /**
                  * SELECT dw.walker_id,
@@ -275,6 +272,10 @@ class DogsWalkersServiceImpl @Inject constructor(
                  *      JOIN userprofiles up ON dw.user_id = up.user_id
                  * WHERE up.user_type = 'DogWalkers';
                  */
+
+                val dw = DOGWALKERS
+                val up = USERPROFILES
+
                 return@withContext query.select(
                     dw.WALKER_ID,
                     up.USERNAME,
@@ -321,15 +322,10 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun privateDogWalkersAll(): List<PrivateDogWalkerInfo> {
         return withContext(dispatcher) {
             try {
                 LOG.info("Thread ${Thread.currentThread().name} executing privateDogWalkersAll")
-
-                val dw = DOGWALKERS
-                val up = USERPROFILES
-                val dwr = DOGWALKERREVIEWS
 
                 /**
                  * SELECT dw.walker_id,
@@ -351,6 +347,11 @@ class DogsWalkersServiceImpl @Inject constructor(
                  *      JOIN userprofiles up ON dw.user_id = up.user_id
                  * WHERE up.user_type = 'DogWalkers';
                  */
+
+                val dw = DOGWALKERS
+                val up = USERPROFILES
+                val dwr = DOGWALKERREVIEWS
+
                 val mainQuery = query.select(
                     dw.WALKER_ID,
                     up.USERNAME,
@@ -372,15 +373,16 @@ class DogsWalkersServiceImpl @Inject constructor(
                     .join(up).on(dw.USER_ID.eq(up.USER_ID))
                     .where(up.USER_TYPE.eq(DSL.`val`("DogWalkers")))
 
-                val result = mainQuery.fetch { record ->
+                val resultSubQuery = mainQuery.fetch { record ->
 
                     /**
                      * SELECT dwr.user_id,
                      *        dwr.rating,
                      *        dwr.review_text
                      * FROM dogwalkerreviews dwr
-                     * WHERE dwr.walker_id = :walkerID;
+                     * WHERE dwr.walker_id = <walkerID>;
                      */
+
                     val subQuery = query
                         .select(
                             dwr.USER_ID,
@@ -433,7 +435,7 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                 }
 
-                return@withContext result
+                return@withContext resultSubQuery
 
             } catch (e: Exception) {
                 LOG.error("Error retrieving private dog walkers from the database", e)
@@ -443,7 +445,6 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun insert(id: Int): Boolean {
         return withContext(dispatcher) {
             try {
@@ -451,8 +452,9 @@ class DogsWalkersServiceImpl @Inject constructor(
 
                 /**
                  * INSERT INTO dogwalkers (user_id)
-                 * VALUES (:id);
+                 * VALUES (<id>);
                  */
+
                 val result = query.insertInto(
                     DOGWALKERS,
                     DOGWALKERS.USER_ID,
@@ -479,11 +481,9 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun updateSingleField(id: Int, fieldName: String, newValue: String): Boolean {
         return withContext(dispatcher) {
             try {
-                LOG.info("Thread ${Thread.currentThread().name} executing update for Dog Walker")
 
                 // สร้างคำสั่ง SQL UPDATE โดยให้ fieldName เป็นชื่อคอลัมน์ที่ต้องการอัปเดต
                 // และให้ newValue เป็นค่าใหม่ที่ต้องการให้คอลัมน์นั้นมี
@@ -535,7 +535,6 @@ class DogsWalkersServiceImpl @Inject constructor(
     }
 
 
-
     override suspend fun delete(id: Int): Boolean {
         return withContext(dispatcher) {
             try {
@@ -545,6 +544,7 @@ class DogsWalkersServiceImpl @Inject constructor(
                  * DELETE FROM dogwalkers
                  * WHERE walker_id = :id;
                  */
+
                 val deletedRows = query.deleteFrom(DOGWALKERS)
                     .where(DOGWALKERS.WALKER_ID.eq(DSL.`val`(id)))
                     .execute()
@@ -562,7 +562,6 @@ class DogsWalkersServiceImpl @Inject constructor(
             }
         }
     }
-
 
 
     companion object {

@@ -10,5 +10,5 @@ data class PublicDogWalkerInfo(
     val walkerID: Int,
     val totalReview: Int,
     @Embedded
-    val detail: win.rushmi0.jungmha.database.record.WalkerDetail,
+    val detail: WalkerDetail,
 )

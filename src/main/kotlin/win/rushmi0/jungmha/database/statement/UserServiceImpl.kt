@@ -42,9 +42,29 @@ class UserServiceImpl @Inject constructor(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : UserService {
 
-
     override suspend fun getUserInfo(accountName: String): NormalInfo? {
         return withContext(dispatcher) {
+
+            /**
+             * SELECT dk.BOOKING_ID,
+             *        up2.USERNAME AS walker_name,
+             *        d.BREED_NAME,
+             *        d.SIZE,
+             *        dk.BOOKING_DATE,
+             *        dk.TIME_START,
+             *        dk.TIME_END,
+             *        dk.DURATION,
+             *        dk.TOTAL,
+             *        dk.STATUS,
+             *        dk.TIMESTAMP,
+             *        dk.SERVICE_STATUS
+             * FROM dogwalkbookings dk
+             * JOIN userprofiles up ON up.USER_ID = dk.USER_ID
+             * JOIN dogwalkers dw ON dw.WALKER_ID = dk.WALKER_ID
+             * JOIN userprofiles up2 ON up2.USER_ID = dw.USER_ID
+             * JOIN dogs d ON d.DOG_ID = dk.DOG_ID
+             * WHERE up.USERNAME = <accountName>
+             */
 
             val up = USERPROFILES.`as`("up")
             val dw = DOGWALKERS.`as`("dw")
@@ -52,16 +72,6 @@ class UserServiceImpl @Inject constructor(
             val up2 = USERPROFILES.`as`("up2")
             val dk = DOGWALKBOOKINGS.`as`("dk")
 
-            /**
-             * SELECT dk.BOOKING_ID, up2.USERNAME AS walker_name, d.BREED_NAME, d.SIZE, dk.BOOKING_DATE,
-             * dk.TIME_START, dk.TIME_END, dk.DURATION, dk.TOTAL, dk.STATUS, dk.TIMESTAMP, dk.SERVICE_STATUS
-             * FROM dogwalkbookings dk
-             * JOIN userprofiles up ON up.USER_ID = dk.USER_ID
-             * JOIN dogwalkers dw ON dw.WALKER_ID = dk.WALKER_ID
-             * JOIN userprofiles up2 ON up2.USER_ID = dw.USER_ID
-             * JOIN dogs d ON d.DOG_ID = dk.DOG_ID
-             * WHERE up.USERNAME = :accountName
-             */
             val subQuery = query.select(
                 dk.BOOKING_ID,
                 up2.USERNAME.`as`("walker_name"),
@@ -87,12 +97,20 @@ class UserServiceImpl @Inject constructor(
                 .on(d.DOG_ID.eq(dk.DOG_ID))
                 .where(up.USERNAME.eq(DSL.`val`(accountName)))
 
+
             /**
-             * SELECT up.USER_ID, up.USERNAME, up.IMAGE_PROFILE, up.FIRST_NAME, up.LAST_NAME, up.EMAIL,
-             * up.PHONE_NUMBER, up.USER_TYPE
+             * SELECT up.USER_ID,
+             *        up.USERNAME,
+             *        up.IMAGE_PROFILE,
+             *        up.FIRST_NAME,
+             *        up.LAST_NAME,
+             *        up.EMAIL,
+             *        up.PHONE_NUMBER,
+             *        up.USER_TYPE
              * FROM userprofiles up
              * WHERE up.USERNAME = :accountName
              */
+
             val mainQuery = query.select(
                 up.USER_ID,
                 up.USERNAME,
@@ -166,7 +184,7 @@ class UserServiceImpl @Inject constructor(
 
                 /**
                  * SELECT * FROM userprofiles
-                 * WHERE userprofiles.USERNAME = :accountName
+                 * WHERE userprofiles.USERNAME = <accountName>
                  */
                 val result: Record? = query.select()
                     .from(USERPROFILES)
@@ -216,6 +234,12 @@ class UserServiceImpl @Inject constructor(
     override suspend fun userAll(): List<UserProfileField> {
         return withContext(dispatcher) {
             try {
+
+                /**
+                 * SELECT *
+                 * FROM userprofiles
+                 */
+
                 val result: Result<Record> = query.select()
                     .from(USERPROFILES)
                     .fetch()
@@ -247,6 +271,7 @@ class UserServiceImpl @Inject constructor(
     }
 
 
+
     override suspend fun insert(payload: IdentityForm): Boolean {
         return withContext(dispatcher) {
             try {
@@ -254,7 +279,7 @@ class UserServiceImpl @Inject constructor(
                 /**
                  * INSERT INTO userprofiles
                  * (userprofiles.USERNAME, userprofiles.AUTHEN_KEY, userprofiles.SHARE_KEY)
-                 * VALUES (:payload.userName, :payload.authenKey, :payload.shareKey)
+                 * VALUES (<payload.userName>, <payload.authenKey>, <payload.shareKey>)
                  */
                 val record = query.insertInto(
                     USERPROFILES,
@@ -296,13 +321,14 @@ class UserServiceImpl @Inject constructor(
                 /**
                  * UPDATE userprofiles
                  * SET
-                 * userprofiles.FIRST_NAME = :payload.firstName,
-                 * userprofiles.LAST_NAME = :payload.lastName,
-                 * userprofiles.EMAIL = :payload.email,
-                 * userprofiles.PHONE_NUMBER = :payload.phoneNumber,
-                 * userprofiles.USER_TYPE = :payload.userType
-                 * WHERE userprofiles.USERNAME = :userName
+                 * userprofiles.FIRST_NAME = <payload.firstName>,
+                 * userprofiles.LAST_NAME = <payload.lastName>,
+                 * userprofiles.EMAIL = <payload.email>,
+                 * userprofiles.PHONE_NUMBER = <payload.phoneNumber>,
+                 * userprofiles.USER_TYPE = <payload.userType>
+                 * WHERE userprofiles.USERNAME = <userName>
                  */
+
                 val updateRows = query.update(USERPROFILES)
                     .set(USERPROFILES.FIRST_NAME, payload.firstName)
                     .set(USERPROFILES.LAST_NAME, payload.lastName)
@@ -346,7 +372,7 @@ class UserServiceImpl @Inject constructor(
 
                 /**
                  * UPDATE userprofiles
-                 * SET <field> = :newValue
+                 * SET <field> = <newValue>
                  * WHERE userprofiles.USER_ID = :id
                  */
                 val updateRows = query.update(USERPROFILES)
@@ -390,7 +416,7 @@ class UserServiceImpl @Inject constructor(
 
                 /**
                  * DELETE FROM userprofiles
-                 * WHERE userprofiles.USER_ID = :id
+                 * WHERE userprofiles.USER_ID = <id>
                  */
                 val deletedRows = query.deleteFrom(USERPROFILES)
                     .where(USERPROFILES.USER_ID.eq(DSL.`val`(id)))

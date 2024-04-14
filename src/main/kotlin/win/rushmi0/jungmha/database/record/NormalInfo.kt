@@ -19,7 +19,7 @@ data class NormalInfo(
     val phoneNumber: String,
     val accountType: String,
     @Embedded
-    val booking: List<win.rushmi0.jungmha.database.record.BookingList>?
+    val booking: List<BookingList>?
 )
 
 @Introspected

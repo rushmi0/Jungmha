@@ -1,5 +1,6 @@
 package win.rushmi0.jungmha.database.statement
 
+
 import io.micronaut.context.annotation.Bean
 import io.micronaut.core.annotation.Introspected
 import io.micronaut.runtime.http.scope.RequestScope
@@ -37,8 +38,6 @@ class DogsServiceImpl @Inject constructor(
 
     override suspend fun findDog(dogID: Int): DogField? {
         return try {
-            val currentThreadName = Thread.currentThread().name
-            LOG.info("Thread $currentThreadName executing findDog")
 
             /**
              * SELECT *
@@ -53,7 +52,7 @@ class DogsServiceImpl @Inject constructor(
             }
 
             return if (record != null) {
-                LOG.info("Dog found with ID [$dogID] on thread [$currentThreadName]")
+                LOG.info("Dog found with ID [$dogID]")
                 DogField(
                     record[DOGS.DOG_ID],
                     record[DOGS.DOG_IMAGE],
@@ -82,15 +81,13 @@ class DogsServiceImpl @Inject constructor(
 
     override suspend fun dogsAll(): List<DogField> {
         return withContext(dispatcher) {
-            val currentThreadName = Thread.currentThread().name
-
             try {
-                LOG.info("Retrieve dogs operation started on thread [$currentThreadName]")
 
                 /**
                  * SELECT *
                  * FROM dogs;
                  */
+
                 val data = query.select()
                     .from(DOGS)
 
@@ -106,14 +103,14 @@ class DogsServiceImpl @Inject constructor(
                 }
 
                 if (result.isNotEmpty()) {
-                    LOG.info("Retrieve dogs operation successful on thread [$currentThreadName]")
+                    LOG.info("Retrieve dogs operation successful")
                 } else {
-                    LOG.warn("No dogs found on thread [$currentThreadName]")
+                    LOG.warn("No dogs found")
                 }
 
                 return@withContext result
             } catch (e: Exception) {
-                LOG.error("Error during retrieve dogs operation on thread [$currentThreadName]", e.message)
+                LOG.error("Error during retrieve dogs operation", e.message)
                 return@withContext emptyList()
             }
         }
@@ -132,6 +129,7 @@ class DogsServiceImpl @Inject constructor(
                  * INSERT INTO dogs (dog_image, breed_name, size)
                  * VALUES (dogImage, breedName, size);
                  */
+
                 val result = query.insertInto(
                     DOGS,
                     DOGS.DOG_IMAGE,
@@ -178,9 +176,10 @@ class DogsServiceImpl @Inject constructor(
 
                 /**
                  * UPDATE dogs
-                 * SET $fieldName = :newValue
-                 * WHERE dog_id = :id;
+                 * SET $fieldName = <newValue>
+                 * WHERE dog_id = <id>;
                  */
+
                 val affectedRows = query.update(DOGS)
                     .set(field, DSL.`val`(newValue))
                     .where(DOGS.DOG_ID.eq(id)).execute()
@@ -212,6 +211,7 @@ class DogsServiceImpl @Inject constructor(
                  * DELETE FROM dogs
                  * WHERE dog_id = :id;
                  */
+
                 val result = query.deleteFrom(DOGS)
                     .where(DOGS.DOG_ID.eq(id))
                     .execute()
@@ -234,4 +234,5 @@ class DogsServiceImpl @Inject constructor(
     companion object {
         private val LOG: Logger = LoggerFactory.getLogger(DogsServiceImpl::class.java)
     }
+
 }
