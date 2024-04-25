@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jooq.meta.jaxb.Logging
 import org.jooq.meta.jaxb.Property
 
@@ -68,23 +70,15 @@ dependencies {
 
 }
 
-
-graalvmNative {
-    binaries {
-        all {
-            // * https://www.graalvm.org/latest/reference-manual/native-image/overview/BuildOutput/?fbclid=IwAR007Rh7fYg-CJZywqhFM8PF5XDWPvgOfaV9txFDqpy6PWjtZp2bXpgncL0_aem_Af0UTqW_wKY5RFkebOwqrANSJn-d6fpSoJLMyra23KLgMNQuur3l75gjN29_Ymw1JYkeX7upxGBzGPFkJ4iRuojh
-            buildArgs.add("-H:+AddAllCharsets")
-            buildArgs.add("-R:MaxHeapSize=3G")
-            buildArgs.add("-J-XX:MaxRAMPercentage=60.0")
-            imageName.set("${project.name}-0.0.1-alpha")
-            javaLauncher.set(javaToolchains.launcherFor {
-                languageVersion.set(JavaLanguageVersion.of(17))
-                vendor.set(JvmVendorSpec.GRAAL_VM)
-            })
-            verbose.set(true)
-        }
+tasks
+    .withType<KotlinJvmCompile>()
+    .configureEach {
+        compilerOptions
+            .languageVersion
+            .set(
+                KotlinVersion.KOTLIN_2_0
+            )
     }
-}
 
 
 java {
@@ -110,6 +104,24 @@ application {
     mainClass.set("win.rushmi0.jungmha.ApplicationKt")
 }
 
+
+graalvmNative {
+    binaries {
+        all {
+            // * https://www.graalvm.org/latest/reference-manual/native-image/overview/BuildOutput/?fbclid=IwAR007Rh7fYg-CJZywqhFM8PF5XDWPvgOfaV9txFDqpy6PWjtZp2bXpgncL0_aem_Af0UTqW_wKY5RFkebOwqrANSJn-d6fpSoJLMyra23KLgMNQuur3l75gjN29_Ymw1JYkeX7upxGBzGPFkJ4iRuojh
+            buildArgs.add("-H:+AddAllCharsets")
+            buildArgs.add("-R:MaxHeapSize=4G")
+            //buildArgs.add("-J-XX:MaxRAMPercentage=60.0")
+            //buildArgs.add("--target=linux-x86-64-v3")
+            imageName.set("${project.name}-0.0.1-alpha")
+            javaLauncher.set(javaToolchains.launcherFor {
+                languageVersion.set(JavaLanguageVersion.of(17))
+                vendor.set(JvmVendorSpec.GRAAL_VM)
+            })
+            verbose.set(true)
+        }
+    }
+}
 
 //graalvmNative.toolchainDetection.set(true)
 micronaut {
