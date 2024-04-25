@@ -32,7 +32,7 @@ services:
       - sh
       - -c
       - |
-        chmod +x run_aot_app.sh; ./run_aot_app.sh
+        chmod +x run_native-image.sh; ./run_native-image.sh
     networks:
       - dev_network
 
@@ -50,7 +50,7 @@ services:
       - sh
       - -c
       - |
-        chmod +x run_jit_app.sh; ./run_jit_app.sh
+        chmod +x run_jvm.sh; ./run_jvm.sh
     networks:
       - dev_network
 
@@ -60,3 +60,4 @@ services:
     image: cloudflare/cloudflared:latest
     restart: unless-stopped
     command: tunnel --no-autoupdate run --token
+
