@@ -2,68 +2,21 @@
   <span><img src="src/main/resources/images/diagram/Logo.svg" height=200 width=512 /></span>
 </div>
 
-## ขั้นตอนการติดตั้งและใช้งาน
+Jungmha คือแพลตฟอร์มที่มุ่งเน้นให้บริการตัวกลางสำหรับคนที่รักสุนัข บางครั้งอาจไม่สามารถหรือไม่มีเวลาดูแลหรือพาเพื่อนสุนัขของเขาไปเดินเล่น 
+และสำหรับผู้ที่มีความสามารถและความประสงค์ที่จะรับจ้างนำสุนัขไปเดินเล่น
 
-เริ่มต้นด้วยการคัดลอกโปรเจ็กต์จาก GitHub และเข้าไปยังไดเร็กทอรีของโปรเจ็กต์ที่คุณได้คัดลอก
-```shell
-git clone https://github.com/rushmi0/Jungmha.git
-cd Jungmha
-```
+#### ผู้ใช้บริการ
+สามารถค้นหาคนที่พื้นที่ใกล้ตนเองได้ และกำการจองช่วงเวลาได้ตามตารางของของคนรับจ้างก็ต่อเมื่อได้ลงทะเบียนแล้ว
 
-## ติดตั้ง GraalVM Community Edition สำหรับ JDK17
-1. ดาวน์โหลด GraalVM จากลิงก์นี้: [GraalVM CE Builds](https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9)
-2. ติดตั้ง GraalVM ตามขั้นตอนการติดตั้งที่เหมาะสมกับระบบปฏิบัติการที่ใช้
-
-
-### กำหนดตัวแปรสภาพแวดล้อม
-กำหนดตัวแปร JAVA_HOME และปรับ PATH เพื่อให้ระบบรู้ถึงที่ติดตั้งของ GraalVM
-
-```shell
-export JAVA_HOME=/home/$(whoami)/to/path/graalvm-ce-17.0.9
-export PATH=$JAVA_HOME/bin:$PATH
-source ~/.zshrc  # หรือใช้ .bashrc หากใช้ bash
-```
-
-### คำสั่งในการใช้ GraalVM ในการคอมไพล์ไปเป็น native binaries
-การใช้ GraalVM เพื่อคอมไพล์โปรแกรมเป็นไฟล์ native binaries ทำให้โปรแกรมสามารถทำงานได้โดยไม่ต้องใช้ Java Virtual Machine (JVM) อีกต่อไป นี่คือคำสั่งใน Gradle เพื่อใช้งาน GraalVM ในการคอมไพล์โปรแกรม
-
-คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries โดยมีการคอมไพล์เบื้องต้น
-```shell
-./gradlew nativeCompile 
-```
-คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries โดยมีการปรับปรุงเพิ่มเติมในกระบวนการคอมไพล์เพื่อให้ได้ผลที่เร็วและมีประสิทธิภาพมากที่สุดที่เป็นไปได้
-```shell
-./gradlew nativeOptimizedCompile 
-```
-
-<br>
-
-## การใช้งานสำหรับ Docker
-
-### 🔧 ⚙️ Just-in-time (JIT) compilation
-แปลงไปเป็น bytes code แล้วใช้ Java Virtual Machine (JVM) ในการรันโปรแกรม
-```shell
-docker compose up -d jungmhaDB jungmha-jvm-app
-```
-
-### 🔧 ⚙️  Ahead-of-time (AOT) compilation
-แปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
-```shell
-docker compose up -d jungmhaDB jungmha-native-image
-```
-
-<br>
-
-### เอกสารการใช้งาน API
-- https://jungmha.rushmi0.win/swagger-ui
-- https://jungmha.rushmi0.win/redoc
+#### ผู้รับจ้าง
+ในส่วนของรับจ้างสามารถปรับแก้ไขข้อมูลรายละเอียดราคาหรือพื้นที่ให้บริการ และยังสามารถยอมรับหรือปฏิเสธการจองได้
 
 ___
-<br>
+
 
 # Backend ผมออกแบบ โดยแบ่งออกเป็นส่วนการทำงาน 4ชั้น
 
-#### ชั้นที่ 1 REST API
+#### ชั้นที่ 1 Service
 - ✨  ส่วนของการจัดส่งข้อมูล ที่จะให้บริการต่างๆแก่ Frontend
 
 #### ชั้นที่ 2 Business Logic
@@ -155,3 +108,62 @@ ___
 </div>
 
 
+___
+
+## ขั้นตอนการติดตั้งและใช้งาน
+
+เริ่มต้นด้วยการคัดลอกโปรเจ็กต์จาก GitHub และเข้าไปยังไดเร็กทอรีของโปรเจ็กต์ที่คุณได้คัดลอก
+```shell
+git clone https://github.com/rushmi0/Jungmha.git
+cd Jungmha
+```
+
+## ติดตั้ง GraalVM Community Edition สำหรับ JDK17
+1. ดาวน์โหลด GraalVM จากลิงก์นี้: [GraalVM CE Builds](https://github.com/graalvm/graalvm-ce-builds/releases/tag/jdk-17.0.9)
+2. ติดตั้ง GraalVM ตามขั้นตอนการติดตั้งที่เหมาะสมกับระบบปฏิบัติการที่ใช้
+
+
+### กำหนดตัวแปรสภาพแวดล้อม
+กำหนดตัวแปร JAVA_HOME และปรับ PATH เพื่อให้ระบบรู้ถึงที่ติดตั้งของ GraalVM
+
+```shell
+export JAVA_HOME=/home/$(whoami)/to/path/graalvm-ce-17.0.9
+export PATH=$JAVA_HOME/bin:$PATH
+source ~/.zshrc  # หรือใช้ .bashrc หากใช้ bash
+```
+
+### คำสั่งในการใช้ GraalVM ในการคอมไพล์ไปเป็น native binaries
+การใช้ GraalVM เพื่อคอมไพล์โปรแกรมเป็นไฟล์ native binaries ทำให้โปรแกรมสามารถทำงานได้โดยไม่ต้องใช้ Java Virtual Machine (JVM) อีกต่อไป นี่คือคำสั่งใน Gradle เพื่อใช้งาน GraalVM ในการคอมไพล์โปรแกรม
+
+คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries
+```shell
+chmod +x run_native-image.sh
+./run_native-image.sh
+```
+คำสั่งนี้จะใช้ GraalVM เพื่อคอมไพล์โปรแกรมไปเป็น native binaries โดยมีการปรับปรุงเพิ่มเติมในกระบวนการคอมไพล์เพื่อให้ได้ผลที่เร็วและมีประสิทธิภาพมากที่สุดที่เป็นไปได้
+```shell
+chmod +x run_jvm.sh
+./run_jvm.sh
+```
+
+<br>
+
+## การใช้งานสำหรับ Docker
+
+### 🔧 ⚙️ Just-in-time (JIT) compilation
+แปลงไปเป็น bytes code แล้วใช้ Java Virtual Machine (JVM) ในการรันโปรแกรม
+```shell
+docker compose up -d jungmhaDB jungmha-jvm-app
+```
+
+### 🔧 ⚙️  Ahead-of-time (AOT) compilation
+แปลงโค้ดไปเป็น native binaries ของแพลตฟอร์มนั้นๆ แล้วรันได้โดยตรง ดังนี้
+```shell
+docker compose up -d jungmhaDB jungmha-native-image
+```
+
+<br>
+
+### เอกสารการใช้งาน API
+- https://jungmha.rushmi0.win/swagger-ui
+- https://jungmha.rushmi0.win/redoc
