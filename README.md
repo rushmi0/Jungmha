@@ -5,6 +5,12 @@
 **Jungmha** คือแพลตฟอร์มที่มุ่งเน้นให้บริการตัวกลางสำหรับคนที่รักสุนัข บางครั้งอาจไม่สามารถหรือไม่มีเวลาดูแลหรือพาเพื่อนสุนัขของเขาไปเดินเล่น 
 และสำหรับผู้ที่มีความสามารถและความประสงค์ที่จะรับจ้างนำสุนัขไปเดินเล่น
 
+<br>
+
+<div align="center">
+  <span><img src="src/main/resources/images/diagram/Screenshot 2024-07-21 103352.png"  /></span>
+</div>
+
 ### ผู้ใช้บริการ
 สามารถค้นหาคนที่พื้นที่ใกล้ตนเองได้ และกำการจองช่วงเวลาได้ตามตารางของของคนรับจ้างก็ต่อเมื่อได้ลงทะเบียนแล้ว
 
@@ -54,7 +60,7 @@ ___
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/192108893-b1eed3c7-b2c4-4e1c-9e9f-c7e83637b33d.png" alt="WebStorm" title="WebStorm"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/192108891-d86b6220-e232-423a-bf5f-90903e6887c3.png" alt="Visual Studio Code" title="Visual Studio Code"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/202896760-337261ed-ee92-4979-84c4-d4b829c7355d.png" alt="Tailwind CSS" title="Tailwind CSS"/></td>
-			<td><img width="64" src="https://daisyui.com/images/daisyui-logo/daisyui-logomark.svg" alt="Tailwind CSS" title="Daisy UI"/></td>
+			<td><img width="64" src="src/main/resources/images/diagram/icons/daisyui-logomark.svg" alt="Daisy UI" title="Daisy UI"/></td>
             <td><img width="64" src="https://user-images.githubusercontent.com/25181517/117447155-6a868a00-af3d-11eb-9cfe-245df15c9f3f.png" alt="JavaScript" title="JavaScript"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183897015-94a058a6-b86e-4e42-a37f-bf92061753e5.png" alt="React" title="React"/></td>
 			<td><img width="64" src="https://user-images.githubusercontent.com/25181517/183568594-85e280a7-0d7e-4d1a-9028-c8c2209e073c.png" alt="Node.js" title="Node.js"/></td>
@@ -78,6 +84,8 @@ ___
 #### Elliptic Curve
 ใช้ [Elliptic Curve](https://cryptobook.nakov.com/asymmetric-key-ciphers/elliptic-curve-cryptography-ecc) และเส้นโค้ง [Secp256k1](https://www.secg.org/sec2-v2.pdf) ในการสร้าง **Public Key** เป็นรูปแบบบีบอัดขนาด 33 Bytes
 
+
+> [!IMPORTANT]\
 > _Private Key นั้นสร้างโดยนำ Password มา Hash ด้วย Sha256 ทั้งหมด 7,200 รอบ เพื่อถ่วงเวลาพวกที่จะมา brute force_
 
 #### ECDH Share Key
@@ -100,6 +108,7 @@ ___
 #### ECDSA
 นำข้อความที่กำหนดมา Hash ด้วย Sha256 เพียงครั้งเดียว แล้วนำ Private Key มาใช้สร้างลายเซ็นแบบ ECDSA แล้วส่งไปให้ Server เพื่อรับ Access token
 
+> [!IMPORTANT]\
 > ลายเซ็นที่สร้างขึ้นใช้งานได้ครั่งเดียวเท่านั้น ไม่สามารถใช้ซ้ำได้
 
 
